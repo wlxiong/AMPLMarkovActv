@@ -6,8 +6,7 @@ param T := 20;	# the equivalent minutes of a time slice
 param H := 72;	# number of time slices, and T * H = 1440 minutes
 param M := 3;	# number of activities, 0:home, 1:work, 2:shopping
 param N :=  50;	# number of individuals
-param beta :=   0.975;	# discount ratio of future utility
-param trueValueOfTime :=  30.0;		# HKD per hour
+param beta :=   0.95;	# discount ratio of future utility
 /*param initEV :=   0.0;*/
 
 # parameters of utility function
@@ -33,6 +32,7 @@ param trueXi :=
 ;
 
 # simulated travel time
+param trueValueOfTime :=  30.0;		# HKD per hour
 param travelTime:
 		0	1	2 :=
 	0	0	2	1
