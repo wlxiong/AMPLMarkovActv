@@ -10,7 +10,7 @@
 # AMPL Model File:   MarkovActv.mod
 # AMPL Data File:    MarkovActv.dat
 # AMPL Command File: MarkovActv.run
- 
+
 
 # AROLD ZURCHER BUS REPAIR EXAMPLE 
 # A constrained optimization formulation to compute maximum likelihood estimates of 
@@ -84,8 +84,8 @@ var trueValueOfTime >= 0;
 /*var transProb {1..M} >= 0;*/
 
 # Define variables for specifying initial parameter values
-var initValueOfTime;
-var initEV;
+/*var initValueOfTime;
+var initEV;*/
 
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
 # The NLP approach requires us to solve equilibrium constraint variables
@@ -129,7 +129,7 @@ subject to
         EV[t,j] = log( sum {k in D} exp(choiceUtil[t,j,k]) );
 
 #  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
-    EVBound {(t,j) in X}: EV[t,j] <= 1000;
+    EVBound {(t,j) in X}: EV[t,j] <= 10000;
 
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS
 
