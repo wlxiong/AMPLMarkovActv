@@ -110,7 +110,7 @@ var choiceUtil {(t,j) in X, k in D} =
     else
         - travelCost[t,j,k] + beta*EV[( (t+travelTime[j,k]+1 ) mod H),k];
 
-var choiceProb {(t,j) in X, k in D} = choiceUtil[t,j,k] / exp(EV[t,j]);
+var choiceProb {(t,j) in X, k in D} = exp(choiceUtil[t,j,k]) / exp(EV[t,j]);
 
 #  END OF DECLARING AUXILIARY VARIABLES #
 
