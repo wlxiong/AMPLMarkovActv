@@ -61,25 +61,25 @@ display beta, valueOfTime, U0, Um, gamma, xi;
 printf "%10.3f \n", _solve_time > EV/solvetime.sol;
 printf "%10.3f \n", valueOfTime > EV/valueOfTime.sol;
 
-# write EV to a file EV.sol
-printf "EV = [\n" > EV/EV.sol;
+# write EV to a file EUtil.m
+printf "EV = [\n" > EV/EUtil.m;
 for {t in TIME} {
 	for {j in D} {
-		printf "%10.3f\t", EV[t,j] > EV/EV.sol;
+		printf "%10.3f\t", EV[t,j] > EV/EUtil.m;
 	}
-	printf "\n" > EV/EV.sol;
+	printf "\n" > EV/EUtil.m;
 }
-printf "];" > EV/EV.sol;
+printf "];" > EV/EUtil.m;
 
-# write choiceProb to a file Pr.sol
-printf "Pr = zeros[%d, %d, %d];\n", H, M, M > EV/Pr.sol;
+# write choiceProb to a file Prob.m
+printf "Pr = zeros(%d, %d, %d);\n", H, M, M > EV/Prob.m;
 for {j in D} {
-	printf "Pr[:, %d, :] = [\n", j > EV/Pr.sol;
+	printf "Pr(:, %d, :) = [\n", j+1 > EV/Prob.m;
 	for {t in TIME} {
 		for {k in D} {
-			printf "%10.3f\t", choiceProb[t,j,k] > EV/Pr.sol;
+			printf "%10.3f\t", choiceProb[t,j,k] > EV/Prob.m;
 		}
-		printf "\n" > EV/Pr.sol;
+		printf "\n" > EV/Prob.m;
 	}
-	printf "];\n" > EV/Pr.sol;
+	printf "];\n" > EV/Prob.m;
 }
