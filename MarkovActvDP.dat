@@ -1,0 +1,41 @@
+# Data generated: 19-Nov-2010 01:01:29
+
+data; 
+
+param T := 20;	# the equivalent minutes of a time slice
+param H := 72;	# number of time slices, and T * H = 1440 minutes
+param M := 3;	# number of activities, 0:home, 1:work, 2:shopping
+param N :=  50;	# number of individuals
+param beta :=   0.975;	# discount ratio of future utility
+param trueValueOfTime :=  30.0;		# HKD per hour
+/*param initEV :=   0.0;*/
+
+# parameters of utility function
+param trueU0 :=
+	0	1.0
+	1	0.0
+	2	0.0
+;
+param trueUm :=
+	0	400
+	1	1000
+	2	400
+;
+param trueGamma :=
+	0	-0.008
+	1	0.01
+	2	0.01
+;
+param trueXi :=
+	0	720
+	1	720
+	2	1170
+;
+
+# simulated travel time
+param travelTime:
+		0	1	2 :=
+	0	0	2	1
+	1	2	0	2
+	2	1	2	0
+;
