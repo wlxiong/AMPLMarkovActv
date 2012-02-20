@@ -50,19 +50,36 @@ option display_round 6, display_width 120;
 
 # display the value function
 display EV;
+# display the choice-specific utility
+/*display choiceUtil;*/
+# display the choice probability
+/*display choiceProb;*/
 
 # display the structural parameters (remember beta was fixed)
 display beta, valueOfTime, U0, Um, gamma, xi;
 
-/*printf "%10.7f \n", _solve_time > EV/solvetime.sol;
-#  printf "%10.7f \n", Likelihood > EV/objval.sol;     
-printf "%10.7f \n", RC > EV/RC.sol;
-printf "%10.7f \n", thetaCost > EV/thetCost.sol;
-for {i in 1..M} {
-  	printf "%10.7f \n", thetaProbs[i] > EV/thetaProbs.sol;
+printf "%10.3f \n", _solve_time > EV/solvetime.sol;
+printf "%10.3f \n", valueOfTime > EV/valueOfTime.sol;
+
+# write EV to a file EV.sol
+printf "EV = [\n" > EV/EV.sol;
+for {t in TIME} {
+	for {j in D} {
+		printf "%10.3f\t", EV[t,j] > EV/EV.sol;
+	}
+	printf "\n" > EV/EV.sol;
 }
-  # write EV to a file EV.sol 
-for {i in X} {
-  	printf "%10.7f \n", EV[i] > EV/EV.sol;
+printf "];" > EV/EV.sol;
+
+# write choiceProb to a file Pr.sol
+printf "Pr = zeros[%d, %d, %d];\n", H, M, M > EV/Pr.sol;
+for {j in D} {
+	printf "Pr[:, %d, :] = [\n", j > EV/Pr.sol;
+	for {t in TIME} {
+		for {k in D} {
+			printf "%10.3f\t", choiceProb[t,j,k] > EV/Pr.sol;
+		}
+		printf "\n" > EV/Pr.sol;
+	}
+	printf "];\n" > EV/Pr.sol;
 }
-*/
