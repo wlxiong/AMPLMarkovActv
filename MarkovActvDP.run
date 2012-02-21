@@ -74,7 +74,7 @@ printf "];" > EV/EUtil.m;
 # write choiceProb to a file Prob.m
 printf "Pr = zeros(%d, %d, %d);\n", H, M, M > EV/Prob.m;
 for {j in D} {
-	printf "Pr(:, %d, :) = [\n", j+1 > EV/Prob.m;
+	printf "Pr(:, %d, :) = [\n", j > EV/Prob.m;
 	for {t in TIME} {
 		for {k in D} {
 			printf "%10.3f\t", choiceProb[t,j,k] > EV/Prob.m;
