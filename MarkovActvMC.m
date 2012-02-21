@@ -33,5 +33,5 @@ for n = 1:N
 	end
 end
 fid = fopen('MarkovActvMC.dat', 'w');
-fprintAmplParamCLSU(fid, 'xt', xt, 1);
-fprintAmplParamCLSU(fid, 'dt', dt, 1);
+fprintAmplParamCLSU(fid, 'xt', xt(:,1:H), 1);
+fprintAmplParamCLSU(fid, 'dt', dt(:,1:H), 1);
