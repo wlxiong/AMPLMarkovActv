@@ -70,8 +70,8 @@ var trueGamma {ACTV};
 var trueXi {ACTV};
 
 # Temporal Activity Utility (approximated)
-var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*1.0*Um[j]/(exp(gamma[j]*((t+0.5)*T-xi[j]))*
-							(1+exp(-gamma[j]*((t+0.5)*T-xi[j])))^(1.0+1)))*T;
+var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*1.0*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
+							(1+exp(-gamma[j]*(t*T-xi[j])))^(1.0+1)))*T;
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time

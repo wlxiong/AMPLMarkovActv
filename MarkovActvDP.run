@@ -48,6 +48,8 @@ display _solve_time;
 # Output commands
 option display_round 6, display_width 120;
 
+# display the activity utility
+display actvUtil;
 # display the value function
 display EV;
 # display the choice-specific utility

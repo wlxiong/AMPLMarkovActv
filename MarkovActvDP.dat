@@ -18,7 +18,7 @@ param trueU0 :=
 param trueUm :=
 	1	400
 	2	1000
-	3	400
+	3	450
 ;
 param trueGamma :=
 	1	-0.008
@@ -28,7 +28,7 @@ param trueGamma :=
 param trueXi :=
 	1	720
 	2	720
-	3	1170
+	3	1110
 ;
 
 # simulated travel time
