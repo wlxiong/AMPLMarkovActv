@@ -23,7 +23,7 @@ fix gamma;
 fix xi;
 
 # Solve command
-solve MarkovActv;
+solve MarkovActvDP;
 
 # Postprocess
 if match (solve_message, "Locally optimal solution") > 0 then { 

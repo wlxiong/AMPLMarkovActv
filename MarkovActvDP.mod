@@ -62,6 +62,7 @@ var U0 {ACTV};
 var Um {ACTV};
 var gamma {ACTV};
 var xi {ACTV};
+param lambda {ACTV};
 
 # Define the ture parameters
 var trueU0 {ACTV};
@@ -70,8 +71,8 @@ var trueGamma {ACTV};
 var trueXi {ACTV};
 
 # Temporal Activity Utility (approximated)
-var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*1.0*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
-							(1+exp(-gamma[j]*(t*T-xi[j])))^(1.0+1)))*T;
+var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*lambda[j]*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
+							(1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)))*T;
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time
@@ -134,7 +135,7 @@ subject to
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS
 
 # Name the problem
-problem MarkovActv:
+problem MarkovActvDP:
 
 # Choose the objective function
 likelihood0,
