@@ -110,10 +110,8 @@ var choiceUtil {(t,j) in X, k in D} =
     else
         - travelCost[t,j,k] + beta*EV[(t+travelTime[j,k]+1) mod H, k];
 
-var minChoiceUtil {(t,j) in X} = min {k in D} choiceUtil[t,j,k];
-
-var choiceProb {(t,j) in X, k in D} = exp( choiceUtil[t,j,k] - minChoiceUtil[t,j] )
-									/ exp( EV[t,j] - minChoiceUtil[t,j] );
+var choiceProb {(t,j) in X, k in D} = exp( choiceUtil[t,j,k] - choiceUtil[t,j,1] )
+									/ exp( EV[t,j] - choiceUtil[t,j,1] );
 
 #  END OF DECLARING AUXILIARY VARIABLES #
 
@@ -134,8 +132,8 @@ maximize likelihood:
 
 subject to
     Bellman_Eqn {(t,j) in X}:
-        EV[t,j] = log( sum {k in D} exp( choiceUtil[t,j,k] - minChoiceUtil[t,j]) )
-				+ minChoiceUtil[t,j];
+        EV[t,j] = log( sum {k in D} exp( choiceUtil[t,j,k] - choiceUtil[t,j,1] ) )
+				+ choiceUtil[t,j,1];
 
 #  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
     EVBound {(t,j) in X}: EV[t,j] <= 10000;
@@ -149,7 +147,7 @@ problem MarkovActvMLE:
 likelihood,
 
 # List the variables
-EV, valueOfTime, choiceProb, choiceUtil, minChoiceUtil, actvUtil, xi, gamma, Um, U0,
+EV, valueOfTime, choiceProb, choiceUtil, actvUtil, xi, gamma, Um, U0,
 
 # List the constraints
 Bellman_Eqn,
