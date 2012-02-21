@@ -1,18 +1,12 @@
-
 data; 
 
-param T := 20;	# the equivalent minutes of a time slice
-param H := 72;	# number of time slices, and T * H = 1440 minutes
-param M := 3;	# number of activities, 0:home, 1:work, 2:shopping
-param N :=  50;	# number of individuals
-param beta :=   0.95;	# discount ratio of future utility
-param lambda :=
-	1	1.0
-	2	1.0
-	3	1.0
-;	# fixed parameter
+# include the constants
+include MarkovActvCons.dat;
 
-# parameters of utility function
+# the true value of VoT
+param trueValueOfTime :=  30.0;		# HKD per hour
+
+# the true parameters of utility function
 param trueU0 :=
 	1	1.0
 	2	0.0
@@ -32,13 +26,4 @@ param trueXi :=
 	1	720
 	2	720
 	3	1110
-;
-
-# simulated travel time
-param trueValueOfTime :=  30.0;		# HKD per hour
-param travelTime:
-		1	2	3 :=
-	1	0	2	1
-	2	2	0	2
-	3	1	2	0
 ;

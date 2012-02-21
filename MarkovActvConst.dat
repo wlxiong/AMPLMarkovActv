@@ -1,0 +1,22 @@
+# the constants
+
+param T := 20;	# the equivalent minutes of a time slice
+param H := 72;	# number of time slices, and T * H = 1440 minutes
+param M := 3;	# number of activities, 0:home, 1:work, 2:shopping
+param N := 500;	# number of individuals
+param beta :=   0.95;	# discount ratio of future utility
+
+# the fixed parameters
+param lambda :=
+	1	1.0
+	2	1.0
+	3	1.0
+;
+
+# simulated travel time
+param travelTime:
+		1	2	3 :=
+	1	0	2	1
+	2	2	0	2
+	3	1	2	0
+;
