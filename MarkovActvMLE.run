@@ -14,7 +14,7 @@ let {j in ACTV} xi[j] := initXi[j];
 let {(t,j) in X} EV[t,j] := initEV;
 
 # Specify KNITRO solver options:
-option knitro_options 'alg=1 outlev=3 maxit=500 xtol=0.0000000001', solver knitroampl;
+option knitro_options 'alg=2 outlev=3 maxit=500 xtol=0.0000000001', solver knitroampl;
 
 # Use the following options if you choose SNOPT as your solver
 # option snopt_options $snopt_options 'outlev=2 timing=3 ';
@@ -32,4 +32,4 @@ display valueOfTime;
 display U0, Um, gamma, xi;
 
 # display the value function
-display EV;
+/*display EV;*/

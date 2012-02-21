@@ -1,7 +1,7 @@
 data; 
 
 # include the constants
-include MarkovActvCons.dat;
+include MarkovActvConst.dat;
 
 # the true value of VoT
 param trueValueOfTime :=  30.0;		# HKD per hour

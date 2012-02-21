@@ -1,7 +1,7 @@
 data; 
 
 # include the constants
-include MarkovActvCons.dat;
+include MarkovActvConst.dat;
 
 # include the simulated states and choices
 include MarkovActvMC.dat
