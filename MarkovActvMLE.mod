@@ -58,11 +58,11 @@ param dt {PERS cross TIME};      # activity choice of individual i
 # END OF MODEL and DATA SETUP #
 
 # Activity Parameters
-var U0 {ACTV};
-var Um {ACTV};
-var gamma {ACTV};
-var xi {ACTV};
-param lambda {ACTV};
+var U0 {ACTV} >= 0, <= 20;
+var Um {ACTV} >= 0;
+var gamma {ACTV} <= 1.0;
+var xi {ACTV} >= 0, <= 1440;
+param lambda {ACTV};	# lambda is fixed
 
 # Define the initial values for parameters
 param initU0 {ACTV};
