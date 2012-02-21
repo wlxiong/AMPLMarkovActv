@@ -2,11 +2,13 @@
 
 model "MarkovActvDP.mod";
 data "MarkovActvDP.dat";
- 
+
 # Specify KNITRO solver options:
 
-option knitro_options 'alg=1 outlev=3 maxit=500 xtol=0.0000000001', solver knitroampl;
- 
+option solver knitroampl;
+option knitro_options "alg=2 hessopt = 2 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1";
+# Multistart options: ms_enable=1 ms_num_to_save=5 ms_savetol=0.01
+
 # Initial guesses set at trivial values; probably not good initial guess
 let {(t,j) in X} EV[t,j] := 0.0;
 let valueOfTime := trueValueOfTime;

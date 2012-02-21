@@ -60,7 +60,7 @@ param dt {PERS cross TIME};      # activity choice of individual i
 # Activity Parameters
 var U0 {ACTV} >= 0, <= 20;
 var Um {ACTV} >= 0;
-var gamma {ACTV} <= 1.0;
+var gamma {ACTV} <= 1.0, >= -1.0;
 var xi {ACTV} >= 0, <= 1440;
 param lambda {ACTV};	# lambda is fixed
 
