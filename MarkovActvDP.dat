@@ -11,24 +11,24 @@ param beta :=   0.95;	# discount ratio of future utility
 
 # parameters of utility function
 param trueU0 :=
-	0	1.0
-	1	0.0
+	1	1.0
 	2	0.0
+	3	0.0
 ;
 param trueUm :=
-	0	400
-	1	1000
-	2	400
+	1	400
+	2	1000
+	3	400
 ;
 param trueGamma :=
-	0	-0.008
-	1	0.01
+	1	-0.008
 	2	0.01
+	3	0.01
 ;
 param trueXi :=
-	0	720
 	1	720
-	2	1170
+	2	720
+	3	1170
 ;
 
 # simulated travel time
