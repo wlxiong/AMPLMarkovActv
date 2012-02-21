@@ -65,10 +65,10 @@ var xi {ACTV};
 param lambda {ACTV};
 
 # Define the ture parameters
-var trueU0 {ACTV};
-var trueUm {ACTV};
-var trueGamma {ACTV};
-var trueXi {ACTV};
+param trueU0 {ACTV};
+param trueUm {ACTV};
+param trueGamma {ACTV};
+param trueXi {ACTV};
 
 # Temporal Activity Utility (approximated)
 var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*lambda[j]*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
@@ -79,7 +79,7 @@ var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*lambda[j]*Um[j]/(exp(gamma[j]*(t*T
 var valueOfTime >= 0;
 
 # true VoT
-var trueValueOfTime >= 0;
+param trueValueOfTime >= 0;
 
 # transProb[i] defines transition probability that state in next time slice. 
 /*var transProb {1..M} >= 0;*/
