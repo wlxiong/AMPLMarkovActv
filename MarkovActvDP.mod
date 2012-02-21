@@ -27,7 +27,7 @@
 #  Define and process the data
 param T;				# the equivalent minutes of a time slice
 param H;                # number of time slice in the data
-set TIME := 1..H;   # TIME is the vector of time slices
+set TIME := 0..(H-1);   # TIME is the vector of time slices
 param N;                # number of individuals in the data
 set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
@@ -70,8 +70,8 @@ var trueGamma {ACTV};
 var trueXi {ACTV};
 
 # Temporal Activity Utility (approximated)
-var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*1.0*Um[j]/(exp(gamma[j]*((t-0.5)*T-xi[j]))*
-							(1+exp(-gamma[j]*((t-0.5)*T-xi[j])))^(1.0+1)))*T;
+var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*1.0*Um[j]/(exp(gamma[j]*((t+0.5)*T-xi[j]))*
+							(1+exp(-gamma[j]*((t+0.5)*T-xi[j])))^(1.0+1)))*T;
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time
@@ -106,9 +106,9 @@ var travelCost {(t, j) in X, k in D} = valueOfTime*travelTime[j, k]*T/60;
 
 var choiceUtil {(t,j) in X, k in D} = 
     if j == k then
-        actvUtil[t,j] + beta*EV[( ((t+1-1) mod H)+1 ),j]
+        actvUtil[t,j] + beta*EV[(t+1) mod H, j]
     else
-        - travelCost[t,j,k] + beta*EV[( ((t+travelTime[j,k]+1-1 ) mod H)+1 ),k];
+        - travelCost[t,j,k] + beta*EV[(t+travelTime[j,k]+1) mod H, k];
 
 var choiceProb {(t,j) in X, k in D} = exp(choiceUtil[t,j,k]) / exp(EV[t,j]);
 
