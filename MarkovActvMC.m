@@ -9,10 +9,10 @@ travelTime = [
     1	2	0
 ];
 
-T = 20;	% the equivalent minutes of a time slice
-H = 72;	% number of time slices, and T * H = 1440 minutes
-M = 3;	% number of activities, 0:home, 1:work, 2:shopping
-N = 50;	% number of individuals
+T = 5;		% the equivalent minutes of a time slice
+H = 288;	% number of time slices, and T * H = 1440 minutes
+M = 3;		% number of activities, 0:home, 1:work, 2:shopping
+N = 100;	% number of individuals
 
 xt = zeros(N,H);	% travelers' choices
 dt = zeros(N,H);	% travelers' states
@@ -32,6 +32,11 @@ for n = 1:N
 		t = t + travelTime(xt(n,t),dt(n,t)) + 1;
 	end
 end
+
+% save the simulated data
+save MarkovActvMC.mat xt dt
+
+% export the data to an AMPL .dat file
 fid = fopen('MarkovActvMC.dat', 'w');
 fprintAmplParamCLSU(fid, 'xt', xt(:,1:H), 1, 0);
 fprintAmplParamCLSU(fid, 'dt', dt(:,1:H), 1, 0);
