@@ -14,12 +14,12 @@ param initValueOfTime :=  20.0;
 
 # initial values of parameters
 param initUm :=
-	1	200
+	1	500
 	2	500
-	3	300
+	3	500
 ;
 param initB :=
-	1	100
+	1	0
 	2	500
 	3	1000
 ;
