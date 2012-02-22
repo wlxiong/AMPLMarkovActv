@@ -1,15 +1,15 @@
 # Title: Constrained Optimization Approaches for Estimation of Structural Models
 # Authors: Che-Lin Su and Kenneth L. Judd, November 2010
-# Updated by Xiong Yiliang <wlwlxiong@gmail.com>
+# Updated by Xiong Yiliang <wlxiong@gmail.com>
 
 # Go to the NEOS Server (google "NEOS Server for Optimization").
 # Click on "NEOS Solvers" and then go to "Nonlinearly Constrained Optimization"
 # You can use any of the constrained optimization solvers that take AMPL input. 
 # In the paper, we use the solver KNITRO.
 
-# AMPL Model File:   MarkovActv.mod
-# AMPL Data File:    MarkovActv.dat
-# AMPL Command File: MarkovActv.run
+# AMPL Model File:   MarkovActvMLE.mod
+# AMPL Data File:    MarkovActvMLE.dat
+# AMPL Command File: MarkovActvMLE.run
 
 
 # AROLD ZURCHER BUS REPAIR EXAMPLE 
