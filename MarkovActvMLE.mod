@@ -1,15 +1,15 @@
 # Title: Constrained Optimization Approaches for Estimation of Structural Models
 # Authors: Che-Lin Su and Kenneth L. Judd, November 2010
-# Updated by Xiong Yiliang <wlwlxiong@gmail.com>
+# Updated by Xiong Yiliang <wlxiong@gmail.com>
 
 # Go to the NEOS Server (google "NEOS Server for Optimization").
 # Click on "NEOS Solvers" and then go to "Nonlinearly Constrained Optimization"
 # You can use any of the constrained optimization solvers that take AMPL input. 
 # In the paper, we use the solver KNITRO.
 
-# AMPL Model File:   MarkovActv.mod
-# AMPL Data File:    MarkovActv.dat
-# AMPL Command File: MarkovActv.run
+# AMPL Model File:   MarkovActvMLE.mod
+# AMPL Data File:    MarkovActvMLE.dat
+# AMPL Command File: MarkovActvMLE.run
 
 
 # AROLD ZURCHER BUS REPAIR EXAMPLE 
@@ -44,7 +44,6 @@ set TIMEACTV := TIME cross ACTV;
 set X := TIMEACTV;	# X is the index set of states
 set D := ACTV;
 # set D {(t,j) in X, k in ACTV: t + travelTime[t,j,k] <=H};	# Everyone returns HOME before H. 
-# param x {i in X} := i;   #  x[i] denotes state i;
 
 # Parameters and definition of transition process
 
@@ -58,21 +57,17 @@ param dt {PERS cross TIME};      # activity choice of individual i
 # END OF MODEL and DATA SETUP #
 
 # Activity Parameters
-var U0 {ACTV} >= 0, <= 20;
 var Um {ACTV} >= 0;
-var gamma {ACTV} <= 1.0, >= -1.0;
-var xi {ACTV} >= 0, <= 1440;
-param lambda {ACTV};	# lambda is fixed
+var b {ACTV} >= 0, <= 1440;
+var c {ACTV} >= 0;
 
 # Define the initial values for parameters
-param initU0 {ACTV};
 param initUm {ACTV};
-param initGamma {ACTV};
-param initXi {ACTV};
+param initB {ACTV};
+param initC {ACTV};
 
 # Temporal Activity Utility (approximated)
-var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*lambda[j]*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
-							(1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)))*T;
+var actvUtil {(t,j) in X} = Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j]) - atan( ( t*T-b[j])/c[j]) );
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time
@@ -123,8 +118,8 @@ var choiceProb {(t,j) in X, k in D} = exp( choiceUtil[t,j,k] - choiceUtil[t,j,1]
 #   Second is the likelihood that the observed transition between t-1 and t would have occurred.
 maximize likelihood: 
     sum {i in PERS, t in TIME} 
-		if dt[i,t] <> -1 and dt[i,(t+1) mod H] <> -1 then 
-			log( choiceProb[ t, dt[i,t], dt[i,(t+1) mod H] ] ) 
+		if xt[i,t] <> -1 and dt[i,t] <> -1 then 
+			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else
 			1.0;
 
@@ -147,7 +142,7 @@ problem MarkovActvMLE:
 likelihood,
 
 # List the variables
-EV, valueOfTime, choiceProb, choiceUtil, actvUtil, xi, gamma, Um, U0,
+EV, valueOfTime, choiceProb, choiceUtil, actvUtil, b, c, Um,
 
 # List the constraints
 Bellman_Eqn,

@@ -1,15 +1,15 @@
 # Title: Constrained Optimization Approaches for Estimation of Structural Models
 # Authors: Che-Lin Su and Kenneth L. Judd, November 2010
-# Updated by Xiong Yiliang <wlwlxiong@gmail.com>
+# Updated by Xiong Yiliang <wlxiong@gmail.com>
 
 # Go to the NEOS Server (google "NEOS Server for Optimization").
 # Click on "NEOS Solvers" and then go to "Nonlinearly Constrained Optimization"
 # You can use any of the constrained optimization solvers that take AMPL input. 
 # In the paper, we use the solver KNITRO.
 
-# AMPL Model File:   MarkovActv.mod
-# AMPL Data File:    MarkovActv.dat
-# AMPL Command File: MarkovActv.run
+# AMPL Model File:   MarkovActvDP.mod
+# AMPL Data File:    MarkovActvDP.dat
+# AMPL Command File: MarkovActvDP.run
 
 
 # AROLD ZURCHER BUS REPAIR EXAMPLE 
@@ -44,7 +44,6 @@ set TIMEACTV := TIME cross ACTV;
 set X := TIMEACTV;	# X is the index set of states
 set D := ACTV;
 # set D {(t,j) in X, k in ACTV: t + travelTime[t,j,k] <=H};	# Everyone returns HOME before H. 
-# param x {i in X} := i;   #  x[i] denotes state i;
 
 # Parameters and definition of transition process
 
@@ -58,21 +57,17 @@ param beta;      	 # discount factor
 # END OF MODEL and DATA SETUP #
 
 # Activity Parameters
-var U0 {ACTV};
 var Um {ACTV};
-var gamma {ACTV};
-var xi {ACTV};
-param lambda {ACTV};
+var b {ACTV};
+var c {ACTV};
 
 # Define the ture parameters
-param trueU0 {ACTV};
 param trueUm {ACTV};
-param trueGamma {ACTV};
-param trueXi {ACTV};
+param trueB {ACTV};
+param trueC {ACTV};
 
 # Temporal Activity Utility (approximated)
-var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*lambda[j]*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
-							(1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)))*T;
+var actvUtil {(t,j) in X} = Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j]) - atan( ( t*T-b[j])/c[j]) );
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time
@@ -85,8 +80,7 @@ param trueValueOfTime >= 0;
 /*var transProb {1..M} >= 0;*/
 
 # Define variables for specifying initial parameter values
-/*var initValueOfTime;
-var initEV;*/
+var initEV;
 
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
 # The NLP approach requires us to solve equilibrium constraint variables
@@ -143,7 +137,7 @@ problem MarkovActvDP:
 likelihood0,
 
 # List the variables
-EV, valueOfTime, choiceProb, choiceUtil, actvUtil, xi, gamma, Um, U0,
+EV, valueOfTime, choiceProb, choiceUtil, actvUtil, b, c, Um,
 
 # List the constraints
 Bellman_Eqn,

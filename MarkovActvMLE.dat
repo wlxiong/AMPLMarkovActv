@@ -1,7 +1,7 @@
 data; 
 
 # include the constants
-include MarkovActvConst.dat;
+include MarkovActv.dat;
 
 # include the simulated states and choices
 include MarkovActvMC.dat
@@ -13,23 +13,18 @@ param initEV :=   0.0;
 param initValueOfTime :=  20.0;
 
 # initial values of parameters
-param initU0 :=
-	1	0.5
-	2	0.1
-	3	0.2
-;
 param initUm :=
-	1	200
+	1	500
 	2	500
-	3	300
+	3	500
 ;
-param initGamma :=
-	1	0.001
-	2	0.005
-	3	0.005
+param initB :=
+	1	0
+	2	500
+	3	1000
 ;
-param initXi :=
-	1	480
-	2	600
+param initC :=
+	1	100
+	2	100
 	3	100
 ;
