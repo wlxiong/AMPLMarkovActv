@@ -67,7 +67,7 @@ param trueB {ACTV};
 param trueC {ACTV};
 
 # Temporal Activity Utility (approximated)
-var actvUtil {(t,j) in X} = Um[j] / ( 3.141592653*c[j]*(1 + ((t*T-b[j])/c[j])^2 ) );
+var actvUtil {(t,j) in X} = Um[j] / ( 3.141592653*c[j]*(1 + ((t*T-b[j])/c[j])^2 ) ) * T;
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time
