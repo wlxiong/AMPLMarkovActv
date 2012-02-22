@@ -1,6 +1,6 @@
 # Title: Constrained Optimization Approaches for Estimation of Structural Models
 # Authors: Che-Lin Su and Kenneth L. Judd, November 2010
-# Updated by Xiong Yiliang <wlxiong@gmail.com>
+# Modified by Xiong Yiliang <wlxiong@gmail.com>
 
 # Go to the NEOS Server (google "NEOS Server for Optimization").
 # Click on "NEOS Solvers" and then go to "Nonlinearly Constrained Optimization"
@@ -11,16 +11,6 @@
 # AMPL Data File:    MarkovActvMLE.dat
 # AMPL Command File: MarkovActvMLE.run
 
-
-# AROLD ZURCHER BUS REPAIR EXAMPLE 
-# A constrained optimization formulation to compute maximum likelihood estimates of 
-# the Harold Zurcher bus problem in Rust (1987). 
-# The specifications of this model listed below follows those in Table X in Rust (1097, p.1022). 
-#	Replacement Cost: RC
-#       Cost Function c(x, theta1) = 0.001 * thetaCost * x
-#       The mileage state space is discretized into 175 points (Fixed Point Dimension): x = 1, ... , 175 
-#       Mileage transitions: move up at most t states. The transition probabilities are
-# The data is simulated using the parameter values reported in Table X.
 
 # SET UP THE MODEL and DATA #
 
@@ -35,7 +25,7 @@ set ACTV := 1..M;       # ACTV is the index set of activities, in-home activity 
 /*param HOME symbolic;    # HOME is a special activity*/
 
 # Travel time
-/*param travelTime {TIME cross ACTV cross ACTV};*/
+# param travelTime {TIME cross ACTV cross ACTV};	# travel time over time
 param travelTime {ACTV cross ACTV};
 
 # Define the state space used in the dynamic programming part
@@ -43,7 +33,6 @@ set TIMEACTV := TIME cross ACTV;
 /*set TIMEHOME := TIME cross {HOME};*/
 set X := TIMEACTV;	# X is the index set of states
 set D := ACTV;
-# set D {(t,j) in X, k in ACTV: t + travelTime[t,j,k] <=H};	# Everyone returns HOME before H. 
 
 # Parameters and definition of transition process
 
@@ -66,7 +55,7 @@ param initUm {ACTV};
 param initB {ACTV};
 param initC {ACTV};
 
-# Temporal Activity Utility (approximated)
+# Temporal Activity Utility
 var actvUtil {(t,j) in X} = Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j]) - atan( ( t*T-b[j])/c[j]) );
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
@@ -77,7 +66,7 @@ var valueOfTime >= 0;
 param initValueOfTime;
 
 # transProb[i] defines transition probability that state in next time slice. 
-/*var transProb {1..M} >= 0;*/
+# var transProb {1..M} >= 0;
 
 # Define variables for specifying EV
 param initEV;
@@ -93,11 +82,7 @@ var EV {X};        	# Expected Value Function of each state
 #  Define auxiliary variables to economize on expressions	
 
 #  Create Cost variable to represent the cost function; 
-#  Cost[i] is the cost of regular maintenance at x[i].
 var travelCost {(t, j) in X, k in D} = valueOfTime*travelTime[j, k]*T/60;
-
-#  Let CbEV[i] represent - Cost[i] + beta*EV[i]; 
-#  this is the expected payoff at x[i] if regular maintenance is chosen
 
 var choiceUtil {(t,j) in X, k in D} = 
     if j == k then

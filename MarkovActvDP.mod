@@ -12,16 +12,6 @@
 # AMPL Command File: MarkovActvDP.run
 
 
-# AROLD ZURCHER BUS REPAIR EXAMPLE 
-# A constrained optimization formulation to compute maximum likelihood estimates of 
-# the Harold Zurcher bus problem in Rust (1987). 
-# The specifications of this model listed below follows those in Table X in Rust (1097, p.1022). 
-#	Replacement Cost: RC
-#       Cost Function c(x, theta1) = 0.001 * thetaCost * x
-#       The mileage state space is discretized into 175 points (Fixed Point Dimension): x = 1, ... , 175 
-#       Mileage transitions: move up at most t states. The transition probabilities are
-# The data is simulated using the parameter values reported in Table X.
-
 # SET UP THE MODEL and DATA #
 
 #  Define and process the data
@@ -43,16 +33,11 @@ set TIMEACTV := TIME cross ACTV;
 /*set TIMEHOME := TIME cross {HOME};*/
 set X := TIMEACTV;	# X is the index set of states
 set D := ACTV;
-# set D {(t,j) in X, k in ACTV: t + travelTime[t,j,k] <=H};	# Everyone returns HOME before H. 
 
 # Parameters and definition of transition process
 
 # Define discount factor. We fix beta since it can't be identified.
 param beta;      	 # discount factor
-
-# Data: (xt, at)
-/*param zt {PERS cross TIME};      # state of individual i*/
-/*param at {PERS cross TIME};      # activity choice of individual i*/
 
 # END OF MODEL and DATA SETUP #
 
@@ -66,7 +51,7 @@ param trueUm {ACTV};
 param trueB {ACTV};
 param trueC {ACTV};
 
-# Temporal Activity Utility (approximated)
+# Temporal Activity Utility
 var actvUtil {(t,j) in X} = Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j]) - atan( ( t*T-b[j])/c[j]) );
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
@@ -93,11 +78,7 @@ var EV {X};        	# Expected Value Function of each state
 #  Define auxiliary variables to economize on expressions	
 
 #  Create Cost variable to represent the cost function; 
-#  Cost[i] is the cost of regular maintenance at x[i].
 var travelCost {(t, j) in X, k in D} = valueOfTime*travelTime[j, k]*T/60;
-
-#  Let CbEV[i] represent - Cost[i] + beta*EV[i]; 
-#  this is the expected payoff at x[i] if regular maintenance is chosen
 
 var choiceUtil {(t,j) in X, k in D} = 
     if j == k then
