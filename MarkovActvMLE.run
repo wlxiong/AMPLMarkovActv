@@ -7,11 +7,15 @@ data "MarkovActvMLE.dat"
 # Initial guesses set at trivial values; probably not good initial guesses
 
 let valueOfTime := initValueOfTime;
-let {j in ACTV} U0[j] := initU0[j];
+let {j in ACTV: j <> 1} U0[j] := initU0[j];
 let {j in ACTV} Um[j] := initUm[j];
 let {j in ACTV} gamma[j] := initGamma[j];
 let {j in ACTV} xi[j] := initXi[j];
 let {(t,j) in X} EV[t,j] := initEV;
+
+# identifiability: set U0 as the base choice
+let U0[1] := 0.0;
+fix U0[1];
 
 # Specify KNITRO solver options:
 option solver knitroampl;
