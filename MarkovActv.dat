@@ -6,13 +6,6 @@ param M := 3;	# number of activities, 0:home, 1:work, 2:shopping
 param N := 100;	# number of individuals
 param beta :=   0.95;	# discount ratio of future utility
 
-# the fixed parameters
-param lambda :=
-	1	1.0
-	2	1.0
-	3	1.0
-;
-
 # simulated travel time
 param travelTime:
 		1	2	3 :=

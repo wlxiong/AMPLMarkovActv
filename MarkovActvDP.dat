@@ -1,29 +1,27 @@
 data; 
 
 # include the constants
-include MarkovActvConst.dat;
+include MarkovActv.dat;
+
+# initial EV
+param initEV :=   0.0;
 
 # the true value of VoT
 param trueValueOfTime :=  30.0;		# HKD per hour
 
 # the true parameters of utility function
-param trueU0 :=
-	1	1.0
-	2	0.0
-	3	0.0
-;
 param trueUm :=
-	1	400
-	2	1000
-	3	450
+	1	1000
+	2	1200
+	3	1200
 ;
-param trueGamma :=
-	1	-0.008
-	2	0.01
-	3	0.01
-;
-param trueXi :=
-	1	720
+param trueB :=
+	1	240
 	2	720
-	3	1110
+	3	1260
+;
+param trueC :=
+	1	120
+	2	180
+	3	120
 ;

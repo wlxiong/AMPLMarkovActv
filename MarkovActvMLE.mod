@@ -44,7 +44,6 @@ set TIMEACTV := TIME cross ACTV;
 set X := TIMEACTV;	# X is the index set of states
 set D := ACTV;
 # set D {(t,j) in X, k in ACTV: t + travelTime[t,j,k] <=H};	# Everyone returns HOME before H. 
-# param x {i in X} := i;   #  x[i] denotes state i;
 
 # Parameters and definition of transition process
 
@@ -58,21 +57,17 @@ param dt {PERS cross TIME};      # activity choice of individual i
 # END OF MODEL and DATA SETUP #
 
 # Activity Parameters
-var U0 {ACTV} >= 0, <= 20;
 var Um {ACTV} >= 0;
-var gamma {ACTV} <= 1.0, >= -1.0;
-var xi {ACTV} >= 0, <= 1440;
-param lambda {ACTV};	# lambda is fixed
+var b {ACTV} >= 0, <= 1440;
+var c {ACTV} >= 0;
 
 # Define the initial values for parameters
-param initU0 {ACTV};
 param initUm {ACTV};
-param initGamma {ACTV};
-param initXi {ACTV};
+param initB {ACTV};
+param initC {ACTV};
 
 # Temporal Activity Utility (approximated)
-var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*lambda[j]*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
-							(1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)))*T;
+var actvUtil {(t,j) in X} = Um[j] / ( 3.141592653*c[j]*(1 + ((t*T-b[j])/c[j])^2 ) );
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time
@@ -147,7 +142,7 @@ problem MarkovActvMLE:
 likelihood,
 
 # List the variables
-EV, valueOfTime, choiceProb, choiceUtil, actvUtil, xi, gamma, Um, U0,
+EV, valueOfTime, choiceProb, choiceUtil, actvUtil, b, c, Um,
 
 # List the constraints
 Bellman_Eqn,

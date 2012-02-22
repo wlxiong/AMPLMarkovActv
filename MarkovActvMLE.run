@@ -4,29 +4,25 @@
 model "MarkovActvMLE.mod";
 data "MarkovActvMLE.dat"
 
-# Initial guesses set at trivial values; probably not good initial guesses
-
-let valueOfTime := initValueOfTime;
-let {j in ACTV: j <> 1} U0[j] := initU0[j];
-let {j in ACTV} Um[j] := initUm[j];
-let {j in ACTV} gamma[j] := initGamma[j];
-let {j in ACTV} xi[j] := initXi[j];
+# Set at a trivial initial value
 let {(t,j) in X} EV[t,j] := initEV;
 
-# identifiability: set U0 as the base choice
-let U0[1] := 0.0;
-fix U0[1];
+# Initial guesses set at trivial values; probably not good initial guesses
+let valueOfTime := initValueOfTime;
+let {j in ACTV} Um[j]:= initUm[j];
+let {j in ACTV}  b[j]:= initB[j];
+let {j in ACTV}  c[j]:= initC[j];
 
 # Specify KNITRO solver options:
 option solver knitroampl;
-option knitro_options "alg=2 hessopt = 2 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1";
-# Multistart options: ms_enable=1 ms_num_to_save=5 ms_savetol=0.01
+option knitro_options "alg=1 hessopt=1 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1";
+# Multistart options
+# option knitro_options "alg=2 hessopt=3 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1 ms_enable=1 ms_num_to_save=5 ms_savetol=0.01";
 
 # Use the following options if you choose SNOPT as your solver
 # option snopt_options $snopt_options 'outlev=2 timing=3 ';
 
 # Solve command
-
 solve MarkovActvMLE;
 display _solve_time;
 
@@ -35,7 +31,7 @@ option display_round 6, display_width 120;
 
 # display values of structural parameters
 display valueOfTime;
-display U0, Um, gamma, xi;
+display Um, b, c;
 
 # display the value function
 /*display EV;*/
