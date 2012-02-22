@@ -118,8 +118,8 @@ var choiceProb {(t,j) in X, k in D} = exp( choiceUtil[t,j,k] - choiceUtil[t,j,1]
 #   Second is the likelihood that the observed transition between t-1 and t would have occurred.
 maximize likelihood: 
     sum {i in PERS, t in TIME} 
-		if dt[i,t] <> -1 and dt[i,(t+1) mod H] <> -1 then 
-			log( choiceProb[ t, dt[i,t], dt[i,(t+1) mod H] ] ) 
+		if xt[i,t] <> -1 and dt[i,t] <> -1 then 
+			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else
 			1.0;
 
