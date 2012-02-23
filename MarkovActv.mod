@@ -11,7 +11,6 @@
 # AMPL Data File:    MarkovActv.dat
 # AMPL Command File: MarkovActv.run
 
-
 # SET UP THE MODEL and DATA #
 
 #  Define and process the data
@@ -23,6 +22,10 @@ set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
 set ACTV := 1..M;       # ACTV is the index set of activities, in-home activity = 1
 /*param HOME symbolic;    # HOME is a special activity*/
+
+# TODO intra-household interaction
+# TODO stochstic travel time
+# TODO congested transport network
 
 # Travel time
 # param travelTime {TIME cross ACTV cross ACTV};	# travel time over time
@@ -137,6 +140,8 @@ var choiceProb {(t,j) in X, k in D} = exp( theta*(choiceUtil[t,j,k] - choiceUtil
 #  END OF DECLARING AUXILIARY VARIABLES #
 
 # DEFINE OBJECTIVE FUNCTION AND CONSTRAINTS #
+
+# TODO calculate profile of likelihood and draw 3D diagrams
 
 # Define the objective: Likelihood function 
 #   The likelihood function contains two parts

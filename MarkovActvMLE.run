@@ -55,12 +55,12 @@ display _solve_time;
 option display_round 6, display_width 120;
 
 # display values of structural parameters
-display beta, valueOfTime, theta;
+display beta, theta, valueOfTime;
 display Um, b, c;
 # display Uw, xi, gamma, lambda;
 
 # write solutions
-display beta, valueOfTime, theta > DATA/MLE.sol;
+display beta, theta, valueOfTime > DATA/MLE.sol;
 display Um, b, c > DATA/MLE.sol;
 # display Uw, xi, gamma, lambda > DATA/MLE.sol;
 
