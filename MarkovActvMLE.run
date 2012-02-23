@@ -14,8 +14,8 @@ problem MarkovActvMLE:
 likelihood,
 
 # List the variables
-EV, actvUtil, choiceUtil, choiceProb, valueOfTime, Um, b, c,
-# EV, actvUtil, choiceUtil, choiceProb, valueOfTime, Uw, xi, gamma,
+EV, actvUtil, choiceUtil, choiceProb, valueOfTime, theta, Um, b, c,
+# EV, actvUtil, choiceUtil, choiceProb, valueOfTime, theta, Uw, xi, gamma,
 
 # List the constraints
 Bellman_Eqn,
@@ -34,10 +34,12 @@ let {j in ACTV}  c[j]:= initC[j];
 # let {j in ACTV} Uw[j] := initUw[j];
 # let {j in ACTV} xi[j] := initXi[j];
 # let {j in ACTV} gamma[j] := initGamma[j];
-
-# fix lambda at the true value for all activities
 # let {j in ACTV} lambda[j] := trueLambda[j];
-# fix lambda;
+# fix lambda;	# fix lambda at the true value for all activities
+
+# fix theta at the true value
+let theta := trueTheta;
+fix theta;
 
 # Specify KNITRO solver options:
 option solver knitroampl;
@@ -53,7 +55,7 @@ display _solve_time;
 option display_round 6, display_width 120;
 
 # display values of structural parameters
-display beta, valueOfTime;
+display beta, valueOfTime, theta;
 display Um, b, c;
 # display Uw, xi, gamma, lambda;
 

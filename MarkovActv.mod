@@ -55,6 +55,15 @@ param trueValueOfTime >= 0;
 # initial value of VoT
 param initValueOfTime >= 0;
 
+# theta: parameter of the logit choice model
+var theta >= 0;
+
+# true value of theta
+param trueTheta >= 0;
+
+# initial value of theta
+param initTheta >= 0;
+
 # transProb[i] defines transition probability that state in next time slice. 
 # var transProb {1..M} >= 0;
 
@@ -122,8 +131,8 @@ var choiceUtil {(t,j) in X, k in D} =
     else
         - travelCost[t,j,k] + beta*EV[(t+travelTime[j,k]+1) mod H, k];
 
-var choiceProb {(t,j) in X, k in D} = exp( choiceUtil[t,j,k] - choiceUtil[t,j,1] )
-									/ exp( EV[t,j] - choiceUtil[t,j,1] );
+var choiceProb {(t,j) in X, k in D} = exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,1]) )
+									/ exp( theta*(EV[t,j] - choiceUtil[t,j,1]) );
 
 #  END OF DECLARING AUXILIARY VARIABLES #
 
@@ -146,7 +155,7 @@ maximize likelihood:
 
 subject to
     Bellman_Eqn {(t,j) in X}:
-        EV[t,j] = log( sum {k in D} exp( choiceUtil[t,j,k] - choiceUtil[t,j,1] ) )
+        EV[t,j] = log( sum {k in D} exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,1]) ) )/theta
 				+ choiceUtil[t,j,1];
 
 #  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
