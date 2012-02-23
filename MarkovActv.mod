@@ -58,6 +58,7 @@ param initValueOfTime >= 0;
 # transProb[i] defines transition probability that state in next time slice. 
 # var transProb {1..M} >= 0;
 
+# PARAMETERS OF CAUCHY DISTRIBUTION
 # Activity Parameters
 var Um {ACTV} >= 0;
 var b {ACTV} >= 0, <= 1440;
@@ -73,14 +74,31 @@ param initUm {ACTV};
 param initB {ACTV};
 param initC {ACTV};
 
-# Define Marginal Utility Function
+# PARAMETERS OF BELL-SHAPED FUNCTION
+# Activity Parameters
+var Uw {ACTV} >= 0;
+var xi {ACTV} >= 0, <= 1440;
+var gamma {ACTV} >= 0;
+var lambda {ACTV} >= 0;
+
+# Define the ture parameters
+param trueUw {ACTV};
+param trueXi {ACTV};
+param trueGamma {ACTV};
+param trueLambda {ACTV};
+
+# Define the initial values for parameters
+param initUw {ACTV};
+param initXi {ACTV};
+param initGamma {ACTV};
+param initLambda {ACTV};
 
 # Scaled Cauchy distribution
 var actvUtil {(t,j) in X} = Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) );
 
-# # Bell-shaped profile
-# var actvUtil {(t,j) in X} = (U0[j] + gamma[j]*lambda[j]*Um[j]/(exp(gamma[j]*(t*T-xi[j]))*
-#                             (1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)))*T;
+# Bell-shaped profile
+# var actvUtil {(t,j) in X} = gamma[j]*lambda[j]*Uw[j]/exp(gamma[j]*(t*T-xi[j]))/
+#                             (1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)*T;
 
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
 # The NLP approach requires us to solve equilibrium constraint variables

@@ -11,7 +11,8 @@ problem MarkovActvMDP:
 likelihood0,
 
 # List the variables
-EV, valueOfTime, choiceProb, choiceUtil, actvUtil, b, c, Um,
+EV, actvUtil, choiceUtil, choiceProb, valueOfTime, Um, b, c,
+# EV, actvUtil, choiceUtil, choiceProb, valueOfTime, Uw, xi, gamma,
 
 # List the constraints
 Bellman_Eqn,
@@ -22,15 +23,27 @@ let {(t,j) in X} EV[t,j] := initEV;
 
 # Set at true values
 let valueOfTime := trueValueOfTime;
+
 let {j in ACTV} Um[j]:= trueUm[j];
 let {j in ACTV}  b[j]:= trueB[j];
 let {j in ACTV}  c[j]:= trueC[j];
 
+# let {j in ACTV} Uw[j] := trueUw[j];
+# let {j in ACTV} xi[j] := trueXi[j];
+# let {j in ACTV} gamma[j] := trueGamma[j];
+# let {j in ACTV} lambda[j] := trueLambda[j];
+
 # Fix the structural parameters at the true values
 fix valueOfTime;
+
 fix Um;
 fix b;
 fix c;
+
+# fix Uw;
+# fix xi;
+# fix gamma;
+# fix lambda;
 
 # Specify KNITRO solver options:
 option solver knitroampl;
@@ -72,7 +85,9 @@ option display_round 6, display_width 120;
 # display choiceProb;
 
 # display the structural parameters (remember beta was fixed)
-display beta, valueOfTime, Um, b, c;
+display beta, valueOfTime;
+display Um, b, c;
+# display Uw, xi, gamma, lambda;
 
 printf "_solve_time:\t%10.7f \n", _solve_time > DATA/MDP.sol;
 
