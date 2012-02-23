@@ -1,7 +1,21 @@
 # Call solver and give it options
 
-model "MarkovActvDP.mod";
-data "MarkovActvDP.dat";
+# Load model and data
+model "MarkovActv.mod";
+data "MarkovActv.dat";
+
+# Define the MDP problem
+problem MarkovActvMDP:
+
+# Choose the objective function
+likelihood0,
+
+# List the variables
+EV, valueOfTime, choiceProb, choiceUtil, actvUtil, b, c, Um,
+
+# List the constraints
+Bellman_Eqn,
+EVBound;
 
 # Set at a trivial inistial value
 let {(t,j) in X} EV[t,j] := initEV;
@@ -23,24 +37,24 @@ option solver knitroampl;
 option knitro_options "alg=1 hessopt=1 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1";
 
 # Solve command
-solve MarkovActvDP;
+solve MarkovActvMDP;
 
 # Solution status
 if match (solve_message, "Locally optimal solution") > 0 then { 
-	printf "%s\n", "Optimal solution found" > EV/MarkovActv.sol;
-	printf "%5.0f \n", 0 > EV/MarkovActv.sol ; 
+	printf "%s\n", "Optimal solution found" > DATA/MDP.sol;
+	printf "%5.0f \n", 0 > DATA/MDP.sol ; 
 }
 else if match (solve_message, "Iteration limit reached") > 0 then { 
-	printf "%s\n", "Iteration limit reached" > EV/MarkovActv.sol;
-	printf "%5.0f \n", 400 > EV/MarkovActv.sol ; 
+	printf "%s\n", "Iteration limit reached" > DATA/MDP.sol;
+	printf "%5.0f \n", 400 > DATA/MDP.sol ; 
 }
 else if match (solve_message, "Evaluation error") > 0 then { 
-	printf "%s\n", "Evaluation error" > EV/MarkovActv.sol;
-	printf "%5.0f \n", 502 > EV/MarkovActv.sol ; 
+	printf "%s\n", "Evaluation error" > DATA/MDP.sol;
+	printf "%5.0f \n", 502 > DATA/MDP.sol ; 
 }
 else {
-	printf "%s\n", "No solution" > EV/MarkovActv.sol;
-	printf "%5.0f \n", 1000 > EV/MarkovActv.sol ; 
+	printf "%s\n", "No solution" > DATA/MDP.sol;
+	printf "%5.0f \n", 1000 > DATA/MDP.sol ; 
 }
 
 display _solve_time;
@@ -60,28 +74,27 @@ option display_round 6, display_width 120;
 # display the structural parameters (remember beta was fixed)
 display beta, valueOfTime, Um, b, c;
 
-printf "_solve_time:\t%10.7f \n", _solve_time > EV/MarkovActv.sol;
-printf "valueOfTime:\t%10.7f \n", valueOfTime > EV/MarkovActv.sol;
+printf "_solve_time:\t%10.7f \n", _solve_time > DATA/MDP.sol;
 
 # write EV to a file EUtil.m
-printf "EV = [\n" > EV/EUtil.m;
+printf "EV = [\n" > DATA/EUtil.m;
 for {t in TIME} {
 	for {j in D} {
-		printf "%10.7f\t", EV[t,j] > EV/EUtil.m;
+		printf "%10.7f\t", EV[t,j] > DATA/EUtil.m;
 	}
-	printf "\n" > EV/EUtil.m;
+	printf "\n" > DATA/EUtil.m;
 }
-printf "];" > EV/EUtil.m;
+printf "];" > DATA/EUtil.m;
 
 # write choiceProb to a file Prob.m
-printf "Pr = zeros(%d, %d, %d);\n", H, M, M > EV/Prob.m;
+printf "Pr = zeros(%d, %d, %d);\n", H, M, M > DATA/Prob.m;
 for {j in D} {
-	printf "Pr(:, %d, :) = [\n", j > EV/Prob.m;
+	printf "Pr(:, %d, :) = [\n", j > DATA/Prob.m;
 	for {t in TIME} {
 		for {k in D} {
-			printf "%10.7f\t", choiceProb[t,j,k] > EV/Prob.m;
+			printf "%10.7f\t", choiceProb[t,j,k] > DATA/Prob.m;
 		}
-		printf "\n" > EV/Prob.m;
+		printf "\n" > DATA/Prob.m;
 	}
-	printf "];\n" > EV/Prob.m;
+	printf "];\n" > DATA/Prob.m;
 }

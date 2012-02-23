@@ -1,7 +1,7 @@
-diary MarkovActvMC.log
+% diary MarkovActvMC.log
 
-run EV/Prob.m
-run EV/EUtil.m
+run DATA/Prob.m
+run DATA/EUtil.m
 
 travelTime = [
     0	2	1
@@ -34,9 +34,9 @@ for n = 1:N
 end
 
 % save the simulated data
-save MarkovActvMC.mat xt dt
+save 'DATA/MC.mat' xt dt
 
 % export the data to an AMPL .dat file
-fid = fopen('MarkovActvMC.dat', 'w');
+fid = fopen('DATA/MC.dat', 'w');
 fprintAmplParamCLSU(fid, 'xt', xt(:,1:H), 1, 0);
 fprintAmplParamCLSU(fid, 'dt', dt(:,1:H), 1, 0);
