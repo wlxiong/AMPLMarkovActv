@@ -17,7 +17,7 @@ problem MarkovActvMDP:
 likelihood0,
 
 # List the variables
-EV, actvUtil, choiceUtil, choiceProb, valueOfTime, theta, Um, b, c,
+EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
 
 # List the constraints
 Bellman_Eqn,
@@ -31,13 +31,13 @@ let theta := trueTheta;
 fix theta;
 
 # Set at the estimated values
-let valueOfTime := valueOfTime_;
+let VoT := VoT_;
 let {j in ACTV} Um[j]:= Um_[j];
 let {j in ACTV}  b[j]:= b_[j];
 let {j in ACTV}  c[j]:= c_[j];
 
 # Fix the structural parameters at the estimated values
-fix valueOfTime;
+fix VoT;
 fix Um;
 fix b;
 fix c;

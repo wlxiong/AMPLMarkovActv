@@ -13,8 +13,8 @@ problem MarkovActvMDP:
 likelihood0,
 
 # List the variables
-EV, actvUtil, choiceUtil, choiceProb, valueOfTime, theta, Um, b, c,
-# EV, actvUtil, choiceUtil, choiceProb, valueOfTime, theta, Uw, xi, gamma,
+EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
+# EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
 Bellman_Eqn,
@@ -24,7 +24,7 @@ EVBound;
 let {(t,j) in X} EV[t,j] := initEV;
 
 # Set at true values
-let valueOfTime := trueValueOfTime;
+let VoT := trueVoT;
 let theta := trueTheta;
 
 let {j in ACTV} Um[j]:= trueUm[j];
@@ -37,7 +37,7 @@ let {j in ACTV}  c[j]:= trueC[j];
 # let {j in ACTV} lambda[j] := trueLambda[j];
 
 # Fix the structural parameters at the true values
-fix valueOfTime;
+fix VoT;
 fix theta;
 
 fix Um;
@@ -89,7 +89,7 @@ option display_round 6, display_width 120;
 # display choiceProb;
 
 # display the structural parameters (remember beta was fixed)
-display beta, valueOfTime, theta;
+display beta, VoT, theta;
 display Um, b, c;
 # display Uw, xi, gamma, lambda;
 

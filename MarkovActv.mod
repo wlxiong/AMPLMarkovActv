@@ -50,16 +50,16 @@ param dt {PERS cross TIME};      # activity choice of individual i
 
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
 # value of time
-var valueOfTime >= 0;
+var VoT >= 0;
 
 # true VoT
-param trueValueOfTime >= 0;
+param trueVoT >= 0;
 
 # initial value of VoT
-param initValueOfTime >= 0;
+param initVoT >= 0;
 
 # estimated VoT
-param valueOfTime_;
+param VoT_;
 
 # theta: parameter of the logit choice model
 var theta >= 0;
@@ -134,7 +134,7 @@ param initEV;
 #  Define auxiliary variables to economize on expressions	
 
 #  Create Cost variable to represent the cost function; 
-var travelCost {(t, j) in X, k in D} = valueOfTime*travelTime[j, k]*T/60;
+var travelCost {(t, j) in X, k in D} = VoT*travelTime[j, k]*T/60;
 
 var choiceUtil {(t,j) in X, k in D} = 
     if j == k then

@@ -20,7 +20,7 @@ param initEV :=   0.0;
 # MDP SIMULATION INPUTS
 
 # the true value of VoT
-param trueValueOfTime :=  30.0;		# HKD per hour
+param trueVoT :=  30.0;		# HKD per hour
 
 # true value of theta
 param trueTheta := 0.5;
@@ -66,7 +66,7 @@ param trueLambda :=
 # MLE ESTIMATION INPUTS
 
 # intial value of VoT
-param initValueOfTime := 20.0;
+param initVoT := 20.0;
 
 # initial value of theta
 param initTheta := 1.0;
