@@ -1,11 +1,14 @@
 # Call solver and give it options
 
 # Load model and data
-model "MarkovActv.mod";
+model "MarkovActv.mod"
 data "MarkovActv.dat"
 
 # include the simulated states and choices
-data 'DATA/MC.dat'
+data "DATA/MC.dat"
+
+# read the estimates
+data "DATA/MLE.dat"
 
 # Define the problem
 problem MarkovActvMDP:
@@ -24,12 +27,12 @@ EVBound;
 let {(t,j) in X} EV[t,j] := initEV;
 
 # Set at true values
-let valueOfTime := trueValueOfTime;
+let valueOfTime := valueOfTime_;
 let theta := trueTheta;
 
-let {j in ACTV} Um[j]:= trueUm[j];
-let {j in ACTV}  b[j]:= trueB[j];
-let {j in ACTV}  c[j]:= trueC[j];
+let {j in ACTV} Um[j]:= Um_[j];
+let {j in ACTV}  b[j]:= b_[j];
+let {j in ACTV}  c[j]:= c_[j];
 
 # Fix the structural parameters at the true values
 fix valueOfTime;
@@ -47,19 +50,7 @@ option knitro_options "alg=1 hessopt=1 outlev=0 maxit=100 xtol=0.0000000001 want
 option display_round 6, display_width 120;
 # option log_file "DATA/LL.log";
 
-# first, try the true value
-solve MarkovActvMDP;
-display _solve_time;
-param ml;
-let ml := 
-	sum {i in PERS, t in TIME} 
-		if xt[i,t] <> -1 and dt[i,t] <> -1 then 
-			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
-		else
-			1.0;
-display trueB[1], trueB[2], ml;
-
-# second, try all the possible values of b[1]
+# first, try all the possible values of b[1]
 param lf_b1 {TIME};
 for {s in TIME} {
 	# set b
@@ -78,7 +69,7 @@ for {s in TIME} {
 	display s, lf_b1[s];
 }
 
-# finally, try all the possible combinations of b[1] and b[2]
+# then, try all the possible combinations of b[1] and b[2]
 set TT := 0..(H-1) by 5;
 param lf_b12 {TT cross TT};
 for {s in TT} {
@@ -102,10 +93,6 @@ for {s in TT} {
 }
 
 # print likelihood values
-printf "b1 = %f;\n", trueB[1] > DATA/LL.m;
-printf "b2 = %f;\n", trueB[2] > DATA/LL.m;
-printf "ml = %f;\n", ml > DATA/LL.m;
-
 printf "t = [\n" > DATA/LL.m;
 for {t in TIME} {
 	printf "%f\n", t*T> DATA/LL.m;

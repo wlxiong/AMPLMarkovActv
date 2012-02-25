@@ -1,11 +1,11 @@
 # Call solver and give it options
 
 # Load model and data
-model "MarkovActv.mod";
+model "MarkovActv.mod"
 data "MarkovActv.dat"
 
 # include the simulated states and choices
-data 'DATA/MC.dat'
+data "DATA/MC.dat"
 
 # Define the MLE problem
 problem MarkovActvMLE:
@@ -60,10 +60,13 @@ display Um, b, c;
 # display Uw, xi, gamma, lambda;
 
 # write solutions
-display beta, theta, valueOfTime > DATA/MLE.sol;
-display Um, b, c > DATA/MLE.sol;
-printf "b1_ = %f;\n", b[1] > DATA/MLE.m;
-printf "b2_ = %f;\n", b[2] > DATA/MLE.m;
+param valueOfTime_ := valueOfTime;
+param Um_ := Um;
+param b_ := b;
+param c_ := c;
+display valueOfTime_, Um_, b_, c_ > DATA/MLE.dat;
+printf "b1_ = %f;\n", b_[1] > DATA/MLE.m;
+printf "b2_ = %f;\n", b_[2] > DATA/MLE.m;
 printf "ml_ = %f;\n", likelihood > DATA/MLE.m;
 
 # display Uw, xi, gamma, lambda > DATA/MLE.sol;
