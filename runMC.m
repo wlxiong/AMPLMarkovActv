@@ -14,9 +14,7 @@ travelTime = [
     1	2	0
 ];
 
-T = 5;		% the equivalent minutes of a time slice
 H = 288;	% number of time slices, and T * H = 1440 minutes
-M = 2;		% number of activities, 1:home, 2:work
 N = 300;	% number of individuals
 
 xt = zeros(N,H);	% travelers' choices

@@ -20,7 +20,7 @@ set TIME := 0..(H-1);   # TIME is the vector of time slices
 param N;                # number of individuals in the data
 set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
-set ACTV := 1..M;       # ACTV is the index set of activities, in-home activity = 1
+set ACTV := 1..M;       # ACTV is the index set of activities
 /*param HOME symbolic;    # HOME is a special activity*/
 
 # TODO intra-household interaction
