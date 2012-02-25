@@ -16,8 +16,10 @@ zlabel('Likelihood')
 view(35,30)
 
 figure; hold on
-minc = -max(0:10000:-min(lf_b23));
-[cs h] = contourf(tt2, tt3, lf_b23, [minc:20000:ml, ml-5000]);
+minc = min(0:-10000:min(lf_b23));
+maxc = max(minc:5000:ml);
+[cs h] = contourf(tt2, tt3, lf_b23, [minc:20000:ml, maxc]);
 clabel(cs, h, 'FontSize', 14, 'Color', 'r', 'Rotation', 0);
 colormap summer
-plot3(b3,b2,ml,'*')
+text(b3,b2, sprintf('(%.1f,%.1f)', b3, b2))
+plot(b3,b2,'*')
