@@ -6,6 +6,7 @@
 
 run DATA/Prob.m
 run DATA/EUtil.m
+whos
 
 travelTime = [
     0	2	1

@@ -57,7 +57,7 @@ let ml :=
 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else
 			1.0;
-display trueB[2], ml;
+display trueB[2], true[3], ml;
 
 # second, try all the possible values of b[2]
 param lf_b2 {TIME};
