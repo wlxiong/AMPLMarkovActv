@@ -27,17 +27,17 @@ param trueTheta := 0.5;
 
 # the true parameters of utility function
 param trueUm :=
-	1	 800
+	1	1200
 	2	1200
 	3	1000
 ;
 param trueB :=
-	1	240
-	2	720
+	1	540
+	2	900
 	3	1260
 ;
 param trueC :=
-	1	120
+	1	180
 	2	180
 	3	150
 ;

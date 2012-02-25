@@ -4,6 +4,7 @@
 % TODO out-of-home activity type vs activity duration
 % TODO activity start time vs trip distance
 
+clear
 run DATA/Prob.m
 run DATA/EUtil.m
 whos

@@ -1,3 +1,4 @@
+clear
 run DATA/LL.m
 run DATA/MLE.m
 whos
