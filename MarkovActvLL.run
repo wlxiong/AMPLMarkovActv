@@ -57,53 +57,53 @@ let ml :=
 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else
 			1.0;
-display trueB[2], trueB[3], ml;
+display trueB[1], trueB[2], ml;
 
-# second, try all the possible values of b[2]
-param lf_b2 {TIME};
+# second, try all the possible values of b[1]
+param lf_b1 {TIME};
 for {s in TIME} {
 	# set b
-	let b[2] := s*T;
+	let b[1] := s*T;
 	fix b;
 	# solve the problem
 	solve MarkovActvMDP;
 	display _solve_time;
 	# calculate likelihood
-	let lf_b2[s] := 
+	let lf_b1[s] := 
 		sum {i in PERS, t in TIME} 
 			if xt[i,t] <> -1 and dt[i,t] <> -1 then 
 				log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 			else
 				1.0;
-	display s, lf_b2[s];
+	display s, lf_b1[s];
 }
 
-# finally, try all the possible combinations of b[2] and b[3]
+# finally, try all the possible combinations of b[1] and b[2]
 set TT := 0..(H-1) by 5;
-param lf_b23 {TT cross TT};
+param lf_b12 {TT cross TT};
 for {s in TT} {
 	for {r in TT} {
 		# set b
-		let b[2] := s*T;
-		let b[3] := r*T;
+		let b[1] := s*T;
+		let b[2] := r*T;
 		fix b;
 		# solve the problem
 		solve MarkovActvMDP;
 		display _solve_time;
 		# calculate likelihood
-		let lf_b23[s,r] := 
+		let lf_b12[s,r] := 
 			sum {i in PERS, t in TIME} 
 				if xt[i,t] <> -1 and dt[i,t] <> -1 then 
 					log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 				else
 					1.0;
-		display s, r, lf_b23[s,r];
+		display s, r, lf_b12[s,r];
 	}
 }
 
 # print likelihood values
+printf "b1 = %f;\n", trueB[1] > DATA/LL.m;
 printf "b2 = %f;\n", trueB[2] > DATA/LL.m;
-printf "b3 = %f;\n", trueB[3] > DATA/LL.m;
 printf "ml = %f;\n", ml > DATA/LL.m;
 
 printf "t = [\n" > DATA/LL.m;
@@ -112,9 +112,9 @@ for {t in TIME} {
 }
 printf "];\n" > DATA/LL.m;
 
-printf "lf_b2 = [\n" > DATA/LL.m;
+printf "lf_b1 = [\n" > DATA/LL.m;
 for {t in TIME} {
-	printf "%f\n", lf_b2[t] > DATA/LL.m;
+	printf "%f\n", lf_b1[t] > DATA/LL.m;
 }
 printf "];\n" > DATA/LL.m;
 
@@ -124,10 +124,10 @@ for {t in TT} {
 }
 printf "];\n" > DATA/LL.m;
 
-printf "lf_b23 = [\n" > DATA/LL.m;
+printf "lf_b12 = [\n" > DATA/LL.m;
 for {s in TT} {
 	for {t in TT} {
-		printf "%f\t", lf_b23[s,t] > DATA/LL.m;
+		printf "%f\t", lf_b12[s,t] > DATA/LL.m;
 	}
 	printf "\n" > DATA/LL.m;
 }

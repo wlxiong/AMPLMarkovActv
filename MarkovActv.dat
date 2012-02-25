@@ -2,7 +2,7 @@
 
 param T := 5;	# the equivalent minutes of a time slice
 param H := 288;	# number of time slices, and T * H = 1440 minutes
-param M := 3;	# number of activities, 0:home, 1:work, 2:shopping
+param M := 2;	# number of activities, 1:home, 2:work
 param N := 300;	# number of individuals
 param beta :=   0.95;	# discount ratio of future utility
 
