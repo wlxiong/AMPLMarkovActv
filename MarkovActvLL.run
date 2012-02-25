@@ -45,9 +45,10 @@ option knitro_options "alg=1 hessopt=1 outlev=0 maxit=100 xtol=0.0000000001 want
 
 # Output commands
 option display_round 6, display_width 120;
+# option log_file "DATA/LL.log";
 
 # first, try the true value
-solve MarkovActvLF;
+solve MarkovActvMDP;
 display _solve_time;
 param ml;
 let ml := 
@@ -65,7 +66,7 @@ for {s in TIME} {
 	let b[2] := s*T;
 	fix b;
 	# solve the problem
-	solve MarkovActvLF;
+	solve MarkovActvMDP;
 	display _solve_time;
 	# calculate likelihood
 	let lf_b2[s] := 
@@ -75,12 +76,13 @@ for {s in TIME} {
 			else
 				1.0;
 	display s, lf_b2[s];
-};
+}
 
 # finally, try all the possible combinations of b[2] and b[3]
-param lf_b23 {TIME cross TIME};
-for {s in TIME} {
-	for {r in TIME}
+set TT := 0..(H-1) by 5;
+param lf_b23 {TT cross TT};
+for {s in TT} {
+	for {r in TT} {
 		# set b
 		let b[2] := s*T;
 		let b[3] := r*T;
@@ -96,31 +98,37 @@ for {s in TIME} {
 				else
 					1.0;
 		display s, r, lf_b23[s,r];
-	};
-};
+	}
+}
 
 # print likelihood values
 printf "b2 = %f;\n", trueB[2] > DATA/LL.m;
 printf "b3 = %f;\n", trueB[3] > DATA/LL.m;
 printf "ml = %f;\n", ml > DATA/LL.m;
 
-printf "tt = [\n" > DATA/LL.m;
+printf "t = [\n" > DATA/LL.m;
 for {t in TIME} {
 	printf "%f\n", t*T> DATA/LL.m;
-};
+}
 printf "];\n" > DATA/LL.m;
 
 printf "lf_b2 = [\n" > DATA/LL.m;
 for {t in TIME} {
-	printf "%f\n", t*T, lf_b2[t] > DATA/LL.m;
-};
+	printf "%f\n", lf_b2[t] > DATA/LL.m;
+}
 printf "];\n" > DATA/LL.m;
 
-for {s in TIME} {
-	printf "lf_b23 = [\n" > DATA/LL.m;
-	for {t in TIME} {
+printf "tt = [\n" > DATA/LL.m;
+for {t in TT} {
+	printf "%f\n", t*T> DATA/LL.m;
+}
+printf "];\n" > DATA/LL.m;
+
+printf "lf_b23 = [\n" > DATA/LL.m;
+for {s in TT} {
+	for {t in TT} {
 		printf "%f\t", lf_b23[s,t] > DATA/LL.m;
-	};
+	}
 	printf "\n" > DATA/LL.m;
 }
 printf "];\n" > DATA/LL.m;

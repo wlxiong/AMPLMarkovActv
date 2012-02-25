@@ -150,7 +150,7 @@ var choiceProb {(t,j) in X, k in D} = exp( theta*(choiceUtil[t,j,k] - choiceUtil
 maximize likelihood0: 0;
 
 maximize likelihood: 
-    sum {i in PERS, t in TIME} 
+	sum {i in PERS, t in TIME} 
 		if xt[i,t] <> -1 and dt[i,t] <> -1 then 
 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else

@@ -1,6 +1,6 @@
-% diary MarkovActvMC.log
+% diary runMC.log
 
-% TDDO activity start time vs activity duration
+% TODO activity start time vs activity duration
 % TODO out-of-home activity type vs activity duration
 % TODO activity start time vs trip distance
 
