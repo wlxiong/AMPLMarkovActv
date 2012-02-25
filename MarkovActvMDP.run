@@ -1,5 +1,7 @@
 # Call solver and give it options
 
+# TODO run simulation with estimated parameters
+
 # Load model and data
 model "MarkovActv.mod";
 data "MarkovActv.dat";

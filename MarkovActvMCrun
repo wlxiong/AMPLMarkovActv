@@ -1,1 +1,1 @@
-matlab -nojvm -r "MarkovActvMC;exit"
+matlab -nojvm -r "MarkovActvMC;quit"
