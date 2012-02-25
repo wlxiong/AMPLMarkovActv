@@ -5,7 +5,7 @@ whos
 
 figure; hold on
 plot(t, lf_b1)
-plot(b1_, ml_, '*')
+plot(b1_, ml, '*')
 xlabel('b_1')
 ylabel('Likelihood')
 
@@ -13,7 +13,7 @@ figure; hold on
 % The vertices of the mesh lines are the triples (x(j), y(i), Z(i,j)).
 % Note that x corresponds to the columns of Z and y corresponds to the rows.
 mesh(tt, tt, lf_b12')
-plot3(b1_,b2_,ml_, '*')
+plot3(b1_,b2_,ml, '*')
 xlabel('b_1')
 ylabel('b_2')
 zlabel('Likelihood')
