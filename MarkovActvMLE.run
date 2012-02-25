@@ -80,7 +80,7 @@ printf ";\n" > DATA/MLE.dat;
 # export to MATLAB
 printf "b1_ = %f;\n", b[1] > DATA/MLE.m;
 printf "b2_ = %f;\n", b[2] > DATA/MLE.m;
-printf "ml_ = %f;\n", likelihood > DATA/MLE.m;
+printf "ml = %f;\n", likelihood > DATA/MLE.m;
 
 # display Uw, xi, gamma, lambda > DATA/MLE.sol;
 

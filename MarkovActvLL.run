@@ -48,6 +48,8 @@ option knitro_options "alg=1 hessopt=1 outlev=0 maxit=100 xtol=0.0000000001 want
 
 # Output commands
 option display_round 6, display_width 120;
+option solver_msg 0;
+option show_stats 0; 
 # option log_file "DATA/LL.log";
 
 # first, try all the possible values of b[1]
@@ -57,8 +59,8 @@ for {s in TIME} {
 	let b[1] := s*T;
 	fix b;
 	# solve the problem
-	solve MarkovActvMDP;
-	display _solve_time;
+	solve MarkovActvMDP > DATA/LL.log;
+	# display _solve_time;
 	# calculate likelihood
 	let lf_b1[s] := 
 		sum {i in PERS, t in TIME} 
@@ -79,8 +81,8 @@ for {s in TT} {
 		let b[2] := r*T;
 		fix b;
 		# solve the problem
-		solve MarkovActvMDP;
-		display _solve_time;
+		solve MarkovActvMDP > DATA/LL.log;
+		# display _solve_time;
 		# calculate likelihood
 		let lf_b12[s,r] := 
 			sum {i in PERS, t in TIME} 
