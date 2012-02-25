@@ -1,0 +1,88 @@
+# Call solver and give it options
+
+# Load model and data
+model "MarkovActv.mod";
+data "MarkovActv.dat"
+
+# include the simulated states and choices
+data 'DATA/MC.dat'
+
+# Define the problem
+problem MarkovActvLF:
+
+# Choose the objective function
+likelihood0,
+
+# List the variables
+EV, actvUtil, choiceUtil, choiceProb, valueOfTime, theta, Um, b, c,
+
+# List the constraints
+Bellman_Eqn,
+EVBound;
+
+# Set at a trivial inistial value
+let {(t,j) in X} EV[t,j] := initEV;
+
+# Set at true values
+let valueOfTime := trueValueOfTime;
+let theta := trueTheta;
+
+let {j in ACTV} Um[j]:= trueUm[j];
+let {j in ACTV}  b[j]:= trueB[j];
+let {j in ACTV}  c[j]:= trueC[j];
+
+# Fix the structural parameters at the true values
+fix valueOfTime;
+fix theta;
+
+fix Um;
+fix b;
+fix c;
+
+# Specify KNITRO solver options:
+option solver knitroampl;
+option knitro_options "alg=1 hessopt=1 outlev=0 maxit=100 xtol=0.0000000001 wantsol=1";
+
+# Output commands
+option display_round 6, display_width 120;
+
+# first, try the true value
+# solve the problem
+solve MarkovActvLF;
+display _solve_time;
+# calculate likelihood
+param lf;
+let lf := 
+	sum {i in PERS, t in TIME} 
+		if xt[i,t] <> -1 and dt[i,t] <> -1 then 
+			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
+		else
+			1.0;
+display trueB[2], lf;
+
+# then, try all the possible values
+param lf_b {TIME};
+for {s in TIME} {
+	# set b
+	let b[2] := s*T;
+	fix b;
+	# solve the problem
+	solve MarkovActvLF;
+	display _solve_time;
+	# calculate likelihood
+	let lf_b[s] := 
+		sum {i in PERS, t in TIME} 
+			if xt[i,t] <> -1 and dt[i,t] <> -1 then 
+				log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
+			else
+				1.0;
+	display s, lf_b[s];
+};
+
+# print likelihood values
+printf "lf = [%10.7f, %10.7f];\n", trueB[2], lf > DATA/LFb.m;
+printf "lf_b = [\n" > DATA/LFb.m;
+for {t in TIME} {
+	printf "%10.1f\t%10.7f\n", t*T, lf_b[t] > DATA/LFb.m;
+};
+printf "];\n" > DATA/LFb.m;
