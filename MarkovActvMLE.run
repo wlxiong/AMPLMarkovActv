@@ -54,19 +54,32 @@ display _solve_time;
 # Output commands
 option display_round 6, display_width 120;
 
-# display values of structural parameters
+# display estimates of structural parameters
 display beta, theta, valueOfTime;
 display Um, b, c;
 # display Uw, xi, gamma, lambda;
 
-# write solutions
-param valueOfTime_ := valueOfTime;
-param Um_ := Um;
-param b_ := b;
-param c_ := c;
-display valueOfTime_, Um_, b_, c_ > DATA/MLE.dat;
-printf "b1_ = %f;\n", b_[1] > DATA/MLE.m;
-printf "b2_ = %f;\n", b_[2] > DATA/MLE.m;
+# write the estimates
+printf "param valueOfTime_ := %f\n; ", valueOfTime > DATA/MLE.dat;
+printf "param Um_ := \n" > DATA/MLE.dat;
+for {j in ACTV} {
+	printf "%f\t%f\n", j, Um[j] > DATA/MLE.dat;
+}
+printf ";\n" > DATA/MLE.dat;
+printf "param  b_ := \n" > DATA/MLE.dat;
+for {j in ACTV} {
+	printf "%f\t%f\n", j, b[j] > DATA/MLE.dat;
+}
+printf ";\n" > DATA/MLE.dat;
+printf "param  c_ := \n" > DATA/MLE.dat;
+for {j in ACTV} {
+	printf "%f\t%f\n", j, c[j] > DATA/MLE.dat;
+}
+printf ";\n" > DATA/MLE.dat;
+
+# export to MATLAB
+printf "b1_ = %f;\n", b[1] > DATA/MLE.m;
+printf "b2_ = %f;\n", b[2] > DATA/MLE.m;
 printf "ml_ = %f;\n", likelihood > DATA/MLE.m;
 
 # display Uw, xi, gamma, lambda > DATA/MLE.sol;

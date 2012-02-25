@@ -58,6 +58,9 @@ param trueValueOfTime >= 0;
 # initial value of VoT
 param initValueOfTime >= 0;
 
+# estimated VoT
+param valueOfTime_;
+
 # theta: parameter of the logit choice model
 var theta >= 0;
 
@@ -85,6 +88,11 @@ param trueC {ACTV};
 param initUm {ACTV};
 param initB {ACTV};
 param initC {ACTV};
+
+# Define the estimated values of paramaters
+param Um_ {ACTV};
+param b_ {ACTV};
+param c_ {ACTV};
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
 # Activity Parameters

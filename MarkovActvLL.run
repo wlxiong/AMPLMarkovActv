@@ -27,17 +27,17 @@ EVBound;
 let {(t,j) in X} EV[t,j] := initEV;
 
 # Set at true values
-let valueOfTime := valueOfTime_;
 let theta := trueTheta;
+fix theta;
 
+# Set at the estimated values
+let valueOfTime := valueOfTime_;
 let {j in ACTV} Um[j]:= Um_[j];
 let {j in ACTV}  b[j]:= b_[j];
 let {j in ACTV}  c[j]:= c_[j];
 
-# Fix the structural parameters at the true values
+# Fix the structural parameters at the estimated values
 fix valueOfTime;
-fix theta;
-
 fix Um;
 fix b;
 fix c;
@@ -70,7 +70,7 @@ for {s in TIME} {
 }
 
 # then, try all the possible combinations of b[1] and b[2]
-set TT := 0..(H-1) by 5;
+set TT := (0..(H-1) by 5) union {H-1};
 param lf_b12 {TT cross TT};
 for {s in TT} {
 	for {r in TT} {
