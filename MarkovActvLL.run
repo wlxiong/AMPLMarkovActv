@@ -8,7 +8,7 @@ data "MarkovActv.dat"
 data 'DATA/MC.dat'
 
 # Define the problem
-problem MarkovActvLF:
+problem MarkovActvMDP:
 
 # Choose the objective function
 likelihood0,
@@ -47,21 +47,19 @@ option knitro_options "alg=1 hessopt=1 outlev=0 maxit=100 xtol=0.0000000001 want
 option display_round 6, display_width 120;
 
 # first, try the true value
-# solve the problem
 solve MarkovActvLF;
 display _solve_time;
-# calculate likelihood
-param lf;
-let lf := 
+param ml;
+let ml := 
 	sum {i in PERS, t in TIME} 
 		if xt[i,t] <> -1 and dt[i,t] <> -1 then 
 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else
 			1.0;
-display trueB[2], lf;
+display trueB[2], ml;
 
-# then, try all the possible values
-param lf_b {TIME};
+# second, try all the possible values of b[2]
+param lf_b2 {TIME};
 for {s in TIME} {
 	# set b
 	let b[2] := s*T;
@@ -70,19 +68,59 @@ for {s in TIME} {
 	solve MarkovActvLF;
 	display _solve_time;
 	# calculate likelihood
-	let lf_b[s] := 
+	let lf_b2[s] := 
 		sum {i in PERS, t in TIME} 
 			if xt[i,t] <> -1 and dt[i,t] <> -1 then 
 				log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 			else
 				1.0;
-	display s, lf_b[s];
+	display s, lf_b2[s];
+};
+
+# finally, try all the possible combinations of b[2] and b[3]
+param lf_b23 {TIME cross TIME};
+for {s in TIME} {
+	for {r in TIME}
+		# set b
+		let b[2] := s*T;
+		let b[3] := r*T;
+		fix b;
+		# solve the problem
+		solve MarkovActvMDP;
+		display _solve_time;
+		# calculate likelihood
+		let lf_b23[s,r] := 
+			sum {i in PERS, t in TIME} 
+				if xt[i,t] <> -1 and dt[i,t] <> -1 then 
+					log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
+				else
+					1.0;
+		display s, r, lf_b23[s,r];
+	};
 };
 
 # print likelihood values
-printf "lf = [%10.7f, %10.7f];\n", trueB[2], lf > DATA/LFb.m;
-printf "lf_b = [\n" > DATA/LFb.m;
+printf "b2 = %f;\n", trueB[2] > DATA/LL.m;
+printf "b3 = %f;\n", trueB[3] > DATA/LL.m;
+printf "ml = %f;\n", ml > DATA/LL.m;
+
+printf "tt = [\n" > DATA/LL.m;
 for {t in TIME} {
-	printf "%10.1f\t%10.7f\n", t*T, lf_b[t] > DATA/LFb.m;
+	printf "%f\n", t*T> DATA/LL.m;
 };
-printf "];\n" > DATA/LFb.m;
+printf "];\n" > DATA/LL.m;
+
+printf "lf_b2 = [\n" > DATA/LL.m;
+for {t in TIME} {
+	printf "%f\n", t*T, lf_b2[t] > DATA/LL.m;
+};
+printf "];\n" > DATA/LL.m;
+
+for {s in TIME} {
+	printf "lf_b23 = [\n" > DATA/LL.m;
+	for {t in TIME} {
+		printf "%f\t", lf_b23[s,t] > DATA/LL.m;
+	};
+	printf "\n" > DATA/LL.m;
+}
+printf "];\n" > DATA/LL.m;
