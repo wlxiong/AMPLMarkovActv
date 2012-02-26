@@ -40,11 +40,11 @@ end
 
 % save the simulated data
 fprintf('\n save the simulation data')
-save 'DATA/MC.mat' xt dt
+save 'DATA/MC.mat' xt dt H N
 
 % export the data to an AMPL .dat file
 fprintf('\n export the data as .dat\n')
 fid = fopen('DATA/MC.dat', 'W');
-fprintAmplParamCLSU(fid, 'xt', xt(:,1:H), 1, 0);
-fprintAmplParamCLSU(fid, 'dt', dt(:,1:H), 1, 0);
+exportParam(fid, 'xt', xt(:,1:H), 1, 0);
+exportParam(fid, 'dt', dt(:,1:H), 1, 0);
 fclose(fid);
