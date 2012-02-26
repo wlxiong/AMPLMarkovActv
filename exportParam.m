@@ -1,4 +1,4 @@
-function fprintAmplParamCLSU(fid, strName, dataInput, varargin)
+function exportParam(fid, strName, dataInput, varargin)
 % This m-file translates data in Matlab format into AMPL data format in a
 % new AMPL data file.
 % 
