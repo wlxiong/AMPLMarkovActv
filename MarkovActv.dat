@@ -32,8 +32,8 @@ param trueUm :=
 	3	1000
 ;
 param trueB :=
-	1	540
-	2	900
+	1	660
+	2	780
 	3	1260
 ;
 param trueC :=
