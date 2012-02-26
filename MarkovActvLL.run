@@ -43,7 +43,7 @@ fix b;
 fix c;
 
 # Specify KNITRO solver options:
-option solver knitroampl;
+option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
 option knitro_options "alg=1 hessopt=1 outlev=0 maxit=100 xtol=0.0000000001 wantsol=1";
 
 # Output commands
