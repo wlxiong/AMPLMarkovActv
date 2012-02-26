@@ -23,7 +23,7 @@ param initEV :=   0.0;
 param trueVoT :=  30.0;		# HKD per hour
 
 # true value of theta
-param trueTheta := 0.5;
+param trueTheta := 1.0;
 
 # the true parameters of utility function
 param trueUm :=

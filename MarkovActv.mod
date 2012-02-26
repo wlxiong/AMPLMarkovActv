@@ -21,20 +21,23 @@ param N;                # number of individuals in the data
 set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
 set ACTV := 1..M;       # ACTV is the index set of activities
-/*param HOME symbolic;    # HOME is a special activity*/
+# param HOME symbolic;    # HOME is a special activity
 
 # TODO intra-household interaction
 # TODO stochstic travel time
 # TODO congested transport network
+# TODO consider activity participation history
+# set AA := 1 .. 2**M;	# index of power set of ACTV
+# set HIST {k in AA} := {i in ACTV: ((k-1) div 2**(i-1)) mod 2 = 1};
 
 # Travel time
 # param travelTime {TIME cross ACTV cross ACTV};	# travel time over time
 param travelTime {ACTV cross ACTV};
 
 # Define the state space used in the dynamic programming part
-set TIMEACTV := TIME cross ACTV;
-/*set TIMEHOME := TIME cross {HOME};*/
-set X := TIMEACTV;	# X is the index set of states
+# set TIMEACTV := TIME cross ACTV;
+# set TIMEHOME := TIME cross {HOME};
+set X := TIME cross ACTV;	# X is the index set of states
 set D := ACTV;
 
 # Parameters and definition of transition process
