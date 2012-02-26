@@ -18,8 +18,8 @@ travelTime = [
 H = 288;	% number of time slices, and T * H = 1440 minutes
 N = 300;	% number of individuals
 
-xt = zeros(N,H);	% travelers' choices
-dt = zeros(N,H);	% travelers' states
+xt = zeros(N,H,'int8');	% travelers' choices
+dt = zeros(N,H,'int8');	% travelers' states
 
 for n = 1:N
 	t = 1;

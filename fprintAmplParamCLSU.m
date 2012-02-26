@@ -5,6 +5,9 @@ function fprintAmplParamCLSU(fid, strName, dataInput, varargin)
 % source: Su and Judd (2011), Constrained Optimization Approaches to
 % Estimation of Structural Models.
 % Code Revised: Che-Lin Su, May 2010.
+% 
+% Check if dataInput is composed of integers.
+% If yes, fprintf the data as integers. 
 
 % Initialization
 vecFirstIndex = [ 1 1 1 ];
@@ -60,12 +63,19 @@ if intType == 2
 	fprintf(fid, 'param %s := \n', strName);
         
 	intCount = vecFirstIndex(1);
-	for currentValue = dataInput
-		% fprintf(fid, '\t%d\t%s\n', intCount, num2str(currentValue));
-        fprintf(fid, '\t%d\t%16.12f\n', intCount, currentValue);
-		intCount = intCount + intIncrement;
+	if isinteger(dataInput(1))
+		for currentValue = dataInput
+			% fprintf(fid, '\t%d\t%s\n', intCount, num2str(currentValue));
+	        fprintf(fid, '\t%d\t%d\n', intCount, currentValue);
+			intCount = intCount + intIncrement;
+		end
+	else
+		for currentValue = dataInput
+			% fprintf(fid, '\t%d\t%s\n', intCount, num2str(currentValue));
+	        fprintf(fid, '\t%d\t%16.12f\n', intCount, currentValue);
+			intCount = intCount + intIncrement;
+		end
 	end
-
 	fprintf(fid, ';\n');
 end
 
@@ -76,18 +86,27 @@ if intType == 3
 	intSizeY = size(dataInput, 2);
         
 	fprintf(fid, 'param %s : \n', strName);
-        
 	for intJ = vecFirstIndex(2):intIncrement:vecFirstIndex(2)+(intSizeY-1)*intIncrement
 		fprintf(fid, '\t%d\t', intJ);
 	end
 	fprintf(fid, ' := \n');
-        
-	for intI = vecFirstIndex(1):intIncrement:vecFirstIndex(1)+(intSizeX-1)*intIncrement
-		fprintf(fid, '%d\t', intI);
-		for intJ = vecFirstIndex(2):intIncrement:vecFirstIndex(2)+(intSizeY-1)*intIncrement
-            fprintf(fid, '%6.4f\t', dataInput(intI+(1-vecFirstIndex(1)), intJ+(1-vecFirstIndex(2))));
+	
+	if isinteger(dataInput(1))
+		for intI = vecFirstIndex(1):intIncrement:vecFirstIndex(1)+(intSizeX-1)*intIncrement
+			fprintf(fid, '%d\t', intI);
+			for intJ = vecFirstIndex(2):intIncrement:vecFirstIndex(2)+(intSizeY-1)*intIncrement
+	            fprintf(fid, '%d\t', dataInput(intI+(1-vecFirstIndex(1)), intJ+(1-vecFirstIndex(2))));
+			end
+			fprintf(fid, '\n');
 		end
-		fprintf(fid, '\n');
+	else
+		for intI = vecFirstIndex(1):intIncrement:vecFirstIndex(1)+(intSizeX-1)*intIncrement
+			fprintf(fid, '%d\t', intI);
+			for intJ = vecFirstIndex(2):intIncrement:vecFirstIndex(2)+(intSizeY-1)*intIncrement
+	            fprintf(fid, '%6.4f\t', dataInput(intI+(1-vecFirstIndex(1)), intJ+(1-vecFirstIndex(2))));
+			end
+			fprintf(fid, '\n');
+		end
 	end
 	fprintf(fid, ';\n');
 end
@@ -100,20 +119,38 @@ if intType == 4
     intSizeZ = size(dataInput, 3);
     
 	fprintf(fid, 'param %s := \n', strName);
-    for intZ = vecFirstIndex(3):intIncrement:vecFirstIndex(3)+(intSizeZ-1)*intIncrement   
-        fprintf(fid, '[*,*,%d]: \n', intZ);     
-        for intJ = vecFirstIndex(2):intIncrement:vecFirstIndex(2)+(intSizeY-1)*intIncrement
-            fprintf(fid, '\t%d\t', intJ);
-        end
-        fprintf(fid, ' := \n');
+	if isinteger(dataInput(1))
+		for intZ = vecFirstIndex(3):intIncrement:vecFirstIndex(3)+(intSizeZ-1)*intIncrement   
+	        fprintf(fid, '[*,*,%d]: \n', intZ);     
+	        for intJ = vecFirstIndex(2):intIncrement:vecFirstIndex(2)+(intSizeY-1)*intIncrement
+	            fprintf(fid, '\t%d\t', intJ);
+	        end
+	        fprintf(fid, ' := \n');
+
+	        for intI = vecFirstIndex(1):intIncrement:vecFirstIndex(1)+(intSizeX-1)*intIncrement
+	            fprintf(fid, '%d\t', intI);
+	            for intJ = 1:intSizeY
+	                fprintf(fid, '%d\t', dataInput(intI+(1-vecFirstIndex(1)), intJ+(1-vecFirstIndex(2)), intZ+(1-vecFirstIndex(3))));
+	            end
+	            fprintf(fid, '\n');
+	        end
+	    end
+	else
+    	for intZ = vecFirstIndex(3):intIncrement:vecFirstIndex(3)+(intSizeZ-1)*intIncrement   
+	        fprintf(fid, '[*,*,%d]: \n', intZ);     
+	        for intJ = vecFirstIndex(2):intIncrement:vecFirstIndex(2)+(intSizeY-1)*intIncrement
+	            fprintf(fid, '\t%d\t', intJ);
+	        end
+	        fprintf(fid, ' := \n');
         
-        for intI = vecFirstIndex(1):intIncrement:vecFirstIndex(1)+(intSizeX-1)*intIncrement
-            fprintf(fid, '%d\t', intI);
-            for intJ = 1:intSizeY
-                fprintf(fid, '%16.4f\t', dataInput(intI+(1-vecFirstIndex(1)), intJ+(1-vecFirstIndex(2)), intZ+(1-vecFirstIndex(3))));
-            end
-            fprintf(fid, '\n');
-        end
-    end
+	        for intI = vecFirstIndex(1):intIncrement:vecFirstIndex(1)+(intSizeX-1)*intIncrement
+	            fprintf(fid, '%d\t', intI);
+	            for intJ = 1:intSizeY
+	                fprintf(fid, '%16.4f\t', dataInput(intI+(1-vecFirstIndex(1)), intJ+(1-vecFirstIndex(2)), intZ+(1-vecFirstIndex(3))));
+	            end
+	            fprintf(fid, '\n');
+	        end
+	    end
+	end
     fprintf(fid, ';\n');
 end
