@@ -27,35 +27,22 @@ include MarkovActv.run
 # Set at a trivial initial value
 let {t in 0..H, j in ACTV} EV[t,j] := initEV;
 
-# Set at true values
-let VoT := trueVoT;
-let theta := trueTheta;
+# Fix at true values
+fix VoT := trueVoT;
+fix theta := trueTheta;
 
-let {j in ACTV} Um[j]:= trueUm[j];
-let {j in ACTV}  b[j]:= trueB[j];
-let {j in ACTV}  c[j]:= trueC[j];
+fix {j in ACTV} Um[j]:= trueUm[j];
+fix {j in ACTV}  b[j]:= trueB[j];
+fix {j in ACTV}  c[j]:= trueC[j];
 
-# let {j in ACTV} Uw[j] := trueUw[j];
-# let {j in ACTV} xi[j] := trueXi[j];
-# let {j in ACTV} gamma[j] := trueGamma[j];
-# let {j in ACTV} lambda[j] := trueLambda[j];
-
-# Fix the structural parameters at the true values
-fix VoT;
-fix theta;
-
-fix Um;
-fix b;
-fix c;
-
-# fix Uw;
-# fix xi;
-# fix gamma;
-# fix lambda;
+# fix {j in ACTV} Uw[j] := trueUw[j];
+# fix {j in ACTV} xi[j] := trueXi[j];
+# fix {j in ACTV} gamma[j] := trueGamma[j];
+# fix {j in ACTV} lambda[j] := trueLambda[j];
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
-option knitro_options "alg=2 hessopt=2 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1";
+option knitro_options "alg=2 hessopt=2 outlev=3 maxit=100 xtol=0.0000000001 wantsol=1";
 
 # Solve command
 solve MarkovActvMDP;

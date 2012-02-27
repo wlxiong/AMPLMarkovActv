@@ -30,21 +30,14 @@ include MarkovActv.run
 # Set at a trivial initial value
 let {t in 0..H, j in ACTV} EV[t,j] := initEV;
 
-# Set at true values
-let theta := trueTheta;
-fix theta;
+# Fix at true values
+fix theta := trueTheta;
 
-# Set at the estimated values
-let VoT := VoT_;
-let {j in ACTV} Um[j]:= Um_[j];
-let {j in ACTV}  b[j]:= b_[j];
-let {j in ACTV}  c[j]:= c_[j];
-
-# Fix the structural parameters at the estimated values
-fix VoT;
-fix Um;
-fix b;
-fix c;
+# Fix at the estimated values
+fix VoT := VoT_;
+fix {j in ACTV} Um[j]:= Um_[j];
+fix {j in ACTV}  b[j]:= b_[j];
+fix {j in ACTV}  c[j]:= c_[j];
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";

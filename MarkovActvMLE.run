@@ -35,15 +35,14 @@ let {j in ACTV} Um[j]:= initUm[j];
 let {j in ACTV}  b[j]:= initB[j];
 let {j in ACTV}  c[j]:= initC[j];
 
-# let {j in ACTV} Uw[j] := initUw[j];
-# let {j in ACTV} xi[j] := initXi[j];
-# let {j in ACTV} gamma[j] := initGamma[j];
-# let {j in ACTV} lambda[j] := trueLambda[j];
+# fix {j in ACTV} Uw[j] := initUw[j];
+# fix {j in ACTV} xi[j] := initXi[j];
+# fix {j in ACTV} gamma[j] := initGamma[j];
+# fix {j in ACTV} lambda[j] := trueLambda[j];
 # fix lambda;	# fix lambda at the true value for all activities
 
 # fix theta at the true value
-let theta := trueTheta;
-fix theta;
+fix theta := trueTheta;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
