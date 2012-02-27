@@ -1,18 +1,20 @@
 # Define the feasible states for each time slice
-let isFeasible[H,HOME] := 1;	# initialize the terminal state
-for {t in H-1..0 by -1} {
-	for {j in ACTV} {
-		for {k in ACTV} {
-			if t+travelTime[j,k]+1 <= H and isFeasible[t+travelTime[j,k]+1, k] > 0 then
-				let isFeasible[t,j] := 1;
-		}
-	}
+let isFeasibleState[H,HOME_PM] := 1;	# initialize the terminal state
+for {t in H-1..0 by -1, j in ACTV, k in ACTV} {
+	if t+travelTime[j,k]+1 <= H and isFeasibleState[t+travelTime[j,k]+1, k] > 0 then {
+		let isFeasibleState[t,j] := 1;
+		let isFeasibleChoice[t,j,k] := 1;
+		if k == HOME_AM and j <> HOME_AM then
+			let isFeasibleChoice[t,j,k] := 0;
+		if j == HOME_PM and k <> HOME_PM then
+			let isFeasibleChoice[t,j,k] := 0;
+	};
 }
 
-# Write isFeasible to BIN.sol
+# Write isFeasibleState to BIN.sol
 for {t in 0..H} {
 	for {j in ACTV} {
-			printf "%d\t", isFeasible[t,j] > DATA/ISF.sol;
+			printf "%d\t", isFeasibleState[t,j] > DATA/ISF.sol;
 	}
 	printf "\n" > DATA/ISF.sol;
 }

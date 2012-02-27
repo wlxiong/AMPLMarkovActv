@@ -21,7 +21,8 @@ param N;                # number of individuals in the data
 set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
 set ACTV := 1..M;       # ACTV is the index set of activities
-param HOME;				# HOME is a special activity
+param HOME_AM;			# define the before work activity as HOME AM
+param HOME_PM;			# define the after work activity as HOME PM
 
 # TODO intra-household interaction
 # TODO stochstic travel time
@@ -34,16 +35,14 @@ param HOME;				# HOME is a special activity
 # param travelTime {TIME cross ACTV cross ACTV};	# travel time over time
 param travelTime {ACTV cross ACTV};
 
-param isFeasible {0..H cross ACTV} default 0;	# Declare the feasible states
+param isFeasibleState {0..H cross ACTV} default 0;	# Declare the feasible states
+param isFeasibleChoice {0..H cross ACTV cross ACTV} default 0;	# Declare the feasible choices
 
 # Define the state space used in the dynamic programming part
-# set TIMEACTV := TIME cross ACTV;
-# set TIMEHOME := TIME cross {HOME};
 # X is the index set of states
-set X := {t in TIME, j in ACTV:	isFeasible[t,j] == 1};
+set X := {t in TIME, j in ACTV:	isFeasibleState[t,j] == 1};
 # D is the index set of choices
-set D {(t,j) in X} := {k in ACTV: 
-	t+travelTime[j,k]+1 <= H and isFeasible[t+travelTime[j,k]+1,k] == 1 };
+set D {(t,j) in X} := {k in ACTV: isFeasibleChoice[t,j,k] == 1};
 
 # Parameters and definition of transition process
 
@@ -152,12 +151,8 @@ var choiceUtil {(t,j) in X, k in D[t,j]} =
         - travelCost[t,j,k] + beta*EV[(t+travelTime[j,k]+1), k];
 
 var choiceProb {(t,j) in X, k in D[t,j]} = 
-	if j <> HOME then
-		exp( theta*choiceUtil[t,j,k] ) / 
-		exp( theta*EV[t,j] )
-	else
-		# HOME is the last activity
-		if k == HOME then 1.0 else 0.0;
+	exp( theta*choiceUtil[t,j,k] ) / 
+	exp( theta*EV[t,j] );
 
 #  END OF DECLARING AUXILIARY VARIABLES #
 
@@ -184,7 +179,7 @@ subject to
     Bellman_Eqn {(t,j) in X}:
         EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
 	Bellman_EqnH:
-		EV[H,HOME] = 0.0;
+		EV[H,HOME_PM] = 0.0;
 
 #  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
     EVBound {(t,j) in X}: EV[t,j] <= 10000;
