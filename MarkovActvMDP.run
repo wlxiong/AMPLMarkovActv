@@ -18,10 +18,14 @@ EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
 
 # List the constraints
 Bellman_Eqn,
+Bellman_EqnH,
 EVBound;
 
-# Set at a trivial inistial value
-let {(t,j) in X} EV[t,j] := initEV;
+# include the code that define the state and choice set
+include MarkovActv.run
+
+# Set at a trivial initial value
+let {t in 0..H, j in ACTV} EV[t,j] := initEV;
 
 # Set at true values
 let VoT := trueVoT;
@@ -98,8 +102,11 @@ printf "_solve_time:\t%10.7f \n", _solve_time > DATA/MDP.sol;
 # write EV to a file EUtil.m
 printf "EV = [\n" > DATA/EUtil.m;
 for {t in TIME} {
-	for {j in D} {
-		printf "%10.7f\t", EV[t,j] > DATA/EUtil.m;
+	for {j in ACTV} {
+		if (t,j) in X then
+			printf "%10.7f\t", EV[t,j] > DATA/EUtil.m;
+		else
+			printf "%10.7f\t", -1 > DATA/EUtil.m;
 	}
 	printf "\n" > DATA/EUtil.m;
 }
@@ -107,12 +114,20 @@ printf "];" > DATA/EUtil.m;
 
 # write choiceProb to a file Prob.m
 printf "Pr = zeros(%d, %d, %d);\n", H, M, M > DATA/Prob.m;
-for {j in D} {
+for {j in ACTV} {
 	printf "Pr(:, %d, :) = [\n", j > DATA/Prob.m;
 	for {t in TIME} {
-		for {k in D} {
-			printf "%10.7f\t", choiceProb[t,j,k] > DATA/Prob.m;
-		}
+		if (t,j) in X then
+			for {k in ACTV} {
+				if k in D[t,j] then
+					printf "%10.7f\t", choiceProb[t,j,k] > DATA/Prob.m;
+				else
+					printf "%10.7f\t", 0.0 > DATA/Prob.m;
+			}
+		else
+			for {k in ACTV} {
+				printf "%10.7f\t", 0.0 > DATA/Prob.m;
+			}
 		printf "\n" > DATA/Prob.m;
 	}
 	printf "];\n" > DATA/Prob.m;

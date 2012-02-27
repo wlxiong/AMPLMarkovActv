@@ -21,10 +21,14 @@ EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
 
 # List the constraints
 Bellman_Eqn,
+Bellman_EqnH,
 EVBound;
 
-# Set at a trivial inistial value
-let {(t,j) in X} EV[t,j] := initEV;
+# include the code that define the state and choice set
+include MarkovActv.run
+
+# Set at a trivial initial value
+let {t in 0..H, j in ACTV} EV[t,j] := initEV;
 
 # Set at true values
 let theta := trueTheta;

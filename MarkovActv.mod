@@ -21,7 +21,7 @@ param N;                # number of individuals in the data
 set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
 set ACTV := 1..M;       # ACTV is the index set of activities
-# param HOME symbolic;    # HOME is a special activity
+param HOME;				# HOME is a special activity
 
 # TODO intra-household interaction
 # TODO stochstic travel time
@@ -34,11 +34,17 @@ set ACTV := 1..M;       # ACTV is the index set of activities
 # param travelTime {TIME cross ACTV cross ACTV};	# travel time over time
 param travelTime {ACTV cross ACTV};
 
+param isFeasible {0..H cross ACTV} default 0;	# Declare the feasible states
+param baseChoice {0..H cross ACTV} default -1;	# Declare the base choice
+
 # Define the state space used in the dynamic programming part
 # set TIMEACTV := TIME cross ACTV;
 # set TIMEHOME := TIME cross {HOME};
-set X := TIME cross ACTV;	# X is the index set of states
-set D := ACTV;
+# X is the index set of states
+set X := {t in TIME, j in ACTV:	isFeasible[t,j] == 1};
+# D is the index set of choices
+set D {(t,j) in X} := {k in ACTV: 
+	t+travelTime[j,k]+1 <= H and isFeasible[t+travelTime[j,k]+1,k] == 1 };
 
 # Parameters and definition of transition process
 
@@ -125,10 +131,11 @@ var actvUtil {(t,j) in X} = Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - ata
 
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
 # The NLP approach requires us to solve equilibrium constraint variables
-var EV {X};        	# Expected Value Function of each state
 
 # Define initial values for EV
 param initEV;
+# Expected Value Function of each state
+var EV {0..H cross ACTV} default initEV;
 
 # END OF DEFINING STRUCTURAL PARAMETERS AND ENDOGENOUS VARIABLES #
 
@@ -137,16 +144,21 @@ param initEV;
 #  Define auxiliary variables to economize on expressions	
 
 #  Create Cost variable to represent the cost function; 
-var travelCost {(t, j) in X, k in D} = VoT*travelTime[j, k]*T/60;
+var travelCost {(t, j) in X, k in D[t,j]} = VoT*travelTime[j, k]*T/60;
 
-var choiceUtil {(t,j) in X, k in D} = 
+var choiceUtil {(t,j) in X, k in D[t,j]} = 
     if j == k then
-        actvUtil[t,j] + beta*EV[(t+1) mod H, j]
+        actvUtil[t,j] + beta*EV[(t+1), j]
     else
-        - travelCost[t,j,k] + beta*EV[(t+travelTime[j,k]+1) mod H, k];
+        - travelCost[t,j,k] + beta*EV[(t+travelTime[j,k]+1), k];
 
-var choiceProb {(t,j) in X, k in D} = exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,1]) )
-									/ exp( theta*(EV[t,j] - choiceUtil[t,j,1]) );
+var choiceProb {(t,j) in X, k in D[t,j]} = 
+	if j <> HOME then
+		exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,baseChoice[t,j]]) ) / 
+		exp( theta*(EV[t,j] - choiceUtil[t,j,baseChoice[t,j]]) )
+	else
+		# HOME is the last activity
+		if k == HOME then 1.0 else 0.0;
 
 #  END OF DECLARING AUXILIARY VARIABLES #
 
@@ -162,7 +174,7 @@ maximize likelihood0: 0;
 
 maximize likelihood: 
 	sum {i in PERS, t in TIME} 
-		if xt[i,t] <> -1 and dt[i,t] <> -1 then 
+		if (t, xt[i,t]) in X and dt[i,t] in D[t, xt[i,t]] then
 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else
 			1.0;
@@ -170,9 +182,11 @@ maximize likelihood:
 #  Define the constraints
 
 subject to
-    Bellman_Eqn {(t,j) in X}:
-        EV[t,j] = log( sum {k in D} exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,1]) ) )/theta
-				+ choiceUtil[t,j,1];
+    Bellman_Eqn {(t,j) in X: t <> H}:
+        EV[t,j] = log( sum {k in D[t,j]} exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,baseChoice[t,j]]) ) )/theta
+				+ choiceUtil[t,j,baseChoice[t,j]];
+	Bellman_EqnH:
+		EV[H,HOME] = 0.0;
 
 #  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
     EVBound {(t,j) in X}: EV[t,j] <= 10000;

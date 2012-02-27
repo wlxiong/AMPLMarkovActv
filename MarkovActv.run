@@ -1,0 +1,18 @@
+# Define the feasible states for each time slice
+let isFeasible[H,HOME] := 1;	# initialize the terminal state
+for {t in H-1..0 by -1} {
+	for {j in ACTV} {
+		for {k in ACTV} {
+			if t+travelTime[j,k]+1 <= H and isFeasible[t+travelTime[j,k]+1, k] > 0 then
+				let isFeasible[t,j] := 1;
+		}
+	}
+}
+# Pick an arbitrary choice as base
+for {t in TIME}{
+	for {j in ACTV} {
+		for {k in D[t,j]: isFeasible[t,j]} {
+			let baseChoice[t,j] := k;
+		}
+	}
+}
