@@ -29,7 +29,6 @@ let {t in 0..H, j in ACTV} EV[t,j] := initEV;
 
 # Fix at true values
 fix VoT := trueVoT;
-fix theta := trueTheta;
 
 fix {j in ACTV} Um[j]:= trueUm[j];
 fix {j in ACTV}  b[j]:= trueB[j];
@@ -39,6 +38,9 @@ fix {j in ACTV}  c[j]:= trueC[j];
 # fix {j in ACTV} xi[j] := trueXi[j];
 # fix {j in ACTV} gamma[j] := trueGamma[j];
 # fix {j in ACTV} lambda[j] := trueLambda[j];
+
+# Fix theta at the true value
+fix theta := trueTheta;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
