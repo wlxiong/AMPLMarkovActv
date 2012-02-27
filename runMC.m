@@ -31,8 +31,8 @@ for n = 1:N
 		dt(n,t) = find( mnrnd(1, p') );
 		xt(n, t + travelTime(xt(n,t), dt(n,t)) + 1 ) = dt(n,t);
 		for s = t + 1 : t+travelTime(xt(n,t), dt(n,t))
-			xt(n,s) = -1;
-			dt(n,s) = -1;
+			xt(n,s) = 0;
+			dt(n,s) = 0;
 		end
 		t = t + travelTime(xt(n,t),dt(n,t)) + 1;
 	end
