@@ -8,11 +8,11 @@ for {t in H-1..0 by -1} {
 		}
 	}
 }
-# Pick an arbitrary choice as base
-for {t in TIME}{
+
+# Write isFeasible to BIN.sol
+for {t in 0..H} {
 	for {j in ACTV} {
-		for {k in D[t,j]: isFeasible[t,j]} {
-			let baseChoice[t,j] := k;
-		}
+			printf "%d\t", isFeasible[t,j] > DATA/ISF.sol;
 	}
+	printf "\n" > DATA/ISF.sol;
 }

@@ -35,7 +35,6 @@ param HOME;				# HOME is a special activity
 param travelTime {ACTV cross ACTV};
 
 param isFeasible {0..H cross ACTV} default 0;	# Declare the feasible states
-param baseChoice {0..H cross ACTV} default -1;	# Declare the base choice
 
 # Define the state space used in the dynamic programming part
 # set TIMEACTV := TIME cross ACTV;
@@ -154,8 +153,8 @@ var choiceUtil {(t,j) in X, k in D[t,j]} =
 
 var choiceProb {(t,j) in X, k in D[t,j]} = 
 	if j <> HOME then
-		exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,baseChoice[t,j]]) ) / 
-		exp( theta*(EV[t,j] - choiceUtil[t,j,baseChoice[t,j]]) )
+		exp( theta*choiceUtil[t,j,k] ) / 
+		exp( theta*EV[t,j] )
 	else
 		# HOME is the last activity
 		if k == HOME then 1.0 else 0.0;
@@ -182,9 +181,8 @@ maximize likelihood:
 #  Define the constraints
 
 subject to
-    Bellman_Eqn {(t,j) in X: t <> H}:
-        EV[t,j] = log( sum {k in D[t,j]} exp( theta*(choiceUtil[t,j,k] - choiceUtil[t,j,baseChoice[t,j]]) ) )/theta
-				+ choiceUtil[t,j,baseChoice[t,j]];
+    Bellman_Eqn {(t,j) in X}:
+        EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
 	Bellman_EqnH:
 		EV[H,HOME] = 0.0;
 
