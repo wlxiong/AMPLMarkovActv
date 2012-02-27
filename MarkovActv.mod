@@ -171,7 +171,7 @@ maximize likelihood:
 		if (t, xt[i,t]) in X and dt[i,t] in D[t, xt[i,t]] then
 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
 		else
-			1.0;
+			0.0;
 
 #  Define the constraints
 
