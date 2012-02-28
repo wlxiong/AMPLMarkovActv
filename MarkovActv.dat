@@ -2,11 +2,10 @@
 
 param T := 5;	# the equivalent minutes of a time slice
 param H := 288;	# number of time slices, and T * H = 1440 minutes
-param M := 3;	# number of activities, 1:home, 2:work, 3: after work
+param M := 3;	# number of activities, 1:home, 2:work, 3: shopping
 param N := 300;	# number of individuals
 param beta :=   0.95;	# discount ratio of future utility
-param HOME_AM := 1;		# define the before work activity as HOME AM
-param HOME_PM := 3;		# define the after work activity as HOME PM
+param HOME := 1;		# define HOME activity
 
 # simulated travel time
 param travelTime:
@@ -22,24 +21,25 @@ param initEV :=   0.0;
 # MDP SIMULATION INPUTS
 
 # the true value of VoT
-param trueVoT :=  30.0;		# HKD per hour
+param trueVoT :=  60.0;		# HKD per hour
 
 # true value of theta
 param trueTheta := 1.0;
 
 # the true parameters of utility function
 param trueUm :=
-	1	1500
-	2	1800
+	1	2000
+	2	2500
 	3	1200
 ;
+
 param trueB :=
-	1	240
-	2	720
-	3	1260
+	1	60
+	2	840
+	3	1080
 ;
 param trueC :=
-	1	150
+	1	240
 	2	180
 	3	120
 ;
@@ -75,13 +75,13 @@ param initTheta := 1.0;
 
 # initial values of parameters
 param initUm :=
-	1	500
-	2	500
-	3	500
+	1	10
+	2	10
+	3	10
 ;
 param initB :=
-	1	0
-	2	500
+	1	100
+	2	100
 	3	1000
 ;
 param initC :=

@@ -21,8 +21,7 @@ param N;                # number of individuals in the data
 set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
 set ACTV := 1..M;       # ACTV is the index set of activities
-param HOME_AM;			# define the before work activity as HOME AM
-param HOME_PM;			# define the after work activity as HOME PM
+param HOME;				# define HOME activity
 
 # TODO intra-household interaction
 # TODO stochstic travel time
@@ -121,7 +120,13 @@ param initGamma {ACTV};
 param initLambda {ACTV};
 
 # Scaled Cauchy distribution
-var actvUtil {(t,j) in X} = Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) );
+var actvUtil {(t,j) in X} = 
+	if j == HOME and t < H/2 then 
+		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
+	else if j == HOME and t >= H/2 then
+		Um[j]/3.141592653*( atan( ( t*T+T-(b[j]+1440) )/c[j] ) - atan( ( t*T-(b[j]+1440) )/c[j]) )
+	else
+		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) );
 
 # Bell-shaped profile
 # var actvUtil {(t,j) in X} = gamma[j]*lambda[j]*Uw[j]/exp(gamma[j]*(t*T-xi[j]))/
@@ -179,7 +184,7 @@ subject to
     Bellman_Eqn {(t,j) in X}:
         EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
 	Bellman_EqnH:
-		EV[H,HOME_PM] = 0.0;
+		EV[H,HOME] = 0.0;
 
 #  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
     EVBound {(t,j) in X}: EV[t,j] <= 10000;
