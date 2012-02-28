@@ -1,6 +1,7 @@
 % plot the Cauchy curve
 
 % load the parameters
+clear
 run DATA/MDP.m
 
 % HOME-PM
