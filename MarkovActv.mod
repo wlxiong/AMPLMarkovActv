@@ -184,7 +184,7 @@ subject to
     Bellman_Eqn {(t,j) in X}:
         EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
 	Bellman_EqnH:
-		EV[H,HOME] = 0.0;
+		EV[H,HOME] = EV[0,HOME];
 
 #  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
     EVBound {(t,j) in X}: EV[t,j] <= 10000;
