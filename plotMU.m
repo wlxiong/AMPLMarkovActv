@@ -1,7 +1,7 @@
 % plot the Cauchy curve
 
 % load the parameters
-run DATA/Param.m
+run DATA/MDP.m
 
 % HOME-PM
 Um(end+1) = Um(1);
@@ -13,11 +13,13 @@ hold on
 grid on
 box off
 
+% marginal utility function
 tt = 0:30:1440;
+pdf = @(u_, b_, c_) u_./pi./c_./( ( (tt-b_)/c_ ).^2 + 1 );
+
 lsty = {'-ro', '-r*', '-r^', '-rs'};
 for i = 1:length(Um)
-	pdf = Um(i)./pi./c(i)./( ( (tt-b(i))/c(i) ).^2 + 1 );
-	plot(tt/1440.0, pdf, lsty{i}, 'LineWidth', 1)
+	plot(tt/1440.0, pdf(Um(i), b(i), c(i)), lsty{i}, 'LineWidth', 1)
 end
 
 set(gca, 'XTick', .0:1.0/6.0:1.0);
