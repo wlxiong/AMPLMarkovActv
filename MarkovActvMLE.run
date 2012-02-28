@@ -63,17 +63,17 @@ display Um, b, c;
 printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
 printf "param Um_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
-	printf "%f\t%f\n", j, Um[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, Um[j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
 printf "param  b_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
-	printf "%f\t%f\n", j, b[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, b[j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
 printf "param  c_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
-	printf "%f\t%f\n", j, c[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, c[j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
 
