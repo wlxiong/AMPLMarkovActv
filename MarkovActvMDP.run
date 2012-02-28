@@ -81,7 +81,7 @@ option display_round 6, display_width 120;
 # display the choice probability
 # display choiceProb;
 
-# display the structural parameters (remember beta was fixed)
+# display the structural parameters (all were fixed)
 display beta, VoT, theta;
 display Um, b, c;
 # display Uw, xi, gamma, lambda;
@@ -121,3 +121,25 @@ for {j in ACTV} {
 	}
 	printf "];\n" > DATA/Prob.m;
 }
+
+# export fixed parameters to Param.m
+printf "beta = %f;\n", beta > DATA/Param.m;
+printf "theta = %f;\n", theta > DATA/Param.m;
+
+# export the structural parameters to Param.m
+printf "VoT = %f;\n", VoT > DATA/Param.m;
+printf "Um = [ " > DATA/Param.m;
+for {j in ACTV} {
+	printf "%f ", Um[j] > DATA/Param.m;
+}
+printf "];\n" > DATA/Param.m;
+printf "b = [ " > DATA/Param.m;
+for {j in ACTV} {
+	printf "%f ", b[j] > DATA/Param.m;
+}
+printf "];\n" > DATA/Param.m;
+printf "c = [ " > DATA/Param.m;
+for {j in ACTV} {
+	printf "%f ", c[j] > DATA/Param.m;
+}
+printf "];\n" > DATA/Param.m;
