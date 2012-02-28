@@ -78,9 +78,29 @@ for {j in ACTV} {
 printf ";\n" > DATA/MLE.dat;
 
 # export to MATLAB
-printf "b1_ = %f;\n", b[1] > DATA/MLE.m;
-printf "b2_ = %f;\n", b[2] > DATA/MLE.m;
 printf "ml = %f;\n", likelihood > DATA/MLE.m;
+
+# export fixed parameters to MLE.m
+printf "beta = %f;\n", beta > DATA/MLE.m;
+printf "theta = %f;\n", theta > DATA/MLE.m;
+
+# export the estimated parameters to MLE.m
+printf "VoT_ = %f;\n", VoT > DATA/MLE.m;
+printf "Um_ = [ " > DATA/MLE.m;
+for {j in ACTV} {
+	printf "%f ", Um[j] > DATA/MLE.m;
+}
+printf "];\n" > DATA/MLE.m;
+printf "b_ = [ " > DATA/MLE.m;
+for {j in ACTV} {
+	printf "%f ", b[j] > DATA/MLE.m;
+}
+printf "];\n" > DATA/MLE.m;
+printf "c_ = [ " > DATA/MLE.m;
+for {j in ACTV} {
+	printf "%f ", c[j] > DATA/MLE.m;
+}
+printf "];\n" > DATA/MLE.m;
 
 # display Uw, xi, gamma, lambda > DATA/MLE.sol;
 

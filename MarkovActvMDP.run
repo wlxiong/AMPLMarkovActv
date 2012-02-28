@@ -122,24 +122,24 @@ for {j in ACTV} {
 	printf "];\n" > DATA/Prob.m;
 }
 
-# export fixed parameters to Param.m
-printf "beta = %f;\n", beta > DATA/Param.m;
-printf "theta = %f;\n", theta > DATA/Param.m;
+# export fixed parameters to MDP.m
+printf "beta = %f;\n", beta > DATA/MDP.m;
+printf "theta = %f;\n", theta > DATA/MDP.m;
 
-# export the structural parameters to Param.m
-printf "VoT = %f;\n", VoT > DATA/Param.m;
-printf "Um = [ " > DATA/Param.m;
+# export the structural parameters to MDP.m
+printf "VoT = %f;\n", VoT > DATA/MDP.m;
+printf "Um = [ " > DATA/MDP.m;
 for {j in ACTV} {
-	printf "%f ", Um[j] > DATA/Param.m;
+	printf "%f ", Um[j] > DATA/MDP.m;
 }
-printf "];\n" > DATA/Param.m;
-printf "b = [ " > DATA/Param.m;
+printf "];\n" > DATA/MDP.m;
+printf "b = [ " > DATA/MDP.m;
 for {j in ACTV} {
-	printf "%f ", b[j] > DATA/Param.m;
+	printf "%f ", b[j] > DATA/MDP.m;
 }
-printf "];\n" > DATA/Param.m;
-printf "c = [ " > DATA/Param.m;
+printf "];\n" > DATA/MDP.m;
+printf "c = [ " > DATA/MDP.m;
 for {j in ACTV} {
-	printf "%f ", c[j] > DATA/Param.m;
+	printf "%f ", c[j] > DATA/MDP.m;
 }
-printf "];\n" > DATA/Param.m;
+printf "];\n" > DATA/MDP.m;
