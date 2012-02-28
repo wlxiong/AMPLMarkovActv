@@ -32,12 +32,12 @@ param trueTheta := 1.0;
 param trueUm :=
 	1	2000
 	2	2500
-	3	1800
+	3	1200
 ;
 param trueB :=
 	1	60
 	2	840
-	3	1140
+	3	1080
 ;
 param trueC :=
 	1	240
@@ -79,13 +79,13 @@ param initTheta := 1.0;
 
 ## Cauchy curve
 param initUm :=
-	1	1000
-	2	1000
-	3	1000
+	1	10
+	2	10
+	3	10
 ;
 param initB :=
-	1	0
-	2	500
+	1	100
+	2	100
 	3	1000
 ;
 param initC :=
