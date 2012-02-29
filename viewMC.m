@@ -20,8 +20,13 @@ for n = 1:N
 	plot(tt(ii)/H, xx)
 end
 ylim([.5 3.5])
+set(gca,'YTick',[1 2 3])
+set(gca,'YTickLabel','Home|Work|Shopping')
+pbaspect([2 1 1])
 set(gca, 'XTick', .0:1.0/6.0:1.0);
 datetick('x', 'HH:MM', 'keepticks');
+xlabel('Time of the day')
+export_fig('FIGURES/xt', '-pdf')
 
 % caculate number of trips
 num_trips = zeros(1,N);
