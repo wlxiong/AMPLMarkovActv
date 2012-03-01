@@ -7,13 +7,8 @@ param N := 300;	# number of individuals
 param beta :=   0.95;	# discount ratio of future utility
 param HOME := 1;		# define HOME activity
 
-# simulated travel time
-param travelTime:
-		1	2	3 :=
-	1	0	2	1
-	2	2	0	2
-	3	1	2	0
-;
+# import travel time data
+include DATA/TT.dat;
 
 # initial EV
 param initEV :=   0.0;
@@ -30,19 +25,19 @@ param trueTheta := 1.0;
 
 ## Cauchy curve
 param trueUm :=
-	1	2000
-	2	2500
-	3	1200
+	1	2400
+	2	2800
+	3	1000
 ;
 param trueB :=
-	1	60
+	1	120
 	2	840
 	3	1080
 ;
 param trueC :=
 	1	240
 	2	180
-	3	120
+	3	150
 ;
 
 ## Bell curve

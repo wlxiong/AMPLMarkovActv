@@ -9,18 +9,15 @@ run DATA/Prob.m
 run DATA/EUtil.m
 whos
 
-travelTime = [
-    0	2	1
-    2	0	2
-    1	2	0
-];
+% load travel time
+load DATA/TT.mat travelTime
 
 H = 288;	% number of time slices, and T * H = 1440 minutes
 N = 300;	% number of individuals
 HOME = 1;	% index of HOME activity
 
-xt = zeros(N,H,'int8');	% travelers' choices
-dt = zeros(N,H,'int8');	% travelers' states
+xt = zeros(N,H,'int32');	% travelers' choices
+dt = zeros(N,H,'int32');	% travelers' states
 
 for n = 1:N
 	fprintf('\t%3d', n)
@@ -29,14 +26,11 @@ for n = 1:N
 	while t <= H
         p = Pr(t,xt(n,t),:);
         p = p(:)./sum(p);      % make sure the probabilites sum to one
+		% generate a choice
 		dt(n,t) = find( mnrnd(1, p') );
-		for s = t + 1 : t+travelTime(xt(n,t), dt(n,t))
-			xt(n,s) = 0;
-			dt(n,s) = 0;
-		end
 		% state transition
-		xt(n, t + travelTime(xt(n,t), dt(n,t)) + 1 ) = dt(n,t);
-		t = t + travelTime(xt(n,t),dt(n,t)) + 1;
+		xt(n, t + travelTime(t, xt(n,t), dt(n,t)) + 1 ) = dt(n,t);
+		t = t + travelTime(t, xt(n,t), dt(n,t)) + 1;
 	end
 end
 

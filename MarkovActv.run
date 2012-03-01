@@ -1,7 +1,7 @@
 # Define the feasible states for each time slice
 let isFeasibleState[H,HOME] := 1;	# initialize the terminal state
 for {t in H-1..0 by -1, j in ACTV, k in ACTV} {
-	if t+travelTime[j,k]+1 <= H and isFeasibleState[t+travelTime[j,k]+1, k] > 0 then {
+	if t+travelTime[t,j,k]+1 <= H and isFeasibleState[t+travelTime[t,j,k]+1, k] > 0 then {
 		let isFeasibleState[t,j] := 1;
 		let isFeasibleChoice[t,j,k] := 1;
 		# if k == HOME and t <= H/8 and j <> HOME then

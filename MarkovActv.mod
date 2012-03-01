@@ -30,9 +30,8 @@ param HOME;				# define HOME activity
 # set AA := 1 .. 2**M;	# index of power set of ACTV
 # set HIST {k in AA} := {i in ACTV: ((k-1) div 2**(i-1)) mod 2 = 1};
 
-# Travel time
-# param travelTime {TIME cross ACTV cross ACTV};	# travel time over time
-param travelTime {ACTV cross ACTV};
+# Travel time varies over time of the day
+param travelTime {TIME cross ACTV cross ACTV};
 
 param isFeasibleState {0..H cross ACTV} default 0;	# Declare the feasible states
 param isFeasibleChoice {0..H cross ACTV cross ACTV} default 0;	# Declare the feasible choices
@@ -147,13 +146,13 @@ var EV {0..H cross ACTV} default initEV;
 #  Define auxiliary variables to economize on expressions	
 
 #  Create Cost variable to represent the cost function; 
-var travelCost {(t, j) in X, k in D[t,j]} = VoT*travelTime[j, k]*T/60;
+var travelCost {(t,j) in X, k in D[t,j]} = VoT*travelTime[t,j,k]*T/60;
 
 var choiceUtil {(t,j) in X, k in D[t,j]} = 
     if j == k then
         actvUtil[t,j] + beta*EV[(t+1), j]
     else
-        - travelCost[t,j,k] + beta*EV[(t+travelTime[j,k]+1), k];
+        - travelCost[t,j,k] + beta*EV[(t+travelTime[t,j,k]+1), k];
 
 var choiceProb {(t,j) in X, k in D[t,j]} = 
 	exp( theta*choiceUtil[t,j,k] ) / 
