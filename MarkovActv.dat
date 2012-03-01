@@ -39,17 +39,17 @@ param trueTheta := 1.0;
 param trueUm :=
 	1	2400
 	2	2800
-	3	1000
+	3	1200
 ;
 param trueB :=
 	1	120
 	2	840
-	3	1080
+	3	1140
 ;
 param trueC :=
 	1	240
 	2	180
-	3	150
+	3	210
 ;
 
 ## Bell curve
