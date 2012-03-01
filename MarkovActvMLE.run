@@ -29,7 +29,7 @@ include MarkovActv.run
 let {t in 0..H, j in ACTV} EV[t,j] := initEV;
 
 # Initial guesses set at trivial values; probably not good initial guesses
-fix VoT := trueVoT;
+let VoT := initVoT;
 
 let {j in ACTV} Um[j]:= initUm[j];
 let {j in ACTV}  b[j]:= initB[j];

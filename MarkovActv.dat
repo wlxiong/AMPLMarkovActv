@@ -76,7 +76,7 @@ param trueLambda :=
 # MLE ESTIMATION INPUTS
 
 # intial value of VoT
-param initVoT := 20.0;
+param initVoT := 10.0;
 
 # initial value of theta
 param initTheta := 1.0;
