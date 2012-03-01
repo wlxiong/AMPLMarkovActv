@@ -33,6 +33,9 @@ param HOME;				# define HOME activity
 # Travel time varies over time of the day
 param travelTime {TIME cross ACTV cross ACTV};
 
+param opening {ACTV};	# activity opening time
+param closing {ACTV};	# activity closing time
+
 param isFeasibleState {0..H cross ACTV} default 0;	# Declare the feasible states
 param isFeasibleChoice {0..H cross ACTV cross ACTV} default 0;	# Declare the feasible choices
 

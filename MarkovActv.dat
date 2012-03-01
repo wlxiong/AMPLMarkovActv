@@ -10,6 +10,18 @@ param HOME := 1;		# define HOME activity
 # import travel time data
 include DATA/TT.dat;
 
+# activity opening and closing time
+param opening := 
+	1	0
+	2	360
+	3	720
+;
+param closing :=
+	1	1440
+	2	1440
+	3	1440
+;
+
 # initial EV
 param initEV :=   0.0;
 
