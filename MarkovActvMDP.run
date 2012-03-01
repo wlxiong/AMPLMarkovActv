@@ -127,18 +127,18 @@ printf "beta = %f;\n", beta > DATA/MDP.m;
 printf "theta = %f;\n", theta > DATA/MDP.m;
 
 # export the structural parameters to MDP.m
-printf "VoT = %f;\n", VoT > DATA/MDP.m;
-printf "Um = [ " > DATA/MDP.m;
+printf "VoT0 = %f;\n", VoT > DATA/MDP.m;
+printf "Um0 = [ " > DATA/MDP.m;
 for {j in ACTV} {
 	printf "%f ", Um[j] > DATA/MDP.m;
 }
 printf "];\n" > DATA/MDP.m;
-printf "b = [ " > DATA/MDP.m;
+printf "b0 = [ " > DATA/MDP.m;
 for {j in ACTV} {
 	printf "%f ", b[j] > DATA/MDP.m;
 }
 printf "];\n" > DATA/MDP.m;
-printf "c = [ " > DATA/MDP.m;
+printf "c0 = [ " > DATA/MDP.m;
 for {j in ACTV} {
 	printf "%f ", c[j] > DATA/MDP.m;
 }

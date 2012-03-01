@@ -81,8 +81,8 @@ printf ";\n" > DATA/MLE.dat;
 printf "ml = %f;\n", likelihood > DATA/MLE.m;
 
 # export fixed parameters to MLE.m
-printf "beta = %f;\n", beta > DATA/MLE.m;
-printf "theta = %f;\n", theta > DATA/MLE.m;
+# printf "beta = %f;\n", beta > DATA/MLE.m;
+# printf "theta = %f;\n", theta > DATA/MLE.m;
 
 # export the estimated parameters to MLE.m
 printf "VoT_ = %f;\n", VoT > DATA/MLE.m;
