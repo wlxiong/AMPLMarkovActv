@@ -45,7 +45,7 @@ fix theta := trueTheta;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
-option knitro_options "alg=2 hessopt=2 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1";
+option knitro_options "alg=2 hessopt=2 outlev=3 maxit=1000 xtol=0.0000000001 wantsol=1";
 
 # Solve command
 solve MarkovActvMLE;
