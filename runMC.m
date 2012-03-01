@@ -16,7 +16,7 @@ whos
 load DATA/TT.mat travelTime
 
 H = 288;	% number of time slices, and T * H = 1440 minutes
-N = 300;	% number of individuals
+N = 200;	% number of individuals
 HOME = 1;	% index of HOME activity
 
 xt = zeros(N,H,'int32');	% travelers' choices
@@ -44,6 +44,7 @@ save 'DATA/MC.mat' xt dt EV Pr H N
 % export the data to an AMPL .dat file
 fprintf('\n export the data as .dat\n')
 fid = fopen('DATA/MC.dat', 'W');
+exportParam(fid, 'N', N);
 exportParam(fid, 'xt', xt(:,1:H), 1, 0);
 exportParam(fid, 'dt', dt(:,1:H), 1, 0);
 fclose(fid);

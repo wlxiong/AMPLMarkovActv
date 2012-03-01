@@ -57,6 +57,8 @@ option display_round 6, display_width 120;
 # display estimates of structural parameters
 display beta, theta, VoT;
 display Um, b, c;
+# display the true values
+display trueUm, trueB, trueC;
 # display Uw, xi, gamma, lambda;
 
 # write the estimates
