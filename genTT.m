@@ -1,6 +1,7 @@
+function genTT
 % generate travel time data
 
-clear
+clear all
 
 % number of nodes
 % 1: home
@@ -45,6 +46,7 @@ pdf = @(m_, b_, c_) m_./( ( (t-b_)./c_ ).^2 + 1 );
 % BPR function
 bpr = @(x, k, t0) t0 .* ( 1.0 + (x./k).^4);
 
+whos
 figure
 hold on
 grid on
@@ -73,7 +75,6 @@ pbaspect([2 1 1])
 legend('boxoff')
 export_fig('FIGURES/travel_time', '-pdf')
 
-whos
 fprintf('save travel time\n')
 save 'DATA/TT.mat' travelTime
 fprintf('export the data as .dat\n')

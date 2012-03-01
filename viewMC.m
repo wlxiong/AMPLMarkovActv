@@ -1,4 +1,9 @@
-clear
+function viewMC
+% visualize the simulation
+
+clear all
+
+% load simulation data
 load 'DATA/MC.mat' EV xt H N
 whos
 

@@ -1,10 +1,13 @@
-% diary runMC.log
+function runMC
+% run the Monte Carlo simulation
 
 % TODO activity start time vs activity duration
 % TODO out-of-home activity type vs activity duration
 % TODO activity start time vs trip distance
 
-clear
+clear all
+
+% load data
 run DATA/Prob.m
 run DATA/EUtil.m
 whos

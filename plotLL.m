@@ -1,4 +1,9 @@
-clear
+function plotLL
+% plot the log-likelihood function
+
+clear all
+
+% load data
 run DATA/LL.m
 run DATA/MLE.m
 whos

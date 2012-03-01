@@ -1,7 +1,9 @@
+function plotMU
 % plot the Cauchy curve
 
+clear all
+
 % load the parameters
-clear
 run DATA/MDP.m
 
 % HOME-PM
