@@ -16,7 +16,7 @@ whos
 load DATA/TT.mat travelTime
 
 H = 288;	% number of time slices, and T * H = 1440 minutes
-N = 200;	% number of individuals
+N = 300;	% number of individuals
 HOME = 1;	% index of HOME activity
 
 xt = zeros(N,H,'int32');	% travelers' choices
