@@ -61,6 +61,12 @@ display Um, b, c;
 display trueUm, trueB, trueC;
 # display Uw, xi, gamma, lambda;
 
+# calculate the Hessain matrix
+option solver "Z:\build\ampl\solvers\examples\gjh.exe";
+solve;
+# use generic synonyms _conname and _con
+display _svarname, _svar > DATA/SVAR.sol;
+
 # write the estimates
 printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
 printf "param Um_ := \n" > DATA/MLE.dat;
