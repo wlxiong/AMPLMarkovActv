@@ -19,8 +19,7 @@ EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
 
 # List the constraints
 Bellman_Eqn,
-Bellman_EqnH,
-EVBound;
+Bellman_EqnH;
 
 # include the code that define the state and choice set
 include MarkovActv.run
@@ -28,31 +27,26 @@ include MarkovActv.run
 # Set at a trivial initial value
 let {t in 0..H, j in ACTV} EV[t,j] := initEV;
 
+# Fix theta at the true value
+fix theta := trueTheta;
+
 # Initial guesses set at trivial values; probably not good initial guesses
 fix VoT := trueVoT;
+
+# Specify KNITRO solver options:
+option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
+option knitro_options "alg=1 hessopt=1 bar_murule=0 ms_enable=1 ms_maxsolves=45 ms_maxbndrange=0 outlev=3 maxit=300 xtol=0.0000000001 wantsol=1";
+
+# Output commands
+option display_round 6, display_width 120;
 
 let {j in ACTV} Um[j]:= initUm[j];
 let {j in ACTV}  b[j]:= initB[j];
 let {j in ACTV}  c[j]:= initC[j];
 
-# let {j in ACTV} Uw[j] := initUw[j];
-# let {j in ACTV} xi[j] := initXi[j];
-# let {j in ACTV} gamma[j] := initGamma[j];
-# fix {j in ACTV} lambda[j] := trueLambda[j];
-
-# Fix theta at the true value
-fix theta := trueTheta;
-
-# Specify KNITRO solver options:
-option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
-option knitro_options "alg=1 hessopt=1 bar_murule=1 outlev=3 maxit=1000 xtol=0.0000000001 wantsol=1";
-
 # Solve command
 solve MarkovActvMLE;
 display _solve_time;
-
-# Output commands
-option display_round 6, display_width 120;
 
 # display estimates of structural parameters
 display beta, theta, VoT;
@@ -112,7 +106,6 @@ printf "];\n" > DATA/MLE.m;
 # suppress the equilibrium constraints to 
 # calculate the Hessian of objective only
 fix EV;
-drop EVBound;
 drop Bellman_Eqn;
 drop Bellman_EqnH;
 

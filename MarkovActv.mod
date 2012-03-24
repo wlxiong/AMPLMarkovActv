@@ -83,9 +83,9 @@ param initTheta >= 0;
 
 # PARAMETERS OF CAUCHY DISTRIBUTION
 # Activity Parameters
-var Um {ACTV} >= 0;
+var Um {ACTV} >= 0, <= 5000;
 var b {ACTV} >= 0, <= 1440;
-var c {ACTV} >= 0;
+var c {ACTV} >= 0, <= 600;
 
 # Define the ture parameters
 param trueUm {ACTV};
@@ -187,8 +187,5 @@ subject to
         EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
 	Bellman_EqnH:
 		EV[H,HOME] = EV[0,HOME];
-
-#  Put bound on EV; this should not bind, but is a cautionary step to help keep algorithm within bounds
-    EVBound {(t,j) in X}: EV[t,j] <= 10000;
 
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS
