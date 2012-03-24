@@ -45,7 +45,7 @@ fix theta := trueTheta;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro800\knitroampl\knitroampl.exe";
-option knitro_options "alg=2 hessopt=2 outlev=3 maxit=1000 xtol=0.0000000001 wantsol=1";
+option knitro_options "alg=1 hessopt=1 bar_murule=1 outlev=3 maxit=1000 xtol=0.0000000001 wantsol=1";
 
 # Solve command
 solve MarkovActvMLE;
@@ -60,12 +60,6 @@ display Um, b, c;
 # display the true values
 display trueUm, trueB, trueC;
 # display Uw, xi, gamma, lambda;
-
-# calculate the Hessain matrix
-option solver "Z:\build\ampl\solvers\examples\gjh.exe";
-solve;
-# use generic synonyms _conname and _con
-display _svarname, _svar > DATA/SVAR.sol;
 
 # write the estimates
 printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
@@ -114,3 +108,36 @@ printf "];\n" > DATA/MLE.m;
 
 # display the value function
 # display EV;
+
+# suppress the equilibrium constraints to 
+# calculate the Hessian of objective only
+fix EV;
+drop EVBound;
+drop Bellman_Eqn;
+drop Bellman_EqnH;
+
+# display solver's variables _svarname, _svar
+display _svarname, _svar > DATA/SVAR.sol;
+
+# calculate the Hessain matrix
+option solver "C:\AMPLcml\gjh.exe";
+option gjh_options "g=grad J=Jaco H=Hess";
+write "bDATA/HES"; solve;
+include DATA/HES.gjh;
+
+# export the gradient vector
+printf "\ngrad = [ " > DATA/MLE.m;
+for {i in 1..9} {
+	printf "%f ", grad[i] > DATA/MLE.m;
+}
+printf "];\n" > DATA/MLE.m;
+
+# export the Hessian matrix
+printf "Hess = [ \n" > DATA/MLE.m;
+for {i in 1..9} {
+	for {j in 1..9} {
+		printf "%f ", Hess[i,j] > DATA/MLE.m;
+	}
+	printf "\n" > DATA/MLE.m;
+}
+printf "];\n" > DATA/MLE.m;
