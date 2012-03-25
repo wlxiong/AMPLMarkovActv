@@ -18,8 +18,7 @@ EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
 
 # List the constraints
 Bellman_Eqn,
-Bellman_EqnH,
-EVBound;
+Bellman_EqnH;
 
 # include the code that define the state and choice set
 include MarkovActv.run
