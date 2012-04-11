@@ -1,11 +1,9 @@
-# Title: Constrained Optimization Approaches for Estimation of Structural Models
-# Authors: Che-Lin Su and Kenneth L. Judd, November 2010
-# Modified by Xiong Yiliang <wlxiong@gmail.com>
+# Title: MPEC Approach for Estimation of MDP Models
+# Author: Xiong Yiliang <wlxiong@gmail.com> 2012
 
 # Go to the NEOS Server (google "NEOS Server for Optimization").
 # Click on "NEOS Solvers" and then go to "Nonlinearly Constrained Optimization"
 # You can use any of the constrained optimization solvers that take AMPL input. 
-# In the paper, we use the solver KNITRO.
 
 # AMPL Model File:   MarkovActv.mod
 # AMPL Data File:    MarkovActv.dat
@@ -22,13 +20,6 @@ set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of out-of-home activities
 set ACTV := 1..M;       # ACTV is the index set of activities
 param HOME;				# define HOME activity
-
-# TODO intra-household interaction
-# TODO stochstic travel time
-# TODO congested transport network
-# TODO consider activity participation history
-# set AA := 1 .. 2**M;	# index of power set of ACTV
-# set HIST {k in AA} := {i in ACTV: ((k-1) div 2**(i-1)) mod 2 = 1};
 
 # Travel time varies over time of the day
 param travelTime {TIME cross ACTV cross ACTV};
@@ -129,10 +120,6 @@ var actvUtil {(t,j) in X} =
 		Um[j]/3.141592653*( atan( ( t*T+T-(b[j]+1440) )/c[j] ) - atan( ( t*T-(b[j]+1440) )/c[j]) )
 	else
 		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) );
-
-# Bell-shaped profile
-# var actvUtil {(t,j) in X} = gamma[j]*lambda[j]*Uw[j]/exp(gamma[j]*(t*T-xi[j]))/
-#                             (1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)*T;
 
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
 # The NLP approach requires us to solve equilibrium constraint variables

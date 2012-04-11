@@ -51,28 +51,6 @@ param trueC :=
 	3	210
 ;
 
-## Bell curve
-param trueUw :=
-	1	600
-	2	1500
-	3	800
-;
-param trueXi :=
-	1	240
-	2	720
-	3	1260
-;
-param trueGamma :=
-	1	0.005
-	2	0.005
-	3	0.005
-;
-param trueLambda :=
-	1	1.0
-	2	1.0
-	3	1.0
-;
-
 # MLE ESTIMATION INPUTS
 
 # intial value of VoT
@@ -98,26 +76,4 @@ param initC :=
 	1	100
 	2	100
 	3	100
-;
-
-## Bell curve
-param initUw :=
-	1	500
-	2	500
-	3	500
-;
-param initXi :=
-	1	0
-	2	500
-	3	1000
-;
-param initGamma :=
-	1	0.0001
-	2	0.0001
-	3	0.0001
-;
-param initLambda :=
-	1	1.0
-	2	1.0
-	3	1.0
 ;

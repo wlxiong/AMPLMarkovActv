@@ -8,14 +8,10 @@ for {t in H-1..0 by -1, j in ACTV, k in ACTV} {
 	then {
 		let isFeasibleState[t,j] := 1;
 		let isFeasibleChoice[t,j,k] := 1;
-		# if k == HOME and t <= H/8 and j <> HOME then
-		# 	let isFeasibleChoice[t,j,k] := 0;
-		# if j == HOME and t >= H*7/8 and k <> HOME then
-		# 	let isFeasibleChoice[t,j,k] := 0;
 	};
 }
 
-# Write isFeasibleState to BIN.sol
+# Write isFeasibleState to DATA/ISF.sol
 for {t in 0..H} {
 	for {j in ACTV}
 		printf "%d\t", isFeasibleState[t,j] > DATA/ISF.sol;
