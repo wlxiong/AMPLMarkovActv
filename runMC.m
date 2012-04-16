@@ -10,7 +10,7 @@ clear all
 % load data
 run DATA/Prob.m
 run DATA/EUtil.m
-whos
+% whos
 
 % load travel time
 load DATA/TT.mat travelTime
@@ -23,7 +23,7 @@ xt = zeros(N,H,'int32');	% travelers' choices
 dt = zeros(N,H,'int32');	% travelers' states
 
 for n = 1:N
-	fprintf('\t%3d', n)
+	% fprintf('\t%3d', n)
 	xt(n,1) = HOME;		% the dividual stay at home in time slice 1
 	t = 1;
 	while t <= H

@@ -102,35 +102,3 @@ printf "];\n" > DATA/MLE.m;
 
 # display the value function
 # display EV;
-
-# suppress the equilibrium constraints to 
-# calculate the Hessian of objective only
-fix EV;
-drop Bellman_Eqn;
-drop Bellman_EqnH;
-
-# display solver's variables _svarname, _svar
-display _svarname, _svar > DATA/SVAR.sol;
-
-# calculate the Hessain matrix
-option solver "C:\AMPLcml\gjh.exe";
-option gjh_options "g=grad J=Jaco H=Hess";
-write "bDATA/HES"; solve;
-include DATA/HES.gjh;
-
-# export the gradient vector
-printf "\ngrad = [ " > DATA/MLE.m;
-for {i in 1..9} {
-	printf "%f ", grad[i] > DATA/MLE.m;
-}
-printf "];\n" > DATA/MLE.m;
-
-# export the Hessian matrix
-printf "Hess = [ \n" > DATA/MLE.m;
-for {i in 1..9} {
-	for {j in 1..9} {
-		printf "%f ", Hess[i,j] > DATA/MLE.m;
-	}
-	printf "\n" > DATA/MLE.m;
-}
-printf "];\n" > DATA/MLE.m;
