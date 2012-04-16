@@ -23,7 +23,9 @@ xt = zeros(N,H,'int32');	% travelers' choices
 dt = zeros(N,H,'int32');	% travelers' states
 
 for n = 1:N
-	% fprintf('\t%3d', n)
+	if mod(n,50) == 0
+		fprintf('%3d...', n)
+	end
 	xt(n,1) = HOME;		% the dividual stay at home in time slice 1
 	t = 1;
 	while t <= H
