@@ -3,7 +3,7 @@
 param T := 5;	# the equivalent minutes of a time slice
 param H := 288;	# number of time slices, and T * H = 1440 minutes
 param M := 3;	# number of activities, 1:home, 2:work, 3: shopping
-param beta := 0.97;		# discount ratio of future utility
+param beta := 0.95;		# discount ratio of future utility
 param HOME := 1;		# define HOME activity
 
 # import travel time data
@@ -36,8 +36,8 @@ param trueTheta := 1.0;
 
 ## Cauchy curve
 param trueUm :=
-	1	2400
-	2	2800
+	1	2200
+	2	2500
 	3	1200
 ;
 param trueB :=

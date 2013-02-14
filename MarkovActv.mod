@@ -169,10 +169,8 @@ maximize likelihood:
 
 #  Define the constraints
 
-subject to
-    Bellman_Eqn {(t,j) in X}:
-        EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
-	Bellman_EqnH:
-		EV[H,HOME] = EV[0,HOME];
+subject to Bellman_Eqn {(t,j) in X}:
+    EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
+subject to Bellman_EqnH: EV[H,HOME] = EV[0,HOME];
 
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS

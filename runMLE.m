@@ -20,7 +20,7 @@ while j <= B
 	runMC
 	% call AMPL to estimate the parameters
 	fprintf('\n start MLE (%d/%d)\n', j, B)
-	[status,result] = system('wine ampl MarkovActvMLE.run','-echo');
+	[status,result] = system('wine ampl MarkovActvMLE.run');
 	% import the estimates
 	run DATA/MLE.m
 	% display the solver message
