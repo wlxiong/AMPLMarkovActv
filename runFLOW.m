@@ -35,8 +35,8 @@ for t = 1:H
 		p = p(:)./sum(p);
 		for d = 1:A
 			% state transition
-			if t + travelTime(t, a, d) < H
-				fx(t + travelTime(t, a, d) + 1, d) = fx(t + travelTime(t, a, d) + 1, d) + fx(t,a) * p(d);
+			if t + travelTime(t,a,d) < H
+				fx(t+travelTime(t,a,d)+1, d) = fx(t+travelTime(t,a,d)+1, d) + fx(t,a) * p(d);
 			end
 		end
 	end

@@ -24,7 +24,7 @@ capcity = [
 
 % parameter for generating flow
 m = [
-0		1200	1000
+0		1200	    1000
 1000	0		1000
 1000	 100	0
 ];
@@ -44,7 +44,8 @@ t = 0:5:1439;
 pdf = @(m_, b_, c_) m_./( ( (t-b_)./c_ ).^2 + 1 );
 
 % BPR function
-bpr = @(x, k, t0) t0 .* ( 1.0 + (x./k).^4);
+% bpr = @(x, k, t0) t0 .* ( 1.0 + (x./k).^4);
+bpr = @(x, k, t0) t0 * 3;   % constant travel time
 
 whos
 figure
@@ -73,7 +74,7 @@ ylabel('Travel time (\times 5 min)')
 axis([.0 1.0 0.0 12])
 pbaspect([2 1 1])
 legend('boxoff')
-export_fig('FIGURES/travel_time', '-pdf')
+% export_fig('FIGURES/travel_time', '-pdf')
 
 fprintf('save travel time\n')
 save 'DATA/TT.mat' travelTime
