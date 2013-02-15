@@ -1,3 +1,3 @@
 Optimal solution found
     0 
-_solve_time:	 0.6500000 
+_solve_time:	22.3549433 
