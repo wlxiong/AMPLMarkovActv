@@ -17,7 +17,7 @@ param H;                # number of time slice in the data
 set TIME := 0..(H-1);   # TIME is the vector of time slices
 param N;                # number of individuals in the data
 set PERS := 1..N;       # PERS is the index set of individuals
-param M;                # number of out-of-home activities
+param M;                # number of activities, including HOME
 set ACTV := 1..M;       # ACTV is the index set of activities
 param HOME;				# define HOME activity
 
@@ -28,13 +28,17 @@ param opening {ACTV};	# activity opening time
 param closing {ACTV};	# activity closing time
 
 param isFeasibleState {0..H cross ACTV} default 0;	# Declare the feasible states
-param isFeasibleChoice {0..H cross ACTV cross ACTV} default 0;	# Declare the feasible choices
+param isFeasibleChoice {0..H cross ACTV cross ACTV cross TIME} default 0;	# Declare the feasible choices
 
 # Define the state space used in the dynamic programming part
 # X is the index set of states
 set X := {t in TIME, j in ACTV:	isFeasibleState[t,j] == 1};
-# D is the index set of choices
-set D {(t,j) in X} := {k in ACTV: isFeasibleChoice[t,j,k] == 1};
+# DTRAVEL is the index set of travel decisions
+set DTRAV {(t,j) in X} := {k in ACTV, h in TIME: k != j and h == travelTime[t,j,k] and isFeasibleChoice[t,j,k,h] == 1};
+# DACTV is the index set of activity decisions
+set DACTV {(t,j) in X} := {k in ACTV, h in TIME: k == j and isFeasibleChoice[t,j,k,h] == 1};
+# D is the union of sets of travel and activity decisions
+set D {(t,j) in X} := DTRAV[t,j] union DACTV[t,j];
 
 # Parameters and definition of transition process
 
@@ -55,7 +59,7 @@ var VoT >= 0;
 param trueVoT >= 0;
 
 # initial value of VoT
-param initVoT >= 0;
+param initVoT;
 
 # estimated VoT
 param VoT_;
@@ -67,7 +71,7 @@ var theta >= 0;
 param trueTheta >= 0;
 
 # initial value of theta
-param initTheta >= 0;
+param initTheta;
 
 # transProb[i] defines transition probability that state in next time slice. 
 # var transProb {1..M} >= 0;
@@ -113,7 +117,7 @@ param initGamma {ACTV};
 param initLambda {ACTV};
 
 # Scaled Cauchy distribution
-var actvUtil {(t,j) in X} = 
+var actvUtil {(t,j) in 0..H cross ACTV} = 
 	if j == HOME and t < H/2 then 
 		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
 	else if j == HOME and t >= H/2 then
@@ -135,17 +139,20 @@ var EV {0..H cross ACTV} default initEV;
 #  DECLARE AUXILIARY VARIABLES  #
 #  Define auxiliary variables to economize on expressions	
 
-#  Create Cost variable to represent the cost function; 
-var travelCost {(t,j) in X, k in D[t,j]} = VoT*travelTime[t,j,k]*T/60;
+#  Define the total discounted utility of pursuing activity j in time (t, t+h-1)
+var sumActvUtil {(t,j) in X, (k,h) in DACTV[t,j]} = sum {s in 1..h} beta**(s-1) * actvUtil[t+s,k];
+#  Define the total discounted utility of traveling from j to k departing at t
+var sumTravelCost {(t,j) in X, (k,h) in DTRAV[t,j]} = sum {s in 1..h} beta**(s-1) * T*VoT/60;
 
-var choiceUtil {(t,j) in X, k in D[t,j]} = 
-    if j == k then
-        actvUtil[t,j] + beta*EV[(t+1), j]
+# Define the utility of selecting decision (k,h)
+var choiceUtil {(t,j) in X, (k,h) in D[t,j]} = 
+    if k == j then
+          sumActvUtil[t,j,k,h] + beta**h * EV[(t+h), k]
     else
-        - travelCost[t,j,k] + beta*EV[(t+travelTime[t,j,k]+1), k];
+        - sumTravelCost[t,j,k,h] + beta**h * EV[(t+h), k];
 
-var choiceProb {(t,j) in X, k in D[t,j]} = 
-	exp( theta*choiceUtil[t,j,k] ) / 
+var choiceProb {(t,j) in X, (k,h) in D[t,j]} = 
+	exp( theta*choiceUtil[t,j,k,h] ) / 
 	exp( theta*EV[t,j] );
 
 #  END OF DECLARING AUXILIARY VARIABLES #
@@ -160,17 +167,17 @@ var choiceProb {(t,j) in X, k in D[t,j]} =
 #   Second is the likelihood that the observed transition between t-1 and t would have occurred.
 maximize likelihood0: 0;
 
-maximize likelihood: 
-	sum {i in PERS, t in TIME} 
-		if (t, xt[i,t]) in X and dt[i,t] in D[t, xt[i,t]] then
-			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
-		else
-			0.0;
+# maximize likelihood: 
+# 	sum {i in PERS, t in TIME} 
+# 		if (t, xt[i,t]) in X and dt[i,t] in D[t, xt[i,t]] then
+# 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
+# 		else
+# 			0.0;
 
 #  Define the constraints
 
 subject to Bellman_Eqn {(t,j) in X}:
-    EV[t,j] = log( sum {k in D[t,j]} exp( theta*choiceUtil[t,j,k] ) ) / theta;
+    EV[t,j] = log( sum {(k,h) in D[t,j]} exp( theta*choiceUtil[t,j,k,h] ) ) / theta;
 subject to Bellman_EqnH: EV[H,HOME] = EV[0,HOME];
 
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS
