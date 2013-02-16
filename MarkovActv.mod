@@ -7,7 +7,7 @@
 
 # AMPL Model File:   MarkovActv.mod
 # AMPL Data File:    MarkovActv.dat
-# AMPL Command File: MarkovActv.run
+# AMPL Command File: MarkovActvMDP.run and JointActvMDP.run
 
 # SET UP THE MODEL and DATA #
 
@@ -36,6 +36,7 @@ param closing {ALLACTV};	# activity closing time
 
 # Declare the feasible states
 param isFeasibleState {n in PERS, t in 0..H, j in AUW[n]} default 0;
+param isFeasibleCoState {t in 0..H, (j1,j2) in AW1xAW2} default 0;
 # Declare the feasible choices
 param isFeasibleChoice {n in PERS, t in 0..H, j in AUW[n], k in AUW[n], h in TIME} default 0;
 
@@ -44,18 +45,20 @@ param isFeasibleChoice {n in PERS, t in 0..H, j in AUW[n], k in AUW[n], h in TIM
 set X {n in PERS}:= {t in TIME, j in AUW[n]: isFeasibleState[n,t,j] == 1};
 # XX is the set of composite states
 set XX := {t in TIME, (j1,j2) in AW1xAW2: 
-	isFeasibleState[1,t,j1] == 1 and isFeasibleState[2,t,j2] = 1};
+	isFeasibleState[1,t,j1] == 1 and 
+	isFeasibleState[2,t,j2] == 1 and 
+	isFeasibleCoState[t,j1,j2] == 1};
 # DTRAVEL is the index set of travel decisions
-set DT {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in TIME: 
+set DT {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in 0..DH: 
 	k != j and h == travelTime[t,j,k] and isFeasibleChoice[n,t,j,k,h] == 1};
 # DA is the index set of activity decisions
-set DA {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in TIME: 
+set DA {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in 0..DH: 
 	k == j and isFeasibleChoice[n,t,j,k,h] == 1};
 # D is the union of sets of travel and activity decisions
 set D {n in PERS, (t,j) in X[n]} := DT[n,t,j] union DA[n,t,j];
 # DD is the set of composite decisions. To simplify the state transition, 
 # the activity durations of the component decisions should be the same.
-set DD {(t,j1,j2) in XX} := {a1 in AUW[1], a2 in AUW[2], h in 1..DH: 
+set DD {(t,j1,j2) in XX} := {a1 in AUW[1], a2 in AUW[2], h in 0..DH: 
 	(a1,h) in D[1,t,j1] and (a2,h) in D[2,t,j2]};
 
 # Parameters and definition of transition process
@@ -73,9 +76,6 @@ param beta;      	 # discount factor
 # value of time
 var VoT >= 0;
 
-# true VoT
-param trueVoT >= 0;
-
 # initial value of VoT
 param initVoT;
 
@@ -84,9 +84,6 @@ param VoT_;
 
 # theta: parameter of the logit choice model
 var theta >= 0;
-
-# true value of theta
-param trueTheta >= 0;
 
 # initial value of theta
 param initTheta;
@@ -103,20 +100,10 @@ var Um {ALLACTV} >= 0, <= 5000;
 var b {ALLACTV} >= 0, <= 1440;
 var c {ALLACTV} >= 0, <= 600;
 
-# Define the ture parameters
-param trueUm {ALLACTV};
-param trueB {ALLACTV};
-param trueC {ALLACTV};
-
 # Define the initial values for parameters
 param initUm {ALLACTV};
 param initB {ALLACTV};
 param initC {ALLACTV};
-
-# Define the estimated values of paramaters
-param Um_ {ALLACTV};
-param b_ {ALLACTV};
-param c_ {ALLACTV};
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
 # Activity Parameters
@@ -124,12 +111,6 @@ var Uw {ALLACTV} >= 0;
 var xi {ALLACTV} >= 0, <= 1440;
 var gamma {ALLACTV} >= 0;
 var lambda {ALLACTV} >= 0;
-
-# Define the ture parameters
-param trueUw {ALLACTV};
-param trueXi {ALLACTV};
-param trueGamma {ALLACTV};
-param trueLambda {ALLACTV};
 
 # Define the initial values for parameters
 param initUw {ALLACTV};
@@ -151,14 +132,16 @@ var actvUtil {n in PERS, j in AUW[n], t in 0..H} =
 
 # Define initial values for EV
 param initEV;
+
 # expected value of each component state
 var EV {n in PERS, t in 0..H, j in AUW[n]} default initEV;
+
 # expected value of each composite state
-var EW {t in 0..H, (j1,j2) in AW1xAW2};
-# lower bound of EV
-var lowerEV {t in 0..H, (j1,j2) in AW1xAW2};
-# upper bound of EV
-var upperEV {t in 0..H, (j1,j2) in AW1xAW2};
+var EW {t in 0..H, (j1,j2) in AW1xAW2} default initEV;
+# lower bound of EW
+var lowerEW {t in 0..H, (j1,j2) in AW1xAW2};
+# upper bound of EW
+var upperEW {t in 0..H, (j1,j2) in AW1xAW2};
 
 # END OF DEFINING STRUCTURAL PARAMETERS AND ENDOGENOUS VARIABLES #
 
@@ -173,7 +156,7 @@ var sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DA[n,t,j]} =
 var sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * T*VoT/60;
 # Define the joint utility
-var jointUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
+var jointActvUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
 	if a1 == a2 then
 		sum {s in 1..h} beta**(s-1) * rho[a1] * actvUtil[1,a1,t+s] * actvUtil[2,a2,t+s]
 	else
@@ -182,32 +165,31 @@ var jointUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 # Define the utility of selecting decision (k,h)
 var choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
     if k == j then
-          sumActvUtil[n,t,j,k,h] + beta**h * EV[n,(t+h), k]
+          sumActvUtil[n,t,j,k,h] + beta**h * EV[n,(t+h),k]
     else
         - sumTravelCost[n,t,j,k,h] + beta**h * EV[n,(t+h), k];
+
+# Define the choice probability
+var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
+	exp( theta*choiceUtil[n,t,j,k,h] - theta*EV[n,t,j] );
+
 # Define the joint decision utility
 var jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 	if a1 == j1 and a2 == j2 then
 		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
-		jointUtil[t,j1,j2,a1,a2,h] + beta**h * EW[t,a1,a2]
+		jointActvUtil[t,j1,j2,a1,a2,h]
 	else if a1 == j1 then
-		sumActvUtil[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h] + 
-		beta**h * EW[t,a1,a2]
+		sumActvUtil[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h]
 	else if a2 == j2 then
-		- sumTravelCost[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
-		beta**h * EW[t,a1,a2]
+		- sumTravelCost[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h]
 	else
-		- sumTravelCost[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h] + 
-		beta**h * EW[t,a1,a2];
+		- sumTravelCost[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h];
 
-# Define the choice probability
-var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
-	exp( theta*choiceUtil[n,t,j,k,h] ) / 
-	exp( theta*EV[n,t,j] );
 # Define the joint choice probability
 var jointChoiceProb {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
-	exp( theta*jointChoiceUtil[t,j1,j2,a1,a2,h] ) / 
-	exp( theta*EW[t,a1,a2] );
+	exp( theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + 
+				  beta**h * EW[t,a1,a2]) - 
+		 theta * EW[t,a1,a2] );
 
 
 #  END OF DECLARING AUXILIARY VARIABLES #
@@ -229,16 +211,37 @@ maximize likelihood0: 0;
 # 		else
 # 			0.0;
 
+
 #  Define the Bellman equation of the component MDP model
 subject to Bellman_Eqn {n in PERS, (t,j) in X[n]}:
 	EV[n,t,j] = log( sum {(k,h) in D[n,t,j]} exp(theta*choiceUtil[n,t,j,k,h]) ) / theta;
 subject to Bellman_EqnH {n in PERS}: 
 	EV[n,H,HOME] = EV[n,0,HOME];
 
+
 # Define the Bellman equation of the composite MDP model
 subject to Bellman_Joint {(t,j1,j2) in XX}:
-	EW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} exp(theta*jointChoiceUtil[t,j1,j2,a1,a2,h]) ) / theta;
-subject to Bellman_JointH : 
-	EV[H,HOME,HOME] = EV[0,HOME,HOME];
+	EW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
+		exp(theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + beta**h * EW[t,a1,a2]) ) ) / theta;
+subject to Bellman_JointH: 
+	EW[H,HOME,HOME] = EW[0,HOME,HOME];
+
+# Define the Bellman equation for updating the lower and upper bounds
+subject to Bellman_Lower {(t,j1,j2) in XX}:
+	lowerEW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
+		exp(theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + lowerEW[t,a1,a2]) ) ) / theta;
+subject to Bellman_LowerH: 
+	lowerEW[H,HOME,HOME] = lowerEW[0,HOME,HOME];
+subject to Bellman_Upper {(t,j1,j2) in XX}:
+	upperEW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
+		exp(theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + upperEW[t,a1,a2]) ) ) / theta;
+subject to Bellman_UpperH: 
+	upperEW[H,HOME,HOME] = upperEW[0,HOME,HOME];
+
+# Define the lower and upper bounds for EW
+subject to LowerEWBound {(t,j1,j2) in XX}:
+	EW[t,j1,j2] >= lowerEW[t,j1,j2];
+subject to UpperEWBound {(t,j1,j2) in XX}:
+	EW[t,j1,j2] <= upperEW[t,j1,j2];
 
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS

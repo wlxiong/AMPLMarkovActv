@@ -1,0 +1,139 @@
+# Load the component MDPs
+# include MarkovActvMDP.run
+
+# Load model and data
+model "MarkovActv.mod";
+data "MarkovActv.dat";
+include MarkovStateAction.run
+
+# include the code that define the state and choice set
+include JointStateAction.run
+
+# Define the composite MDP problem for the entire household
+problem compositeMDP:
+
+# Choose the objective function
+likelihood0,
+
+# List the variables
+EW, lowerEW, upperEW, 
+jointChoiceUtil, jointChoiceProb,
+actvUtil, sumActvUtil, sumTravelCost, jointActvUtil, 
+LowerEWBound, UpperEWBound, 
+# Um, b, c,
+# VoT, theta, 
+# EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
+
+# List the constraints
+Bellman_Joint,
+Bellman_JointH;
+
+
+# Initialize the lower and upper bounds
+for {(t,j1,j2) in XX} {
+	# fix lowerEW[t,j1,j2] := max(EV[1,t,j1], EV[2,t,j2]);
+	# fix upperEW[t,j1,j2] := EV[1,t,j1] + EV[2,t,j2];
+	fix lowerEW[t,j1,j2] := -500;
+	fix upperEW[t,j1,j2] := 500;
+}
+
+
+# Specify KNITRO solver options:
+option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
+option knitro_options "alg=3 hessopt=1 outlev=3 maxit=300 xtol=0.0000000001 wantsol=1";
+# option presolve 0;
+
+# Solve command
+solve;
+
+# Solution status
+printf "Composite MDP\n" > DATA/jointMDP.sol;
+if match (solve_message, "Locally optimal solution") > 0 then { 
+	printf "%s\n", "Optimal solution found" > DATA/jointMDP.sol;
+	printf "%5.0f \n", 0 > DATA/jointMDP.sol ; 
+}
+else if match (solve_message, "Iteration limit reached") > 0 then { 
+	printf "%s\n", "Iteration limit reached" > DATA/jointMDP.sol;
+	printf "%5.0f \n", 400 > DATA/jointMDP.sol ; 
+}
+else if match (solve_message, "Evaluation error") > 0 then { 
+	printf "%s\n", "Evaluation error" > DATA/jointMDP.sol;
+	printf "%5.0f \n", 502 > DATA/jointMDP.sol ; 
+}
+else {
+	printf "%s\n", "No solution" > DATA/jointMDP.sol;
+	printf "%5.0f \n", 1000 > DATA/jointMDP.sol ; 
+}
+
+display _solve_time > DATA/jointMDP.sol;
+
+# write the structural parameters
+display beta, VoT, theta > DATA/jointMDP.sol;
+display Um, b, c > DATA/jointMDP.sol;
+
+# also display the structural parameters
+printf "\n\nComposite MDP";
+printf "\n\nstructural parameters (all fixed):\n\n";
+display beta, VoT, theta;
+display Um, b, c;
+# display Uw, xi, gamma, lambda;
+
+
+# Output commands
+option display_round 6, display_width 120;
+
+# export EW to a file jointEUtil.m
+printf "EW = zeros(%d, %d, %d);\n", H, M, M > DATA/jointEUtil.m;
+for {t in TIME} {
+	printf "EW(%3d, :, :) = [", t > DATA/jointEUtil.m;
+	for {j1 in AUW[1]} {
+		for {j2 in AUW[2]} {
+			if (t,j1,j2) in XX then
+				printf "%10.3f", EW[t,j1,j2] > DATA/jointEUtil.m;
+			else
+				printf "%10.3f", -99 > DATA/jointEUtil.m;
+		}
+		printf ";" > DATA/jointEUtil.m;
+	}
+	printf "];\n" > DATA/jointEUtil.m;
+}
+
+# export choiceProb to a file jointProb.m
+printf "jointPr = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, H > DATA/jointProb.m;
+for {(t,j1,j2) in XX} {
+	for {a1 in AUW[1]} {
+		printf "jointPr(%d, %d, %d, %d, :, :) = [\n", t, j1, j2, a1 > DATA/jointProb.m;
+		for {h in 0..DH} {
+			for {a2 in AUW[2]} {
+				if (a1,a2,h) in DD[t,j1,j2] then
+					printf "%5.3f\t", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointProb.m;
+				else
+					printf "%5.3f\t", 0.0 > DATA/jointProb.m;
+			}
+			printf "\n" > DATA/jointProb.m;
+		}
+		printf "]';\n" > DATA/jointProb.m;
+	}
+}
+
+# export fixed parameters to jointMDP.m
+printf "beta = %f;\n", beta > DATA/jointMDP.m;
+printf "theta = %f;\n", theta > DATA/jointMDP.m;
+
+# export the structural parameters to jointMDP.m
+printf "VoT0 = %f;\n", VoT > DATA/jointMDP.m;
+printf "Um0 = [ " > DATA/jointMDP.m;
+for {j in ALLACTV} {
+	printf "%f ", Um[j] > DATA/jointMDP.m;
+}
+printf "];\n" > DATA/jointMDP.m;
+printf "b0 = [ " > DATA/jointMDP.m;
+for {j in ALLACTV} {
+	printf "%f ", b[j] > DATA/jointMDP.m;
+}
+printf "];\n" > DATA/jointMDP.m;
+printf "c0 = [ " > DATA/jointMDP.m;
+for {j in ALLACTV} {
+	printf "%f ", c[j] > DATA/jointMDP.m;
+}
+printf "];\n" > DATA/jointMDP.m;

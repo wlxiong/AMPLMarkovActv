@@ -4,7 +4,7 @@ param T  := 5;			# the equivalent minutes of a time slice
 param H  := 288;		# number of time slices, and T * H = 1440 minutes
 param DH := 36;			# the longest duration for a decision
 param M  := 3;			# number of activities, 1:home, 2:work, 3: shopping
-param beta := 0.95;		# discount ratio of future utility
+param beta := 0.9;		# discount ratio of future utility
 param HOME := 1;		# define HOME activity
 
 # define the work activity for each household member
@@ -13,6 +13,13 @@ set WORK[2] := 2;
 
 # import travel time data
 include DATA/TT.dat;
+
+# interaction coefficient for each activity
+param rho :=
+	1	0.0
+	2	0.0
+	3	0.0
+;
 
 # activity opening and closing time
 param opening := 
@@ -32,25 +39,25 @@ param initEV :=   0.0;
 # MDP SIMULATION INPUTS
 
 # the true value of VoT
-param trueVoT :=  60.0;		# HKD per hour
+param VoT :=  60.0;		# HKD per hour
 
 # true value of theta
-param trueTheta := 1.0;
+param theta := 1.0;
 
 # the true parameters of utility function
 
 ## Cauchy curve
-param trueUm :=
+param Um :=
 	1	2200
 	2	2500
 	3	1200
 ;
-param trueB :=
+param b :=
 	1	120
 	2	840
 	3	1140
 ;
-param trueC :=
+param c :=
 	1	240
 	2	180
 	3	210
