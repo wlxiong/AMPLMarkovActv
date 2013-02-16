@@ -1,6 +1,8 @@
 # Define the feasible states for each time slice
 let isFeasibleState[H,HOME] := 1;	# initialize the terminal state
 for {t in H-1..0 by -1, j in ACTV, k in ACTV} {
+	if t < opening[j]/T or t > closing [k]/T then
+		continue;
 	if  t+travelTime[t,j,k]+1 >= opening[k]/T and 
 		t+travelTime[t,j,k]+1 <= closing[k]/T and 
 		t+travelTime[t,j,k]+1 <= H and 
