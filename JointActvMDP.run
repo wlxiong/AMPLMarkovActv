@@ -1,10 +1,10 @@
 # Load the component MDPs
-# include MarkovActvMDP.run
+include MarkovActvMDP.run
 
 # Load model and data
-model "MarkovActv.mod";
-data "MarkovActv.dat";
-include MarkovStateAction.run
+# model "MarkovActv.mod";
+# data "MarkovActv.dat";
+# include MarkovStateAction.run
 
 # include the code that define the state and choice set
 include JointStateAction.run
@@ -19,22 +19,28 @@ likelihood0,
 EW, lowerEW, upperEW, 
 jointChoiceUtil, jointChoiceProb,
 actvUtil, sumActvUtil, sumTravelCost, jointActvUtil, 
-LowerEWBound, UpperEWBound, 
 # Um, b, c,
 # VoT, theta, 
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
 Bellman_Joint,
-Bellman_JointH;
+Bellman_JointH,
+Bellman_Lower,
+Bellman_LowerH,
+Bellman_Upper,
+Bellman_UpperH,
+LowerEWBound, 
+UpperEWBound;
 
 
-# Initialize the lower and upper bounds
+# Initialize the lower and upper bounds and the EW values
 for {(t,j1,j2) in XX} {
-	# fix lowerEW[t,j1,j2] := max(EV[1,t,j1], EV[2,t,j2]);
-	# fix upperEW[t,j1,j2] := EV[1,t,j1] + EV[2,t,j2];
-	fix lowerEW[t,j1,j2] := -500;
-	fix upperEW[t,j1,j2] := 500;
+	fix lowerEW[t,j1,j2] := max(EV[1,t,j1], EV[2,t,j2]);
+	fix upperEW[t,j1,j2] := EV[1,t,j1] + EV[2,t,j2];
+	let EW[t,j1,j2] := .5 * (lowerEW[t,j1,j2] + upperEW[t,j1,j2]);
+	# fix lowerEW[t,j1,j2] := -500;
+	# fix upperEW[t,j1,j2] := 500;
 }
 
 
