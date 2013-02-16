@@ -24,7 +24,7 @@ capcity = [
 
 % parameter for generating flow
 m = [
-0		1200	    1000
+0		1200	1000
 1000	0		1000
 1000	 100	0
 ];
@@ -45,7 +45,7 @@ pdf = @(m_, b_, c_) m_./( ( (t-b_)./c_ ).^2 + 1 );
 
 % BPR function
 % bpr = @(x, k, t0) t0 .* ( 1.0 + (x./k).^4);
-bpr = @(x, k, t0) t0 * 3;   % constant travel time
+bpr = @(x, k, t0) t0;   % constant travel time
 
 whos
 figure
