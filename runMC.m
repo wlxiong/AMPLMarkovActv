@@ -46,7 +46,7 @@ save 'DATA/MC.mat' xt dt EV Pr H N
 % export the data to an AMPL .dat file
 fprintf('\n export the data as .dat\n')
 fid = fopen('DATA/MC.dat', 'W');
-exportParam(fid, 'N', N);
-exportParam(fid, 'xt', xt(:,1:H), 1, 0);
-exportParam(fid, 'dt', dt(:,1:H), 1, 0);
+amplwrite(fid, 'N', N);
+amplwrite(fid, 'xt', xt(:,1:H), 1, 0);
+amplwrite(fid, 'dt', dt(:,1:H), 1, 0);
 fclose(fid);

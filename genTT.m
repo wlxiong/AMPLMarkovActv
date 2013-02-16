@@ -80,5 +80,5 @@ fprintf('save travel time\n')
 save 'DATA/TT.mat' travelTime
 fprintf('export the data as .dat\n')
 fid = fopen('DATA/TT.dat', 'W');
-exportParam(fid, 'travelTime', travelTime, 0, 1, 1);
+amplwrite(fid, 'travelTime', travelTime, 0, 1, 1);
 fclose(fid);
