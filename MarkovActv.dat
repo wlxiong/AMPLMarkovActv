@@ -2,9 +2,13 @@
 
 param T := 5;	# the equivalent minutes of a time slice
 param H := 288;	# number of time slices, and T * H = 1440 minutes
-param M := 3;	# number of activities, 1:home, 2:work, 3: shopping
+param M := 3;			# number of activities, 1:home, 2:work, 3: shopping
 param beta := 0.95;		# discount ratio of future utility
 param HOME := 1;		# define HOME activity
+
+# define the work activity for each household member
+set WORK[1] := 2;
+set WORK[2] := 2;
 
 # import travel time data
 include DATA/TT.dat;

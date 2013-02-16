@@ -1,6 +1,6 @@
 Optimal solution found
     0 
-_solve_time = 25.4438
+_solve_time = 25.2254
 
 beta = 0.950000
 VoT = 60.000000

@@ -6,32 +6,40 @@
 model "MarkovActv.mod";
 data "MarkovActv.dat";
 
-# Define the MDP problem
-problem MarkovActvMDP:
+# Define the component MDP problem for each individual
+problem componentMDP {n in PERS}:
 
 # Choose the objective function
 likelihood0,
 
 # List the variables
-EV, actvUtil, sumActvUtil, sumTravelCost, choiceUtil, choiceProb, VoT, theta, Um, b, c,
+{t in 0..H, j in ACTVWORK[n]} EV[n,t,j], 
+{(t,j) in X[n], (k,h) in D[n,t,j]} (choiceUtil[n,t,j,k,h], choiceProb[n,t,j,k,h]), 
+{t in 0..H, j in ACTVWORK[n]} actvUtil[n,t,j], 
+{(t,j) in X[n], (k,h) in DACTV[n,t,j]} (sumActvUtil[n,t,j,k,h], sumTravelCost[n,t,j,k,h]), 
+Um, b, c,
+VoT, theta, 
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
-Bellman_Eqn,
-Bellman_EqnH;
+{(t,j) in X[n]} Bellman_Eqn[n,t,j],
+Bellman_EqnH[n];
 
 # include the code that define the state and choice set
 include MarkovActv.run
 
+for {n in PERS} {
+
+problem componentMDP[n];
+
 # Set at a trivial initial value
-let {t in 0..H, j in ACTV} EV[t,j] := initEV;
+# let {t in 0..H, j in ACTVWORK[n]} EV[n,t,j] := initEV;
 
 # Fix at true values
 fix VoT := trueVoT;
-
-fix {j in ACTV} Um[j]:= trueUm[j];
-fix {j in ACTV}  b[j]:= trueB[j];
-fix {j in ACTV}  c[j]:= trueC[j];
+fix {j in ALLACTV} Um[j]:= trueUm[j];
+fix {j in ALLACTV}  b[j]:= trueB[j];
+fix {j in ALLACTV}  c[j]:= trueC[j];
 
 # fix {j in ACTV} Uw[j] := trueUw[j];
 # fix {j in ACTV} xi[j] := trueXi[j];
@@ -47,7 +55,9 @@ option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl
 option knitro_options "alg=3 hessopt=1 outlev=3 maxit=100 xtol=0.0000000001 wantsol=1";
 
 # Solve command
-solve MarkovActvMDP;
+solve;
+
+}
 
 # Solution status
 if match (solve_message, "Locally optimal solution") > 0 then { 
@@ -101,38 +111,42 @@ display Um, b, c;
 # display choiceProb > DATA/Prob.dat;
 
 # export EV to a file EUtil.m
-printf "EV = [\n" > DATA/EUtil.m;
-for {t in TIME} {
-	for {j in ACTV} {
-		if (t,j) in X then
-			printf "%10.3f\t", EV[t,j] > DATA/EUtil.m;
-		else
-			printf "%10.3f\t", -1 > DATA/EUtil.m;
+printf "EV = zeros(%d, %d, %d);\n", N, H, M >> DATA/EUtil.m;
+for {n in PERS} {
+	printf "EV(%d, :, :) = [\n", n > DATA/EUtil.m;
+	for {t in TIME} {
+		for {j in ACTV} {
+			if (t,j) in X[n] then
+				printf "%10.3f\t", EV[n,t,j] > DATA/EUtil.m;
+			else
+				printf "%10.3f\t", -1 > DATA/EUtil.m;
+		}
+		printf "\n" > DATA/EUtil.m;
 	}
-	printf "\n" > DATA/EUtil.m;
+	printf "];\n" > DATA/EUtil.m;
 }
-printf "];" > DATA/EUtil.m;
 
 # export choiceProb to a file Prob.m
-printf "Pr = zeros(%d, %d, %d, %d);\n", H, M, M, H > DATA/Prob.m;
-for {t in TIME} {
-	for {j in ACTV} {
-		if not (t,j) in X then
-			continue;
-		printf "Pr(%d, %d, :, :) = [\n", t, j > DATA/Prob.m;
-		for {h in TIME} {
-			for {k in ACTV} {
-				if (k,h) in D[t,j] then
-					printf "%5.3f\t", choiceProb[t,j,k,h] > DATA/Prob.m;
-				else
-					printf "%5.3f\t", 0.0 > DATA/Prob.m;
+printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, H > DATA/Prob.m;
+for {n in PERS} {
+	for {t in TIME} {
+		for {j in ACTV} {
+			if not (t,j) in X[n] then
+				continue;
+			printf "Pr(%d, %d, %d, :, :) = [\n", n, t, j > DATA/Prob.m;
+			for {h in TIME} {
+				for {k in ACTV} {
+					if (k,h) in D[n,t,j] then
+						printf "%5.3f\t", choiceProb[n,t,j,k,h] > DATA/Prob.m;
+					else
+						printf "%5.3f\t", 0.0 > DATA/Prob.m;
+				}
+				printf "\n" > DATA/Prob.m;
 			}
-			printf "\n" > DATA/Prob.m;
+			printf "]';\n" > DATA/Prob.m;
 		}
-		printf "]';\n" > DATA/Prob.m;
 	}
 }
-
 
 # export fixed parameters to MDP.m
 printf "beta = %f;\n", beta > DATA/MDP.m;
