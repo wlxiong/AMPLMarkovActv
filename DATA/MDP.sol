@@ -1,14 +1,30 @@
+Component MDP 1
 Optimal solution found
     0 
-_solve_time = 25.2254
+_solve_time = 25.553
 
-beta = 0.950000
-VoT = 60.000000
-theta = 1.000000
+beta = 0.95
+VoT = 60
+theta = 1
 
-:       Um             b            c         :=
-1   2200.000000    120.000000   240.000000
-2   2500.000000    840.000000   180.000000
-3   1200.000000   1140.000000   210.000000
+:    Um     b      c     :=
+1   2200    120   240
+2   2500    840   180
+3   1200   1140   210
+;
+
+Component MDP 2
+Optimal solution found
+    0 
+_solve_time = 28.1738
+
+beta = 0.95
+VoT = 60
+theta = 1
+
+:    Um     b      c     :=
+1   2200    120   240
+2   2500    840   180
+3   1200   1140   210
 ;
 

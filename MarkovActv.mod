@@ -14,6 +14,7 @@
 #  Define and process the data
 param T;				# the equivalent minutes of a time slice
 param H;                # number of time slice in the data
+param DH;				# the longest duration for a decision
 set TIME := 0..(H-1);   # TIME is the vector of time slices
 param N := 2;           # number of individuals in the household
 set PERS := 1..N;       # PERS is the index set of individuals
@@ -42,8 +43,8 @@ param isFeasibleChoice {n in PERS, t in 0..H, j in AUW[n], k in AUW[n], h in TIM
 # X is the index set of states
 set X {n in PERS}:= {t in TIME, j in AUW[n]: isFeasibleState[n,t,j] == 1};
 # XX is the set of composite states
-set XX := {t in TIME, (j,k) in AW1xAW2: 
-	isFeasibleState[1,t,j] == 1 and isFeasibleState[2,t,k] = 1};
+set XX := {t in TIME, (j1,j2) in AW1xAW2: 
+	isFeasibleState[1,t,j1] == 1 and isFeasibleState[2,t,j2] = 1};
 # DTRAVEL is the index set of travel decisions
 set DT {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in TIME: 
 	k != j and h == travelTime[t,j,k] and isFeasibleChoice[n,t,j,k,h] == 1};
@@ -52,9 +53,10 @@ set DA {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in TIME:
 	k == j and isFeasibleChoice[n,t,j,k,h] == 1};
 # D is the union of sets of travel and activity decisions
 set D {n in PERS, (t,j) in X[n]} := DT[n,t,j] union DA[n,t,j];
-# DD is the set of composite decisions
-# to simplify the state transition, the activity durations of the component decisions should be the same
-set DD {(t,j,k) in XX} := {(a1, h1) in D[1,t,j], (a2,h2) in D[2,t,k]: h1 == h2};
+# DD is the set of composite decisions. To simplify the state transition, 
+# the activity durations of the component decisions should be the same.
+set DD {(t,j1,j2) in XX} := {a1 in AUW[1], a2 in AUW[2], h in 1..DH: 
+	(a1,h) in D[1,t,j1] and (a2,h) in D[2,t,j2]};
 
 # Parameters and definition of transition process
 
@@ -88,6 +90,9 @@ param trueTheta >= 0;
 
 # initial value of theta
 param initTheta;
+
+# intra-household interaction coeffcient for each activity
+var rho {ALLACTV};
 
 # transProb[i] defines transition probability that state in next time slice. 
 # var transProb {1..M} >= 0;
@@ -133,7 +138,7 @@ param initGamma {ALLACTV};
 param initLambda {ALLACTV};
 
 # Scaled Cauchy distribution
-var actvUtil {n in PERS, t in 0..H, j in AUW[n]} = 
+var actvUtil {n in PERS, j in AUW[n], t in 0..H} = 
 	if j == HOME and t < H/2 then 
 		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
 	else if j == HOME and t >= H/2 then
@@ -149,11 +154,11 @@ param initEV;
 # expected value of each component state
 var EV {n in PERS, t in 0..H, j in AUW[n]} default initEV;
 # expected value of each composite state
-var EW {t in 0..H, (j,k) in AW1xAW2};
+var EW {t in 0..H, (j1,j2) in AW1xAW2};
 # lower bound of EV
-var lowerEV {t in 0..H, (j,k) in AW1xAW2};
+var lowerEV {t in 0..H, (j1,j2) in AW1xAW2};
 # upper bound of EV
-var upperEV {t in 0..H, (j,k) in AW1xAW2};
+var upperEV {t in 0..H, (j1,j2) in AW1xAW2};
 
 # END OF DEFINING STRUCTURAL PARAMETERS AND ENDOGENOUS VARIABLES #
 
@@ -163,10 +168,16 @@ var upperEV {t in 0..H, (j,k) in AW1xAW2};
 
 #  Define the total discounted utility of pursuing activity j in time (t, t+h-1)
 var sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DA[n,t,j]} = 
-	sum {s in 1..h} beta**(s-1) * actvUtil[n,t+s,k];
+	sum {s in 1..h} beta**(s-1) * actvUtil[n,k,t+s];
 #  Define the total discounted utility of traveling from j to k departing at t
 var sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * T*VoT/60;
+# Define the joint utility
+var jointUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
+	if a1 == a2 then
+		sum {s in 1..h} beta**(s-1) * rho[a1] * actvUtil[1,a1,t+s] * actvUtil[2,a2,t+s]
+	else
+		0.0;
 
 # Define the utility of selecting decision (k,h)
 var choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
@@ -174,10 +185,30 @@ var choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} =
           sumActvUtil[n,t,j,k,h] + beta**h * EV[n,(t+h), k]
     else
         - sumTravelCost[n,t,j,k,h] + beta**h * EV[n,(t+h), k];
+# Define the joint decision utility
+var jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
+	if a1 == j1 and a2 == j2 then
+		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
+		jointUtil[t,j1,j2,a1,a2,h] + beta**h * EW[t,a1,a2]
+	else if a1 == j1 then
+		sumActvUtil[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h] + 
+		beta**h * EW[t,a1,a2]
+	else if a2 == j2 then
+		- sumTravelCost[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
+		beta**h * EW[t,a1,a2]
+	else
+		- sumTravelCost[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h] + 
+		beta**h * EW[t,a1,a2];
 
+# Define the choice probability
 var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
 	exp( theta*choiceUtil[n,t,j,k,h] ) / 
 	exp( theta*EV[n,t,j] );
+# Define the joint choice probability
+var jointChoiceProb {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
+	exp( theta*jointChoiceUtil[t,j1,j2,a1,a2,h] ) / 
+	exp( theta*EW[t,a1,a2] );
+
 
 #  END OF DECLARING AUXILIARY VARIABLES #
 
@@ -198,10 +229,16 @@ maximize likelihood0: 0;
 # 		else
 # 			0.0;
 
-#  Define the constraints
-
+#  Define the Bellman equation of the component MDP model
 subject to Bellman_Eqn {n in PERS, (t,j) in X[n]}:
-    EV[n,t,j] = log( sum {(k,h) in D[n,t,j]} exp( theta*choiceUtil[n,t,j,k,h] ) ) / theta;
-subject to Bellman_EqnH {n in PERS}: EV[n,H,HOME] = EV[n,0,HOME];
+	EV[n,t,j] = log( sum {(k,h) in D[n,t,j]} exp(theta*choiceUtil[n,t,j,k,h]) ) / theta;
+subject to Bellman_EqnH {n in PERS}: 
+	EV[n,H,HOME] = EV[n,0,HOME];
+
+# Define the Bellman equation of the composite MDP model
+subject to Bellman_Joint {(t,j1,j2) in XX}:
+	EW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} exp(theta*jointChoiceUtil[t,j1,j2,a1,a2,h]) ) / theta;
+subject to Bellman_JointH : 
+	EV[H,HOME,HOME] = EV[0,HOME,HOME];
 
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS

@@ -6,6 +6,9 @@
 model "MarkovActv.mod";
 data "MarkovActv.dat";
 
+# include the code that define the state and choice set
+include MarkovActv.run
+
 # Define the component MDP problem for each individual
 problem componentMDP {n in PERS}:
 
@@ -26,73 +29,74 @@ VoT, theta,
 {(t,j) in X[n]} Bellman_Eqn[n,t,j],
 Bellman_EqnH[n];
 
-# include the code that define the state and choice set
-include MarkovActv.run
-
+# Solve the component MDPs separately
 for {n in PERS} {
 
-problem componentMDP[n];
+	# Set the current problem
+	problem componentMDP[n];
 
-# Set at a trivial initial value
-# let {t in 0..H, j in ACTVWORK[n]} EV[n,t,j] := initEV;
+	# Set at a trivial initial value
+	# let {t in 0..H, j in ACTVWORK[n]} EV[n,t,j] := initEV;
 
-# Fix at true values
-fix VoT := trueVoT;
-fix {j in ALLACTV} Um[j]:= trueUm[j];
-fix {j in ALLACTV}  b[j]:= trueB[j];
-fix {j in ALLACTV}  c[j]:= trueC[j];
+	# Fix theta at the true value
+	fix theta := trueTheta;
+	# Fix at true values
+	fix VoT := trueVoT;
 
-# fix {j in ACTV} Uw[j] := trueUw[j];
-# fix {j in ACTV} xi[j] := trueXi[j];
-# fix {j in ACTV} gamma[j] := trueGamma[j];
-# fix {j in ACTV} lambda[j] := trueLambda[j];
+	# Fix parameters of the marginal utility function
+	fix {j in ALLACTV} Um[j]:= trueUm[j];
+	fix {j in ALLACTV}  b[j]:= trueB[j];
+	fix {j in ALLACTV}  c[j]:= trueC[j];
 
-# Fix theta at the true value
-fix theta := trueTheta;
+	# fix {j in ACTV} Uw[j] := trueUw[j];
+	# fix {j in ACTV} xi[j] := trueXi[j];
+	# fix {j in ACTV} gamma[j] := trueGamma[j];
+	# fix {j in ACTV} lambda[j] := trueLambda[j];
 
+	# Specify KNITRO solver options:
+	option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
+	option knitro_options "alg=3 hessopt=1 outlev=3 maxit=100 xtol=0.0000000001 wantsol=1";
+	# option presolve 0;
+	
+	# Solve command
+	solve;
 
-# Specify KNITRO solver options:
-option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
-option knitro_options "alg=3 hessopt=1 outlev=3 maxit=100 xtol=0.0000000001 wantsol=1";
+	# Solution status
+	printf "Component MDP %d\n", n > DATA/MDP.sol;
+	if match (solve_message, "Locally optimal solution") > 0 then { 
+		printf "%s\n", "Optimal solution found" > DATA/MDP.sol;
+		printf "%5.0f \n", 0 > DATA/MDP.sol ; 
+	}
+	else if match (solve_message, "Iteration limit reached") > 0 then { 
+		printf "%s\n", "Iteration limit reached" > DATA/MDP.sol;
+		printf "%5.0f \n", 400 > DATA/MDP.sol ; 
+	}
+	else if match (solve_message, "Evaluation error") > 0 then { 
+		printf "%s\n", "Evaluation error" > DATA/MDP.sol;
+		printf "%5.0f \n", 502 > DATA/MDP.sol ; 
+	}
+	else {
+		printf "%s\n", "No solution" > DATA/MDP.sol;
+		printf "%5.0f \n", 1000 > DATA/MDP.sol ; 
+	}
 
-# Solve command
-solve;
+	display _solve_time > DATA/MDP.sol;
 
+	# write the structural parameters
+	display beta, VoT, theta > DATA/MDP.sol;
+	display Um, b, c > DATA/MDP.sol;
+
+	# also display the structural parameters
+	printf "\n\nComponent MDP %d", n;
+	printf "\n\nstructural parameters (all fixed):\n\n";
+	display beta, VoT, theta;
+	display Um, b, c;
+	# display Uw, xi, gamma, lambda;
 }
 
-# Solution status
-if match (solve_message, "Locally optimal solution") > 0 then { 
-	printf "%s\n", "Optimal solution found" > DATA/MDP.sol;
-	printf "%5.0f \n", 0 > DATA/MDP.sol ; 
-}
-else if match (solve_message, "Iteration limit reached") > 0 then { 
-	printf "%s\n", "Iteration limit reached" > DATA/MDP.sol;
-	printf "%5.0f \n", 400 > DATA/MDP.sol ; 
-}
-else if match (solve_message, "Evaluation error") > 0 then { 
-	printf "%s\n", "Evaluation error" > DATA/MDP.sol;
-	printf "%5.0f \n", 502 > DATA/MDP.sol ; 
-}
-else {
-	printf "%s\n", "No solution" > DATA/MDP.sol;
-	printf "%5.0f \n", 1000 > DATA/MDP.sol ; 
-}
-
-display _solve_time > DATA/MDP.sol;
 
 # Output commands
 option display_round 6, display_width 120;
-
-# write the structural parameters
-display beta, VoT, theta > DATA/MDP.sol;
-display Um, b, c > DATA/MDP.sol;
-
-# also display the structural parameters
-printf "\n\nstructural parameters (all fixed):\n\n";
-display beta, VoT, theta;
-display Um, b, c;
-# display Uw, xi, gamma, lambda;
-
 
 # write the activity utility and travel cost
 # display actvUtil > DATA/actvUtil.dat;
