@@ -41,8 +41,6 @@ fix {j in ACTV}  c[j]:= trueC[j];
 # Fix theta at the true value
 fix theta := trueTheta;
 
-display sumActvUtil > DATA/sumActvUtil.dat;
-display sumTravelCost > DATA/sumTravelCost.dat;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
@@ -69,60 +67,72 @@ else {
 	printf "%5.0f \n", 1000 > DATA/MDP.sol ; 
 }
 
-display _solve_time;
+display _solve_time > DATA/MDP.sol;
 
 # Output commands
 option display_round 6, display_width 120;
 
-# display the activity utility
-# display actvUtil;
-# display the value function
-# display EV;
-# display the choice-specific utility
-# display choiceUtil;
-# display the choice probability
-# display choiceProb;
+# write the structural parameters
+display beta, VoT, theta > DATA/MDP.sol;
+display Um, b, c > DATA/MDP.sol;
 
-# display the structural parameters (all were fixed)
+# also display the structural parameters
+printf "\n\nstructural parameters (all fixed):\n\n";
 display beta, VoT, theta;
 display Um, b, c;
 # display Uw, xi, gamma, lambda;
 
-printf "_solve_time:\t%10.7f \n", _solve_time > DATA/MDP.sol;
 
-# write EV to a file EUtil.m
+# write the activity utility and travel cost
+# display actvUtil > DATA/actvUtil.dat;
+# display sumActvUtil > DATA/sumActvUtil.dat;
+# display sumTravelCost > DATA/sumTravelCost.dat;
+
+# write the value function
+# display EV > DATA/MDP.sol;
+# write the choice-specific utility
+# display choiceUtil > DATA/MDP.sol;
+# write the choice probability
+# display choiceProb > DATA/MDP.sol;
+
+# write EV to a AMPL data file EUtil.dat
+# display EV > DATA/EUtil.dat;
+# write choiceProb to a AMPL data file Prob.dat
+# display choiceProb > DATA/Prob.dat;
+
+# export EV to a file EUtil.m
 printf "EV = [\n" > DATA/EUtil.m;
 for {t in TIME} {
 	for {j in ACTV} {
 		if (t,j) in X then
-			printf "%10.7f\t", EV[t,j] > DATA/EUtil.m;
+			printf "%10.3f\t", EV[t,j] > DATA/EUtil.m;
 		else
-			printf "%10.7f\t", -1 > DATA/EUtil.m;
+			printf "%10.3f\t", -1 > DATA/EUtil.m;
 	}
 	printf "\n" > DATA/EUtil.m;
 }
 printf "];" > DATA/EUtil.m;
 
-# write choiceProb to a file Prob.m
-printf "Pr = zeros(%d, %d, %d);\n", H, M, M > DATA/Prob.m;
-for {j in ACTV} {
-	printf "Pr(:, %d, :) = [\n", j > DATA/Prob.m;
-	for {t in TIME} {
-		if (t,j) in X then
+# export choiceProb to a file Prob.m
+printf "Pr = zeros(%d, %d, %d, %d);\n", H, M, M, H > DATA/Prob.m;
+for {t in TIME} {
+	for {j in ACTV} {
+		if not (t,j) in X then
+			continue;
+		printf "Pr(%d, %d, :, :) = [\n", t, j > DATA/Prob.m;
+		for {h in TIME} {
 			for {k in ACTV} {
-				if k in D[t,j] then
-					printf "%10.7f\t", choiceProb[t,j,k] > DATA/Prob.m;
+				if (k,h) in D[t,j] then
+					printf "%5.3f\t", choiceProb[t,j,k,h] > DATA/Prob.m;
 				else
-					printf "%10.7f\t", 0.0 > DATA/Prob.m;
+					printf "%5.3f\t", 0.0 > DATA/Prob.m;
 			}
-		else
-			for {k in ACTV} {
-				printf "%10.7f\t", 0.0 > DATA/Prob.m;
-			}
-		printf "\n" > DATA/Prob.m;
+			printf "\n" > DATA/Prob.m;
+		}
+		printf "]';\n" > DATA/Prob.m;
 	}
-	printf "];\n" > DATA/Prob.m;
 }
+
 
 # export fixed parameters to MDP.m
 printf "beta = %f;\n", beta > DATA/MDP.m;
