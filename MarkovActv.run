@@ -3,7 +3,7 @@
 let isFeasibleState[1,H,HOME] := 1;		# initialize the terminal state for individual 1
 let isFeasibleState[2,H,HOME] := 1;		# initialize the terminal state for individual 2
 
-for {n in PERS, t in H-1..0 by -1, j in ACTV, k in ACTV union WORK[n]} {
+for {n in PERS, t in H-1..0 by -1, j in AUW[n], k in AUW[n]} {
 	if t < opening[j]/T or t > closing[j]/T then
 		continue;
 	if j == k then {
@@ -42,7 +42,7 @@ for {n in PERS} {
 	for {t in 0..H} {
 		for {j in ACTV} {
 			if (t,j) in X[n] then { 
-				printf "%d\t", card(DACTV[n,t,j]) > DATA/ISFD.sol;
+				printf "%d\t", card(DA[n,t,j]) > DATA/ISFD.sol;
 			};
 		}
 		printf "\n" > DATA/ISFD.sol;

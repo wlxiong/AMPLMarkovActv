@@ -21,34 +21,37 @@ param M;                # number of activities, including HOME
 set ACTV := 1..M;       # ACTV is the index set of activities
 param HOME;				# define HOME activity
 set WORK {n in PERS};	# define the work activity for each household member
-set ACTVWORK {n in PERS} := ACTV union WORK[n];
+
+# shortcuts for set union and set product
+set AUW {n in PERS} := ACTV union WORK[n];
+set AW1xAW2 := AUW[1] cross AUW[2];
 set ALLACTV := ACTV union WORK[1] union WORK[2];
 
 # Travel time varies over time of the day
-param travelTime {TIME cross (ACTVWORK[1]) cross (ACTVWORK[2])};
+param travelTime {TIME cross AW1xAW2};
 
 param opening {ALLACTV};	# activity opening time
 param closing {ALLACTV};	# activity closing time
 
 # Declare the feasible states
-param isFeasibleState {n in PERS, t in 0..H, j in ACTVWORK[n]} default 0;
+param isFeasibleState {n in PERS, t in 0..H, j in AUW[n]} default 0;
 # Declare the feasible choices
-param isFeasibleChoice {n in PERS, t in 0..H, j in ACTVWORK[n], k in ACTVWORK[n], h in TIME} default 0;
+param isFeasibleChoice {n in PERS, t in 0..H, j in AUW[n], k in AUW[n], h in TIME} default 0;
 
 # Define the state space used in the dynamic programming part
 # X is the index set of states
-set X {n in PERS}:= {t in TIME, j in ACTVWORK[n]: isFeasibleState[n,t,j] == 1};
+set X {n in PERS}:= {t in TIME, j in AUW[n]: isFeasibleState[n,t,j] == 1};
 # XX is the set of composite states
-set XX := {t in TIME, j in ACTVWORK[1], k in ACTVWORK[2]: 
+set XX := {t in TIME, (j,k) in AW1xAW2: 
 	isFeasibleState[1,t,j] == 1 and isFeasibleState[2,t,k] = 1};
 # DTRAVEL is the index set of travel decisions
-set DTRAV {n in PERS, (t,j) in X[n]} := {k in ACTVWORK[n], h in TIME: 
+set DT {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in TIME: 
 	k != j and h == travelTime[t,j,k] and isFeasibleChoice[n,t,j,k,h] == 1};
-# DACTV is the index set of activity decisions
-set DACTV {n in PERS, (t,j) in X[n]} := {k in ACTVWORK[n], h in TIME: 
+# DA is the index set of activity decisions
+set DA {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in TIME: 
 	k == j and isFeasibleChoice[n,t,j,k,h] == 1};
 # D is the union of sets of travel and activity decisions
-set D {n in PERS, (t,j) in X[n]} := DTRAV[n,t,j] union DACTV[n,t,j];
+set D {n in PERS, (t,j) in X[n]} := DT[n,t,j] union DA[n,t,j];
 # DD is the set of composite decisions
 # to simplify the state transition, the activity durations of the component decisions should be the same
 set DD {(t,j,k) in XX} := {(a1, h1) in D[1,t,j], (a2,h2) in D[2,t,k]: h1 == h2};
@@ -130,7 +133,7 @@ param initGamma {ALLACTV};
 param initLambda {ALLACTV};
 
 # Scaled Cauchy distribution
-var actvUtil {n in PERS, t in 0..H, j in ACTVWORK[n]} = 
+var actvUtil {n in PERS, t in 0..H, j in AUW[n]} = 
 	if j == HOME and t < H/2 then 
 		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
 	else if j == HOME and t >= H/2 then
@@ -143,8 +146,14 @@ var actvUtil {n in PERS, t in 0..H, j in ACTVWORK[n]} =
 
 # Define initial values for EV
 param initEV;
-# Expected Value Function of each state
-var EV {n in PERS, t in 0..H, j in ACTVWORK[n]} default initEV;
+# expected value of each component state
+var EV {n in PERS, t in 0..H, j in AUW[n]} default initEV;
+# expected value of each composite state
+var EW {t in 0..H, (j,k) in AW1xAW2};
+# lower bound of EV
+var lowerEV {t in 0..H, (j,k) in AW1xAW2};
+# upper bound of EV
+var upperEV {t in 0..H, (j,k) in AW1xAW2};
 
 # END OF DEFINING STRUCTURAL PARAMETERS AND ENDOGENOUS VARIABLES #
 
@@ -153,10 +162,10 @@ var EV {n in PERS, t in 0..H, j in ACTVWORK[n]} default initEV;
 #  Define auxiliary variables to economize on expressions	
 
 #  Define the total discounted utility of pursuing activity j in time (t, t+h-1)
-var sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DACTV[n,t,j]} = 
+var sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DA[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * actvUtil[n,t+s,k];
 #  Define the total discounted utility of traveling from j to k departing at t
-var sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DTRAV[n,t,j]} = 
+var sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * T*VoT/60;
 
 # Define the utility of selecting decision (k,h)
