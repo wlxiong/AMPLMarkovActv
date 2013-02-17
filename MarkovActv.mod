@@ -40,7 +40,7 @@ param closing {ALLACTV};	# activity closing time
 param isFeasibleState {n in PERS, t in 0..H, j in AUW[n]} default 0;
 param isFeasibleCoState {t in 0..H, (j1,j2) in AW1xAW2} default 0;
 # Declare the feasible choices
-param isFeasibleChoice {n in PERS, t in 0..H, j in AUW[n], k in AUW[n], h in TIME} default 0;
+param isFeasibleChoice {n in PERS, t in 0..H, j in AUW[n], k in AUW[n], h in 1..DH} default 0;
 
 # Define the state space used in the dynamic programming part
 # X is the index set of states

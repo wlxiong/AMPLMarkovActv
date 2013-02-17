@@ -7,7 +7,7 @@ for {n in PERS, t in H-1..0 by -1, j in AUW[n], k in AUW[n]} {
 	if t < opening[j]/T or t > closing[j]/T then
 		continue;
 	if j == k then {
-		for {h in TIME} {
+		for {h in 1..DH} {
 			if t + 1 >= opening[k]/T and
 			   t + h <= closing[k]/T and
 			   t + h <= H and
@@ -30,7 +30,7 @@ for {n in PERS} {
 	for {t in 0..H} {
 		for {j in AUW[n]}
 			if (t,j) in X[n] then
-				printf "(%d,%3d,%d):%3d\t", n,t, j, card(DA[n,t,j]) > DATA/ISFS.sol;
+				printf "(%d,%3d,%d):%3d\t", n,t, j, card(D[n,t,j]) > DATA/ISFS.sol;
 		printf "\n" > DATA/ISFS.sol;
 	}
 	printf "\n" > DATA/ISFS.sol;
