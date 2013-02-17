@@ -118,25 +118,45 @@ for {t in TIME} {
 	printf "];\n" > DATA/EUtil.m;
 }
 
-# export choiceProb to a file Prob.m
-printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/Prob.m;
+# export choiceProb to a file choiceProb.txt
+printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/choiceProb.txt;
 for {n in PERS} {
 	for {(t,j) in X[n]} {
-		printf "Pr(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/Prob.m;
+		printf "Pr(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/choiceProb.txt;
 		for {h in 1..DH} {
 			for {k in AUW[n]} {
 				if (k,h) in D[n,t,j] then
 					if choiceProb[n,t,j,k,h] >= 0.0 and
 					   choiceProb[n,t,j,k,h] <= 1.0 then
-						printf " %8.5f", choiceProb[n,t,j,k,h] > DATA/Prob.m;
+						printf " %8.5f", choiceProb[n,t,j,k,h] > DATA/choiceProb.txt;
 					else
-						printf " %8s", "nan" > DATA/Prob.m;
+						printf " %8s", "nan" > DATA/choiceProb.txt;
 				else
-					printf " %8.5f", 0.0 > DATA/Prob.m;
+					printf " %8.5f", 0.0 > DATA/choiceProb.txt;
 			}
-			printf "\n" > DATA/Prob.m;
+			printf "\n" > DATA/choiceProb.txt;
 		}
-		printf "]';\n" > DATA/Prob.m;
+		printf "]';\n" > DATA/choiceProb.txt;
+	}
+}
+
+# export exp(choiceProb) to a file expChoiceProb.txt
+printf "Ud = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/expChoiceProb.txt;
+for {n in PERS} {
+	for {(t,j) in X[n]} {
+		printf "Ud(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/expChoiceProb.txt;
+		for {h in 1..DH} {
+			for {k in AUW[n]} {
+				if (k,h) in D[n,t,j] then
+					printf " %8.2f", ( theta * ( choiceUtil[n,t,j,k,h] + 
+												 beta**h * EV[n,(t+h),k]) - 
+									   theta * EV[n,t,j]) > DATA/expChoiceProb.txt;
+				else
+					printf " %8.2f", 0.0 > DATA/expChoiceProb.txt;
+			}
+			printf "\n" > DATA/expChoiceProb.txt;
+		}
+		printf "]';\n" > DATA/expChoiceProb.txt;
 	}
 }
 
