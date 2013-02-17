@@ -102,6 +102,9 @@ option display_round 6, display_width 120;
 # write choiceProb to a AMPL data file Prob.dat
 # display choiceProb > DATA/Prob.dat;
 
+# export flow variables
+include NetworkFlows.run;
+
 # export EV to a file EUtil.m
 printf "EV = zeros(%d, %d, %d);\n", N, H, M > DATA/EUtil.m;
 for {t in TIME} {
@@ -118,25 +121,25 @@ for {t in TIME} {
 	printf "];\n" > DATA/EUtil.m;
 }
 
-# export choiceProb to a file choiceProb.txt
-printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/choiceProb.txt;
+# export choiceProb to a file choiceProb.m
+printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/choiceProb.m;
 for {n in PERS} {
 	for {(t,j) in X[n]} {
-		printf "Pr(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/choiceProb.txt;
+		printf "Pr(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/choiceProb.m;
 		for {h in 1..DH} {
 			for {k in AUW[n]} {
 				if (k,h) in D[n,t,j] then
 					if choiceProb[n,t,j,k,h] >= -0.01 and
 					   choiceProb[n,t,j,k,h] <=  1.01 then
-						printf " %8.5f", choiceProb[n,t,j,k,h] > DATA/choiceProb.txt;
+						printf " %8.5f", choiceProb[n,t,j,k,h] > DATA/choiceProb.m;
 					else
-						printf " %8s", "nan" > DATA/choiceProb.txt;
+						printf " %8s", "nan" > DATA/choiceProb.m;
 				else
-					printf " %8.5f", 0.0 > DATA/choiceProb.txt;
+					printf " %8.5f", 0.0 > DATA/choiceProb.m;
 			}
-			printf "\n" > DATA/choiceProb.txt;
+			printf "\n" > DATA/choiceProb.m;
 		}
-		printf "]';\n" > DATA/choiceProb.txt;
+		printf "]';\n" > DATA/choiceProb.m;
 	}
 }
 

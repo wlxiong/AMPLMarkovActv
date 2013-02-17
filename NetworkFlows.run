@@ -1,0 +1,42 @@
+# computing network flows
+
+# the total population
+param NHH := 10000;
+
+# the number of travelers in each state
+param fx {n in PERS, t in 0..H, j in AUW[n]};
+
+# the number of travelers making decisions in each state
+param gx {n in PERS, t in 0..H, j in AUW[n]};
+
+# set fx & gx to zeros
+let {n in PERS, t in 0..H, j in AUW[n]} fx[n,t,j] := 0.0;
+let {n in PERS, t in 0..H, j in AUW[n]} gx[n,t,j] := 0.0;
+
+# initialize fx & gx in the starting states
+let {n in PERS} fx[n,0,HOME] := NHH;
+let {n in PERS} gx[n,0,HOME] := NHH;
+
+# compute fx in the remaining states
+for {n in PERS, (t,j) in X[n]} {
+	for {(k,h) in D[n,t,j]} {
+		if k == j then
+			let {s in 1..h} fx[n,t+s,k] := fx[n,t+s,k] + gx[n,t,j] * choiceProb[n,t,j,k,h];
+		else
+			let fx[n,t+h,k] := fx[n,t+h,k] + fx[n,t,j] * choiceProb[n,t,j,k,h];
+		let gx[n,t+h,k] := gx[n,t+h,k] + gx[n,t,j] * choiceProb[n,t,j,k,h];
+	}
+}
+
+# export fx to file FX.m
+printf "fx = zeros(%d, %d, %d);\n", N, H, M > DATA/FX.m;
+for {t in TIME} {
+	printf "fx(:, %3d, :) = [", t+1 > DATA/FX.m;
+	for {n in PERS} {
+		for {j in AUW[n]} {
+			printf " %8.1f", fx[n,t,j] > DATA/FX.m;
+		}
+		printf ";" > DATA/FX.m;
+	}
+	printf "];\n" > DATA/FX.m;
+}

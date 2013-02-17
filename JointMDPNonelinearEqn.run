@@ -107,25 +107,25 @@ for {t in TIME} {
 	printf "];\n" > DATA/jointEUtil.m;
 }
 
-# export choiceProb to a file jointChoiceProb.txt
-printf "Pj = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/jointChoiceProb.txt;
+# export choiceProb to a file jointChoiceProb.m
+printf "Pj = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/jointChoiceProb.m;
 for {(t,j1,j2) in XX} {
 	for {h in 1..DH} {
-		printf "Pj(%3d, %d, %d, :, :, %2d) = [", t+1, j1, j2, h > DATA/jointChoiceProb.txt;
+		printf "Pj(%3d, %d, %d, :, :, %2d) = [", t+1, j1, j2, h > DATA/jointChoiceProb.m;
 		for {a1 in AUW[1]} {
 			for {a2 in AUW[2]} {
 				if (a1,a2,h) in DD[t,j1,j2] then
 					if jointChoiceProb[t,j1,j2,a1,a2,h] >= -0.01 and 
 					   jointChoiceProb[t,j1,j2,a1,a2,h] <=  1.01 then
-						printf " %8.5f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointChoiceProb.txt;
+						printf " %8.5f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointChoiceProb.m;
 					else
-						printf " %8s", "nan" > DATA/jointChoiceProb.txt;
+						printf " %8s", "nan" > DATA/jointChoiceProb.m;
 				else
-					printf " %8.5f", 0.0 > DATA/jointChoiceProb.txt;
+					printf " %8.5f", 0.0 > DATA/jointChoiceProb.m;
 			}
-			printf ";" > DATA/jointChoiceProb.txt;
+			printf ";" > DATA/jointChoiceProb.m;
 		}
-		printf "];\n" > DATA/jointChoiceProb.txt;
+		printf "];\n" > DATA/jointChoiceProb.m;
 	}
 }
 
