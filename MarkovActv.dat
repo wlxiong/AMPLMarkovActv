@@ -46,6 +46,9 @@ param theta := 1.0;
 
 # the true parameters of utility function
 
+# Is Cauchy distribution used ? 
+param IS_CAUCHY := 0;
+
 ## Cauchy curve
 param Um :=
 	1	2200
@@ -61,4 +64,31 @@ param c :=
 	1	240
 	2	180
 	3	210
+;
+
+## Bell-shaped curve
+param U0 :=
+	1	1.0
+	2	0.0
+	3	0.0
+;
+param U1 :=
+	1	400
+	2	1000
+	3	400
+;
+param xi :=
+	1	720
+	2	720
+	3	1170
+;
+param gamma :=
+	1	-.008
+	2	.01
+	3	.01
+;
+param lambda :=
+	1	1.0
+	2	1.0
+	3	1.0
 ;

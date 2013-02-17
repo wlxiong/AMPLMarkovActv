@@ -84,6 +84,8 @@ param rho {ALLACTV};
 
 
 # PARAMETERS OF CAUCHY DISTRIBUTION
+# Is Cauchy distribution used ? 
+param IS_CAUCHY;
 # Activity Parameters
 param Um {ALLACTV} >= 0, <= 5000;
 param b {ALLACTV} >= 0, <= 1440;
@@ -92,23 +94,29 @@ param c {ALLACTV} >= 0, <= 600;
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
 # Activity Parameters
-param Uw {ALLACTV} >= 0;
+param U0 {ALLACTV};
+param U1 {ALLACTV};
 param xi {ALLACTV} >= 0, <= 1440;
-param gamma {ALLACTV} >= 0;
-param lambda {ALLACTV} >= 0;
+param gamma {ALLACTV};
+param lambda {ALLACTV};
 
-# Scaled Cauchy distribution
+# Marginal activity utility
+param PI := 3.141592653;
 param actvUtil {n in PERS, j in AUW[n], t in 0..H} = 
-	if j == HOME and t < H/2 then 
-		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
-	else if j == HOME and t >= H/2 then
-		Um[j]/3.141592653*( atan( ( t*T+T-(b[j]+1440) )/c[j] ) - atan( ( t*T-(b[j]+1440) )/c[j]) )
+	if IS_CAUCHY == 1 then
+		# Scaled Cauchy distribution
+		if j == HOME and t < H/2 then 
+			Um[j]/PI*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
+		else if j == HOME and t >= H/2 then
+			Um[j]/PI*( atan( ( t*T+T-(b[j]+1440) )/c[j] ) - atan( ( t*T-(b[j]+1440) )/c[j]) )
+		else
+			Um[j]/PI*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
 	else
-		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) );
-
-# Bell-shaped marginal utility function
-# param actvUtil {(t,j) in X} = gamma[j]*lambda[j]*Uw[j]/exp(gamma[j]*(t*T-xi[j]))/
-#                             (1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)*T;
+		# Bell-shaped marginal utility function
+		T * ( U0[j] + 
+			  gamma[j]*lambda[j]*U1[j] / 
+				 ( exp( gamma[j] * (t*T - xi[j]) ) *
+				   ( 1 + exp( -gamma[j]*(t*T - xi[j]) ) )**(lambda[j]+1) ) );
 
 
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
