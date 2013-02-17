@@ -139,9 +139,9 @@ var EV {n in PERS, t in 0..H, j in AUW[n]} default initEV;
 # expected value of each composite state
 var EW {t in 0..H, (j1,j2) in AW1xAW2} default initEV;
 # lower bound of EW
-var lowerEW {t in 0..H, (j1,j2) in AW1xAW2};
+var lower {t in 0..H, (j1,j2) in AW1xAW2};
 # upper bound of EW
-var upperEW {t in 0..H, (j1,j2) in AW1xAW2};
+var upper {t in 0..H, (j1,j2) in AW1xAW2};
 
 # END OF DEFINING STRUCTURAL PARAMETERS AND ENDOGENOUS VARIABLES #
 
@@ -158,20 +158,22 @@ var sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} =
 # Define the joint utility
 var jointActvUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
 	if a1 == a2 then
-		sum {s in 1..h} beta**(s-1) * rho[a1] * actvUtil[1,a1,t+s] * actvUtil[2,a2,t+s]
+		sum {s in 1..h} beta**(s-1) * rho[a1]*actvUtil[1,a1,t+s]*actvUtil[2,a2,t+s]
 	else
 		0.0;
 
 # Define the utility of selecting decision (k,h)
 var choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
     if k == j then
-          sumActvUtil[n,t,j,k,h] + beta**h * EV[n,(t+h),k]
+          sumActvUtil[n,t,j,k,h]
     else
-        - sumTravelCost[n,t,j,k,h] + beta**h * EV[n,(t+h), k];
+        - sumTravelCost[n,t,j,k,h];
 
 # Define the choice probability
 var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
-	exp( theta*choiceUtil[n,t,j,k,h] - theta*EV[n,t,j] );
+	exp( theta * (choiceUtil[n,t,j,k,h] + 
+				  beta**h * EV[n,(t+h),k]) - 
+		 theta * EV[n,t,j] );
 
 # Define the joint decision utility
 var jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
@@ -214,7 +216,9 @@ maximize likelihood0: 0;
 
 #  Define the Bellman equation of the component MDP model
 subject to Bellman_Eqn {n in PERS, (t,j) in X[n]}:
-	EV[n,t,j] = log( sum {(k,h) in D[n,t,j]} exp(theta*choiceUtil[n,t,j,k,h]) ) / theta;
+	EV[n,t,j] = log( sum {(k,h) in D[n,t,j]} 
+							exp( theta * (choiceUtil[n,t,j,k,h] + 
+										  beta**h * EV[n,(t+h),k]) ) ) / theta;
 subject to Bellman_EqnH {n in PERS}: 
 	EV[n,H,HOME] = EV[n,0,HOME];
 
@@ -222,26 +226,29 @@ subject to Bellman_EqnH {n in PERS}:
 # Define the Bellman equation of the composite MDP model
 subject to Bellman_Joint {(t,j1,j2) in XX}:
 	EW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
-		exp(theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + beta**h * EW[t,a1,a2]) ) ) / theta;
+							exp( theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + 
+										  beta**h * EW[t,a1,a2]) ) ) / theta;
 subject to Bellman_JointH: 
 	EW[H,HOME,HOME] = EW[0,HOME,HOME];
 
 # Define the Bellman equation for updating the lower and upper bounds
 subject to Bellman_Lower {(t,j1,j2) in XX}:
-	lowerEW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
-		exp(theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + lowerEW[t,a1,a2]) ) ) / theta;
+	lower[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
+								exp( theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + 
+											  beta**h * lower[t,a1,a2]) ) ) / theta;
 subject to Bellman_LowerH: 
-	lowerEW[H,HOME,HOME] = lowerEW[0,HOME,HOME];
+	lower[H,HOME,HOME] = lower[0,HOME,HOME];
 subject to Bellman_Upper {(t,j1,j2) in XX}:
-	upperEW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
-		exp(theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + upperEW[t,a1,a2]) ) ) / theta;
+	upper[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
+								exp( theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + 
+											  beta**h * upper[t,a1,a2]) ) ) / theta;
 subject to Bellman_UpperH: 
-	upperEW[H,HOME,HOME] = upperEW[0,HOME,HOME];
+	upper[H,HOME,HOME] = upper[0,HOME,HOME];
 
 # Define the lower and upper bounds for EW
-subject to LowerEWBound {(t,j1,j2) in XX}:
-	EW[t,j1,j2] >= lowerEW[t,j1,j2];
-subject to UpperEWBound {(t,j1,j2) in XX}:
-	EW[t,j1,j2] <= upperEW[t,j1,j2];
+subject to LowerBound {(t,j1,j2) in XX}:
+	EW[t,j1,j2] >= lower[t,j1,j2];
+subject to UpperBound {(t,j1,j2) in XX}:
+	EW[t,j1,j2] <= upper[t,j1,j2];
 
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS

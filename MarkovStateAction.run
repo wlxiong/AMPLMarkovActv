@@ -27,11 +27,10 @@ for {n in PERS, t in H-1..0 by -1, j in AUW[n], k in AUW[n]} {
 
 # Write isFeasibleState to DATA/ISFS.sol
 for {n in PERS} {
-	printf "individual %d:\n", n > DATA/ISFS.sol;
 	for {t in 0..H} {
 		for {j in AUW[n]}
 			if (t,j) in X[n] then
-				printf "(%3d,%d):%3d\t", t, j, card(DA[n,t,j]) > DATA/ISFS.sol;
+				printf "(%d,%3d,%d):%3d\t", n,t, j, card(DA[n,t,j]) > DATA/ISFS.sol;
 		printf "\n" > DATA/ISFS.sol;
 	}
 	printf "\n" > DATA/ISFS.sol;

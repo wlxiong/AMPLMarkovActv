@@ -1,12 +1,13 @@
 # Load the component MDPs
-include MarkovActvMDP.run
+# include MarkovActvMDP.run
 
 # Load model and data
-# model "MarkovActv.mod";
-# data "MarkovActv.dat";
-# include MarkovStateAction.run
+model "MarkovActv.mod";
+data "MarkovActv.dat";
 
-# include the code that define the state and choice set
+# include the code that define the component state and choice set
+include MarkovStateAction.run
+# include the code that define the composite state and choice set
 include JointStateAction.run
 
 # Define the composite MDP problem for the entire household
@@ -16,7 +17,8 @@ problem compositeMDP:
 likelihood0,
 
 # List the variables
-EW, lowerEW, upperEW, 
+EW, 
+# lower, upper, 
 jointChoiceUtil, jointChoiceProb,
 actvUtil, sumActvUtil, sumTravelCost, jointActvUtil, 
 # Um, b, c,
@@ -25,23 +27,23 @@ actvUtil, sumActvUtil, sumTravelCost, jointActvUtil,
 
 # List the constraints
 Bellman_Joint,
-Bellman_JointH,
-Bellman_Lower,
-Bellman_LowerH,
-Bellman_Upper,
-Bellman_UpperH,
-LowerEWBound, 
-UpperEWBound;
+Bellman_JointH;
+# Bellman_Lower,
+# Bellman_LowerH,
+# Bellman_Upper,
+# Bellman_UpperH,
+# LowerBound, 
+# UpperBound;
 
 
 # Initialize the lower and upper bounds and the EW values
-for {(t,j1,j2) in XX} {
-	fix lowerEW[t,j1,j2] := max(EV[1,t,j1], EV[2,t,j2]);
-	fix upperEW[t,j1,j2] := EV[1,t,j1] + EV[2,t,j2];
-	let EW[t,j1,j2] := .5 * (lowerEW[t,j1,j2] + upperEW[t,j1,j2]);
-	# fix lowerEW[t,j1,j2] := -500;
-	# fix upperEW[t,j1,j2] := 500;
-}
+# for {(t,j1,j2) in XX} {
+# 	fix lower[t,j1,j2] := max(EV[1,t,j1], EV[2,t,j2]);
+# 	fix upper[t,j1,j2] := EV[1,t,j1] + EV[2,t,j2];
+# 	let EW[t,j1,j2] := .5 * (lower[t,j1,j2] + upper[t,j1,j2]);
+# 	# fix lower[t,j1,j2] := -500;
+# 	# fix upper[t,j1,j2] := 500;
+# }
 
 
 # Specify KNITRO solver options:
@@ -78,10 +80,10 @@ display beta, VoT, theta > DATA/jointMDP.sol;
 display Um, b, c > DATA/jointMDP.sol;
 
 # also display the structural parameters
-printf "\n\nComposite MDP";
-printf "\n\nstructural parameters (all fixed):\n\n";
-display beta, VoT, theta;
-display Um, b, c;
+# printf "\n\nComposite MDP";
+# printf "\n\nstructural parameters (all fixed):\n\n";
+# display beta, VoT, theta;
+# display Um, b, c;
 # display Uw, xi, gamma, lambda;
 
 
@@ -91,7 +93,7 @@ option display_round 6, display_width 120;
 # export EW to a file jointEUtil.m
 printf "EW = zeros(%d, %d, %d);\n", H, M, M > DATA/jointEUtil.m;
 for {t in TIME} {
-	printf "EW(%3d, :, :) = [", t > DATA/jointEUtil.m;
+	printf "EW(%3d, :, :) = [", t+1 > DATA/jointEUtil.m;
 	for {j1 in AUW[1]} {
 		for {j2 in AUW[2]} {
 			if (t,j1,j2) in XX then
@@ -108,13 +110,13 @@ for {t in TIME} {
 printf "jointPr = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, H > DATA/jointProb.m;
 for {(t,j1,j2) in XX} {
 	for {a1 in AUW[1]} {
-		printf "jointPr(%d, %d, %d, %d, :, :) = [\n", t, j1, j2, a1 > DATA/jointProb.m;
+		printf "jointPr(%d, %d, %d, %d, :, :) = [\n", t+1, j1, j2, a1 > DATA/jointProb.m;
 		for {h in 0..DH} {
 			for {a2 in AUW[2]} {
 				if (a1,a2,h) in DD[t,j1,j2] then
-					printf "%5.3f\t", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointProb.m;
+					printf "%5.3f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointProb.m;
 				else
-					printf "%5.3f\t", 0.0 > DATA/jointProb.m;
+					printf "%5.3f", 0.0 > DATA/jointProb.m;
 			}
 			printf "\n" > DATA/jointProb.m;
 		}
