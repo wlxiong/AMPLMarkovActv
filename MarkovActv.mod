@@ -183,7 +183,7 @@ param jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 var jointChoiceProb {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 	exp( theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + 
 				  beta**h * EW[t,a1,a2]) - 
-		 theta * EW[t,a1,a2] );
+		 theta * EW[t,j1,j2] );
 
 
 #  END OF DECLARING AUXILIARY VARIABLES #
