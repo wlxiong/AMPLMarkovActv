@@ -115,8 +115,8 @@ for {(t,j1,j2) in XX} {
 		for {a1 in AUW[1]} {
 			for {a2 in AUW[2]} {
 				if (a1,a2,h) in DD[t,j1,j2] then
-					if jointChoiceProb[t,j1,j2,a1,a2,h] >= 0.0 and 
-					   jointChoiceProb[t,j1,j2,a1,a2,h] <= 1.0 then
+					if jointChoiceProb[t,j1,j2,a1,a2,h] >= -0.01 and 
+					   jointChoiceProb[t,j1,j2,a1,a2,h] <=  1.01 then
 						printf " %8.5f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointChoiceProb.txt;
 					else
 						printf " %8s", "nan" > DATA/jointChoiceProb.txt;

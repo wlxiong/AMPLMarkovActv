@@ -126,8 +126,8 @@ for {n in PERS} {
 		for {h in 1..DH} {
 			for {k in AUW[n]} {
 				if (k,h) in D[n,t,j] then
-					if choiceProb[n,t,j,k,h] >= 0.0 and
-					   choiceProb[n,t,j,k,h] <= 1.0 then
+					if choiceProb[n,t,j,k,h] >= -0.01 and
+					   choiceProb[n,t,j,k,h] <=  1.01 then
 						printf " %8.5f", choiceProb[n,t,j,k,h] > DATA/choiceProb.txt;
 					else
 						printf " %8s", "nan" > DATA/choiceProb.txt;
