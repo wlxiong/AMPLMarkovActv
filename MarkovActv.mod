@@ -208,9 +208,12 @@ maximize likelihood0: 0;
 
 #  Define the Bellman equation of the component MDP model
 subject to Bellman_Eqn {n in PERS, (t,j) in X[n]}:
-	EV[n,t,j] = log( sum {(k,h) in D[n,t,j]} 
+	EV[n,t,j] = if card(D[n,t,j]) > 1 then
+					log( sum {(k,h) in D[n,t,j]}
 							exp( theta * (choiceUtil[n,t,j,k,h] + 
-										  beta**h * EV[n,(t+h),k]) ) ) / theta;
+										  beta**h * EV[n,(t+h),k]) ) ) / theta
+				else	 sum {(k,h) in D[n,t,j]}
+							(choiceUtil[n,t,j,k,h] + beta**h * EV[n,(t+h),k]);
 subject to Bellman_EqnH {n in PERS}: 
 	EV[n,H,HOME] = EV[n,0,HOME];
 
@@ -221,9 +224,12 @@ subject to Bellman_EqnH {n in PERS}:
 
 # Define the Bellman equation of the composite MDP model
 subject to Bellman_Joint {(t,j1,j2) in XX}:
-	EW[t,j1,j2] = log( sum {(a1,a2,h) in DD[t,j1,j2]} 
+	EW[t,j1,j2] = if card(DD[t,j1,j2]) > 1 then
+					log( sum {(a1,a2,h) in DD[t,j1,j2]}
 							exp( theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + 
-										  beta**h * EW[t,a1,a2]) ) ) / theta;
+										  beta**h * EW[t,a1,a2]) ) ) / theta
+				  else	 sum {(a1,a2,h) in DD[t,j1,j2]}
+							(jointChoiceUtil[t,j1,j2,a1,a2,h] + beta**h * EW[t,a1,a2]);
 subject to Bellman_JointH: 
 	EW[H,HOME,HOME] = EW[0,HOME,HOME];
 
