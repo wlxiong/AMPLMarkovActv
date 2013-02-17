@@ -1,4 +1,4 @@
-# Title: MPEC Approach for Estimation of MDP Models
+# Title: A Dynamic Markov Activity-Travel Scheduler
 # Author: Xiong Yiliang <wlxiong@gmail.com> 2013
 
 # Go to the NEOS Server (google "NEOS Server for Optimization").
@@ -7,7 +7,9 @@
 
 # AMPL Model File:   MarkovActv.mod
 # AMPL Data File:    MarkovActv.dat
-# AMPL Command File: MarkovActvMDP.run and JointActvMDP.run
+# AMPL Command File: MDPNonlinearEqn.run, JointMDPNonlinearEqn.run
+#					 StateAction.run, JointStateAction.run
+
 
 # SET UP THE MODEL and DATA #
 
