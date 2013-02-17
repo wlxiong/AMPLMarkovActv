@@ -26,6 +26,7 @@ jointChoiceProb,
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
+# jointChoiceProb_Range,
 Bellman_Joint,
 Bellman_JointH;
 # Bellman_Lower,
@@ -97,9 +98,9 @@ for {t in TIME} {
 	for {j1 in AUW[1]} {
 		for {j2 in AUW[2]} {
 			if (t,j1,j2) in XX then
-				printf "%10.3f", EW[t,j1,j2] > DATA/jointEUtil.m;
+				printf " %8.2f", EW[t,j1,j2] > DATA/jointEUtil.m;
 			else
-				printf "%10.3f", -99 > DATA/jointEUtil.m;
+				printf " %8s", "nan" > DATA/jointEUtil.m;
 		}
 		printf ";" > DATA/jointEUtil.m;
 	}
@@ -107,20 +108,24 @@ for {t in TIME} {
 }
 
 # export choiceProb to a file jointProb.m
-printf "jointPr = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, H > DATA/jointProb.m;
+printf "jP = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/jointProb.m;
 for {(t,j1,j2) in XX} {
-	for {a1 in AUW[1]} {
-		printf "jointPr(%d, %d, %d, %d, :, :) = [\n", t+1, j1, j2, a1 > DATA/jointProb.m;
-		for {h in 1..DH} {
+	for {h in 1..DH} {
+		printf "jP(%3d, %d, %d, :, :, %2d) = [", t+1, j1, j2, h > DATA/jointProb.m;
+		for {a1 in AUW[1]} {
 			for {a2 in AUW[2]} {
 				if (a1,a2,h) in DD[t,j1,j2] then
-					printf "%5.3f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointProb.m;
+					if jointChoiceProb[t,j1,j2,a1,a2,h] >= 0.0 and 
+					   jointChoiceProb[t,j1,j2,a1,a2,h] <= 1.0 then
+						printf " %8.5f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointProb.m;
+					else
+						printf " %8s", "nan" > DATA/jointProb.m;
 				else
-					printf "%5.3f", 0.0 > DATA/jointProb.m;
+					printf " %8.5f", 0.0 > DATA/jointProb.m;
 			}
-			printf "\n" > DATA/jointProb.m;
+			printf ";" > DATA/jointProb.m;
 		}
-		printf "]';\n" > DATA/jointProb.m;
+		printf "];\n" > DATA/jointProb.m;
 	}
 }
 

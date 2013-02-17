@@ -27,6 +27,7 @@ likelihood0,
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
+# {(t,j) in X[n], (k,h) in D[n,t,j]} choiceProb_Range,
 {(t,j) in X[n]} Bellman_Eqn[n,t,j],
 Bellman_EqnH[n];
 
@@ -108,9 +109,9 @@ for {t in TIME} {
 	for {n in PERS} {
 		for {j in AUW[n]} {
 			if (t,j) in X[n] then
-				printf "%10.3f", EV[n,t,j] > DATA/EUtil.m;
+				printf " %8.2f", EV[n,t,j] > DATA/EUtil.m;
 			else
-				printf "%10.3f", -99 > DATA/EUtil.m;
+				printf " %8s", "nan" > DATA/EUtil.m;
 		}
 		printf ";" > DATA/EUtil.m;
 	}
@@ -118,16 +119,20 @@ for {t in TIME} {
 }
 
 # export choiceProb to a file Prob.m
-printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, H > DATA/Prob.m;
+printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/Prob.m;
 for {n in PERS} {
 	for {(t,j) in X[n]} {
 		printf "Pr(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/Prob.m;
 		for {h in 1..DH} {
 			for {k in AUW[n]} {
 				if (k,h) in D[n,t,j] then
-					printf "%6.3f", choiceProb[n,t,j,k,h] > DATA/Prob.m;
+					if choiceProb[n,t,j,k,h] >= 0.0 and
+					   choiceProb[n,t,j,k,h] <= 1.0 then
+						printf " %8.5f", choiceProb[n,t,j,k,h] > DATA/Prob.m;
+					else
+						printf " %8s", "nan" > DATA/Prob.m;
 				else
-					printf "%6.3f", 0.0 > DATA/Prob.m;
+					printf " %8.5f", 0.0 > DATA/Prob.m;
 			}
 			printf "\n" > DATA/Prob.m;
 		}

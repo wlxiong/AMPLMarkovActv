@@ -214,6 +214,10 @@ subject to Bellman_Eqn {n in PERS, (t,j) in X[n]}:
 subject to Bellman_EqnH {n in PERS}: 
 	EV[n,H,HOME] = EV[n,0,HOME];
 
+# choice probability range
+# subject to choiceProb_Range {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]}:
+# 	0.0 <= choiceProb[n,t,j,k,h] <= 1.0;
+
 
 # Define the Bellman equation of the composite MDP model
 subject to Bellman_Joint {(t,j1,j2) in XX}:
@@ -222,6 +226,10 @@ subject to Bellman_Joint {(t,j1,j2) in XX}:
 										  beta**h * EW[t,a1,a2]) ) ) / theta;
 subject to Bellman_JointH: 
 	EW[H,HOME,HOME] = EW[0,HOME,HOME];
+
+# joint choice probability range
+# subject to jointChoiceProb_Range {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]}:
+# 	0.0 <= jointChoiceProb[t,j1,j2,a1,a2,h] <= 1.0;
 
 # Define the Bellman equation for updating the lower and upper bounds
 subject to Bellman_Lower {(t,j1,j2) in XX}:
