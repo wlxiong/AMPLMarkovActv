@@ -68,60 +68,37 @@ set DD {(t,j1,j2) in XX} := {a1 in AUW[1], a2 in AUW[2], h in 0..DH:
 # Define discount factor. We fix beta since it can't be identified.
 param beta;      	 # discount factor
 
-# Data: (xt, dt)
-# param xt {PERS cross TIME};      # state of individual i
-# param dt {PERS cross TIME};      # activity choice of individual i
-
 # END OF MODEL and DATA SETUP #
 
+
 # DEFINING STRUCTURAL PARAMETERS and ENDOGENOUS VARIABLES TO BE SOLVED #
+
 # value of time
-var VoT >= 0;
-
-# initial value of VoT
-param initVoT;
-
-# estimated VoT
-param VoT_;
+param VoT >= 0;
 
 # theta: parameter of the logit choice model
-var theta >= 0;
-
-# initial value of theta
-param initTheta;
+param theta >= 0;
 
 # intra-household interaction coeffcient for each activity
-var rho {ALLACTV};
+param rho {ALLACTV};
 
-# transProb[i] defines transition probability that state in next time slice. 
-# var transProb {1..M} >= 0;
 
 # PARAMETERS OF CAUCHY DISTRIBUTION
 # Activity Parameters
-var Um {ALLACTV} >= 0, <= 5000;
-var b {ALLACTV} >= 0, <= 1440;
-var c {ALLACTV} >= 0, <= 600;
+param Um {ALLACTV} >= 0, <= 5000;
+param b {ALLACTV} >= 0, <= 1440;
+param c {ALLACTV} >= 0, <= 600;
 
-# Define the initial values for parameters
-param initUm {ALLACTV};
-param initB {ALLACTV};
-param initC {ALLACTV};
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
 # Activity Parameters
-var Uw {ALLACTV} >= 0;
-var xi {ALLACTV} >= 0, <= 1440;
-var gamma {ALLACTV} >= 0;
-var lambda {ALLACTV} >= 0;
-
-# Define the initial values for parameters
-param initUw {ALLACTV};
-param initXi {ALLACTV};
-param initGamma {ALLACTV};
-param initLambda {ALLACTV};
+param Uw {ALLACTV} >= 0;
+param xi {ALLACTV} >= 0, <= 1440;
+param gamma {ALLACTV} >= 0;
+param lambda {ALLACTV} >= 0;
 
 # Scaled Cauchy distribution
-var actvUtil {n in PERS, j in AUW[n], t in 0..H} = 
+param actvUtil {n in PERS, j in AUW[n], t in 0..H} = 
 	if j == HOME and t < H/2 then 
 		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) )
 	else if j == HOME and t >= H/2 then
@@ -129,20 +106,25 @@ var actvUtil {n in PERS, j in AUW[n], t in 0..H} =
 	else
 		Um[j]/3.141592653*( atan( ( t*T+T-b[j])/c[j] ) - atan( ( t*T-b[j])/c[j]) );
 
+# Bell-shaped marginal utility function
+# param actvUtil {(t,j) in X} = gamma[j]*lambda[j]*Uw[j]/exp(gamma[j]*(t*T-xi[j]))/
+#                             (1+exp(-gamma[j]*(t*T-xi[j])))^(lambda[j]+1)*T;
+
+
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
 # The NLP approach requires us to solve equilibrium constraint variables
 
 # Define initial values for EV
 param initEV;
 
-# expected value of each component state
+# Declare expected value of each component state
 var EV {n in PERS, t in 0..H, j in AUW[n]} default initEV;
 
-# expected value of each composite state
+# Declare expected value of each composite state
 var EW {t in 0..H, (j1,j2) in AW1xAW2} default initEV;
-# lower bound of EW
+# Declare lower bound of EW
 var lower {t in 0..H, (j1,j2) in AW1xAW2};
-# upper bound of EW
+# Declare upper bound of EW
 var upper {t in 0..H, (j1,j2) in AW1xAW2};
 
 # END OF DEFINING STRUCTURAL PARAMETERS AND ENDOGENOUS VARIABLES #
@@ -152,33 +134,33 @@ var upper {t in 0..H, (j1,j2) in AW1xAW2};
 #  Define auxiliary variables to economize on expressions	
 
 #  Define the total discounted utility of pursuing activity j in time (t, t+h-1)
-var sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DA[n,t,j]} = 
+param sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DA[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * actvUtil[n,k,t+s];
 #  Define the total discounted utility of traveling from j to k departing at t
-var sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} = 
+param sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * T*VoT/60;
 # Define the joint utility
-var jointActvUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
+param jointActvUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
 	if a1 == a2 then
 		sum {s in 1..h} beta**(s-1) * rho[a1]*actvUtil[1,a1,t+s]*actvUtil[2,a2,t+s]
 	else
 		0.0;
 
 # Define the utility of selecting decision (k,h)
-var choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
+param choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
     if k == j then
           sumActvUtil[n,t,j,k,h]
     else
         - sumTravelCost[n,t,j,k,h];
 
-# Define the choice probability
+# Declare the choice probability
 var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
 	exp( theta * (choiceUtil[n,t,j,k,h] + 
 				  beta**h * EV[n,(t+h),k]) - 
 		 theta * EV[n,t,j] );
 
 # Define the joint decision utility
-var jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
+param jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 	if a1 == j1 and a2 == j2 then
 		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
 		jointActvUtil[t,j1,j2,a1,a2,h]
@@ -189,7 +171,7 @@ var jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 	else
 		- sumTravelCost[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h];
 
-# Define the joint choice probability
+# Declare the joint choice probability
 var jointChoiceProb {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 	exp( theta * (jointChoiceUtil[t,j1,j2,a1,a2,h] + 
 				  beta**h * EW[t,a1,a2]) - 

@@ -1,7 +1,7 @@
 Composite MDP
-Iteration limit reached
-  400 
-_solve_time = 18.1117
+Optimal solution found
+    0 
+_solve_time = 9.04806
 
 beta = 0.9
 VoT = 60

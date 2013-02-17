@@ -19,8 +19,8 @@ likelihood0,
 # List the variables
 EW, 
 # lower, upper, 
-jointChoiceUtil, jointChoiceProb,
-actvUtil, sumActvUtil, sumTravelCost, jointActvUtil, 
+jointChoiceProb,
+# actvUtil, sumActvUtil, sumTravelCost, jointActvUtil, jointChoiceUtil, 
 # Um, b, c,
 # VoT, theta, 
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
@@ -48,7 +48,7 @@ Bellman_JointH;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
-option knitro_options "alg=3 hessopt=1 outlev=3 maxit=300 xtol=0.0000000001 wantsol=1";
+option knitro_options "alg=2 hessopt=1 outlev=3 maxit=500 xtol=0.0000000001 wantsol=1";
 # option presolve 0;
 
 # Solve command
