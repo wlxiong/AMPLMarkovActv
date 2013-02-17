@@ -111,7 +111,7 @@ printf "jointPr = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, H > DATA/joi
 for {(t,j1,j2) in XX} {
 	for {a1 in AUW[1]} {
 		printf "jointPr(%d, %d, %d, %d, :, :) = [\n", t+1, j1, j2, a1 > DATA/jointProb.m;
-		for {h in 0..DH} {
+		for {h in 1..DH} {
 			for {a2 in AUW[2]} {
 				if (a1,a2,h) in DD[t,j1,j2] then
 					printf "%5.3f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointProb.m;

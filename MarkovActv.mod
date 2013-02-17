@@ -51,16 +51,16 @@ set XX := {t in TIME, (j1,j2) in AW1xAW2:
 	isFeasibleState[2,t,j2] == 1 and 
 	isFeasibleCoState[t,j1,j2] == 1};
 # DTRAVEL is the index set of travel decisions
-set DT {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in 0..DH: 
+set DT {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in 1..DH: 
 	k != j and h == travelTime[t,j,k] and isFeasibleChoice[n,t,j,k,h] == 1};
 # DA is the index set of activity decisions
-set DA {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in 0..DH: 
+set DA {n in PERS, (t,j) in X[n]} := {k in AUW[n], h in 1..DH: 
 	k == j and isFeasibleChoice[n,t,j,k,h] == 1};
 # D is the union of sets of travel and activity decisions
 set D {n in PERS, (t,j) in X[n]} := DT[n,t,j] union DA[n,t,j];
 # DD is the set of composite decisions. To simplify the state transition, 
 # the activity durations of the component decisions should be the same.
-set DD {(t,j1,j2) in XX} := {a1 in AUW[1], a2 in AUW[2], h in 0..DH: 
+set DD {(t,j1,j2) in XX} := {a1 in AUW[1], a2 in AUW[2], h in 1..DH: 
 	(a1,h) in D[1,t,j1] and (a2,h) in D[2,t,j2]};
 
 # Parameters and definition of transition process

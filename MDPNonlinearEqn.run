@@ -122,12 +122,12 @@ printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, H > DATA/Prob.m;
 for {n in PERS} {
 	for {(t,j) in X[n]} {
 		printf "Pr(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/Prob.m;
-		for {h in TIME} {
+		for {h in 1..DH} {
 			for {k in AUW[n]} {
 				if (k,h) in D[n,t,j] then
-					printf "%5.3f", choiceProb[n,t,j,k,h] > DATA/Prob.m;
+					printf "%6.3f", choiceProb[n,t,j,k,h] > DATA/Prob.m;
 				else
-					printf "%5.3f", 0.0 > DATA/Prob.m;
+					printf "%6.3f", 0.0 > DATA/Prob.m;
 			}
 			printf "\n" > DATA/Prob.m;
 		}
