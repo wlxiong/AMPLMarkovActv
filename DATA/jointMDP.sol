@@ -1,9 +1,9 @@
 Composite MDP
-Optimal solution found
-    0 
-_solve_time = 2.82362
+Iteration limit reached
+  400 
+_solve_time = 18.1117
 
-beta = 0.8
+beta = 0.9
 VoT = 60
 theta = 1
 

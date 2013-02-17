@@ -7,7 +7,7 @@ model "MarkovActv.mod";
 data "MarkovActv.dat";
 
 # include the code that define the state and choice set
-include MarkovStateAction.run
+include MDPStateAction.run
 
 # Define the component MDP problem for each individual
 problem componentMDP {n in PERS}:

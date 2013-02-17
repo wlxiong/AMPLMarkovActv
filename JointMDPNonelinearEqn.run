@@ -6,9 +6,9 @@ model "MarkovActv.mod";
 data "MarkovActv.dat";
 
 # include the code that define the component state and choice set
-include MarkovStateAction.run
+include MDPStateAction.run
 # include the code that define the composite state and choice set
-include JointStateAction.run
+include JointMDPStateAction.run
 
 # Define the composite MDP problem for the entire household
 problem compositeMDP:
