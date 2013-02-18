@@ -4,7 +4,7 @@ param T  := 5;			# the equivalent minutes of a time slice
 param H  := 288;		# number of time slices, and T * H = 1440 minutes
 param DH := 36;			# the longest duration for a decision
 param M  := 3;			# number of activities, 1:home, 2:work, 3: shopping
-param beta := 0.9;		# discount ratio of future utility
+param beta := 0.95;		# discount ratio of future utility
 param HOME := 1;		# define HOME activity
 
 # define the work activity for each household member
@@ -24,7 +24,7 @@ param rho :=
 # activity opening and closing time
 param opening := 
 	1	0
-	2	180
+	2	360
 	3	600
 ;
 param closing :=
@@ -51,41 +51,41 @@ param IS_CAUCHY := 0;
 
 ## Cauchy curve
 param Um :=
-	1	2200
+	1	3600
 	2	2500
 	3	1200
 ;
 param b :=
-	1	120
+	1	0
 	2	840
 	3	1140
 ;
 param c :=
-	1	240
+	1	320
 	2	180
 	3	210
 ;
 
 ## Bell-shaped curve
 param U0 :=
-	1	1.0
+	1	1.25
 	2	0.0
 	3	0.0
 ;
 param U1 :=
-	1	400
-	2	1000
+	1	800
+	2	800
 	3	400
 ;
 param xi :=
 	1	720
 	2	720
-	3	1170
+	3	1140
 ;
 param gamma :=
-	1	-.008
-	2	.01
-	3	.01
+	1	-.006
+	2	 .008
+	3	 .010
 ;
 param lambda :=
 	1	1.0
