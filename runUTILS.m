@@ -1,21 +1,16 @@
 function runUTILS
 % plotting utility variables
 
-run_solver = true;
-if run_solver
-    % run the solver
-    status = system('ampl ChoiceUtils.run','-echo');
-    if status ~= 0
-        error('errors in running ChoiceUtils.run')
-    end
-end
+runAMPL('ChoiceUtils.run')
 
 % load data
-clear
+clear functions
 run 'DATA\actvUtil.m'
 % whos
 
 % plot Ua for individual n
 n = 1;
+
+figure; grid off; box off
 plotUA(squeeze(Ua(n,:,:)))
 export_fig('FIGURES/Ua' , '-pdf')
