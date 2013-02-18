@@ -1,0 +1,27 @@
+# export the choice related utilities
+
+# Load model and data
+model "MarkovActv.mod";
+data "MarkovActv.dat";
+
+# include the code that define the component state and choice set
+include MDPStateAction.run
+# include the code that define the composite state and choice set
+include JointMDPStateAction.run
+
+
+# export the activity utility
+printf "Ua = zeros(%d, %d, %d);\n", N, M, H > DATA/actvUtil.m;
+for {t in TIME} {
+	printf "Ua(:, :, %3d) = [", t+1 > DATA/actvUtil.m;
+	for {n in PERS} {
+		for {j in AUW[n]} {
+			if (t,j) in X[n] then
+				printf " %8.2f", actvUtil[n,j,t] > DATA/actvUtil.m;
+			else
+				printf " %8s", "nan" > DATA/actvUtil.m;
+		}
+		printf ";" > DATA/actvUtil.m;
+	}
+	printf "];\n" > DATA/actvUtil.m;
+}

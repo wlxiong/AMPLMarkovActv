@@ -34,7 +34,10 @@ for {t in TIME} {
 	printf "fx(:, %3d, :) = [", t+1 > DATA/FX.m;
 	for {n in PERS} {
 		for {j in AUW[n]} {
-			printf " %8.1f", fx[n,t,j] > DATA/FX.m;
+			if fx[n,t,j] > 0.0 then
+				printf " %8.1f", fx[n,t,j] > DATA/FX.m;
+			else
+				printf " %8s", "nan" > DATA/FX.m;
 		}
 		printf ";" > DATA/FX.m;
 	}
