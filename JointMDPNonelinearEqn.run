@@ -5,6 +5,9 @@
 model "MarkovActv.mod";
 data "MarkovActv.dat";
 
+# logging options
+let debug_log := 0;
+
 # include the code that define the component state and choice set
 include MDPStateAction.run
 # include the code that define the composite state and choice set
@@ -129,11 +132,14 @@ for {(t,j1,j2) in XX} {
 	}
 }
 
+# start debug log
+if debug_log == 1 then {
+
 # export exp(jointChoiceProb) to a file expJointChoiceProb.txt
-printf "Uj = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/expJointChoiceProb.txt;
+printf "ePj = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/expJointChoiceProb.txt;
 for {(t,j1,j2) in XX} {
 	for {h in 1..DH} {
-		printf "Uj(%3d, %d, %d, :, :, %2d) = [", t+1, j1, j2, h > DATA/expJointChoiceProb.txt;
+		printf "ePj(%3d, %d, %d, :, :, %2d) = [", t+1, j1, j2, h > DATA/expJointChoiceProb.txt;
 		for {a1 in AUW[1]} {
 			for {a2 in AUW[2]} {
 				if (a1,a2,h) in DD[t,j1,j2] then
@@ -147,6 +153,9 @@ for {(t,j1,j2) in XX} {
 		}
 		printf "];\n" > DATA/expJointChoiceProb.txt;
 	}
+}
+
+# end of log
 }
 
 # export fixed parameters to jointMDP.m

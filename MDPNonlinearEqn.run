@@ -6,6 +6,9 @@
 model "MarkovActv.mod";
 data "MarkovActv.dat";
 
+# logging options
+let debug_log := 0;
+
 # include the code that define the state and choice set
 include MDPStateAction.run
 
@@ -102,6 +105,7 @@ option display_round 6, display_width 120;
 # write choiceProb to a AMPL data file Prob.dat
 # display choiceProb > DATA/Prob.dat;
 
+
 # export flow variables
 include NetworkFlows.run;
 
@@ -143,11 +147,14 @@ for {n in PERS} {
 	}
 }
 
+# debug output
+if debug_log == 1 then {
+
 # export exp(choiceProb) to a file expChoiceProb.txt
-printf "Ud = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/expChoiceProb.txt;
+printf "ePr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/expChoiceProb.txt;
 for {n in PERS} {
 	for {(t,j) in X[n]} {
-		printf "Ud(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/expChoiceProb.txt;
+		printf "ePr(%d, %d, %d, :, :) = [\n", n, t+1, j > DATA/expChoiceProb.txt;
 		for {h in 1..DH} {
 			for {k in AUW[n]} {
 				if (k,h) in D[n,t,j] then
@@ -161,6 +168,9 @@ for {n in PERS} {
 		}
 		printf "]';\n" > DATA/expChoiceProb.txt;
 	}
+}
+
+# end of log
 }
 
 # export fixed parameters to MDP.m
