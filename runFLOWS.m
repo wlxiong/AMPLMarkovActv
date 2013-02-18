@@ -5,6 +5,11 @@ function runFLOW
 n = 1;
 
 function run_helper(b)
+	% export beta to an AMPL .dat file
+	fid = fopen('DATA/beta.dat', 'W');
+	amplwrite(fid, 'beta', b);
+	fclose(fid);
+
 	% start solver
 	runAMPL('MDPNonlinearEqn.run')
 
