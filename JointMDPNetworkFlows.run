@@ -1,0 +1,49 @@
+# computing network flows
+
+# the total population
+param NHH := 10000;
+
+# the number of travelers in each state
+param fx {n in PERS, t in 0..H, j in AUW[n]};
+
+# the number of households making decisions in each state
+param gx {t in 0..H, (j1,j2) in AW1xAW2};
+
+# set fx & gx to zeros
+let {n in PERS, t in 0..H, j in AUW[n]} fx[n,t,j] := 0.0;
+let {t in 0..H, (j1,j2) in AW1xAW2} gx[t,j1,j2] := 0.0;
+
+# initialize fx & gx in the starting states
+let {n in PERS} fx[n,0,HOME] := NHH;
+let gx[0,HOME,HOME] := NHH;
+
+# compute fx in the remaining states
+for {(t,j1,j2) in XX} {
+	for {(a1,a2,h) in DD[t,j1,j2]} {
+		if a1 == j1 then
+			let {s in 1..h} fx[1,t+s,a1] := fx[1,t+s,a1] + gx[t,j1,j2] * jointChoiceProb[t,j1,j2,a1,a2,h];
+		else
+			let fx[1,t+h,a1] := fx[1,t+h,a1] + gx[t,j1,j2] * jointChoiceProb[t,j1,j2,a1,a2,h];
+		if a2 == j2 then
+			let {s in 1..h} fx[2,t+s,a2] := fx[2,t+s,a2] + gx[t,j1,j2] * jointChoiceProb[t,j1,j2,a1,a2,h];
+		else
+			let fx[2,t+h,a2] := fx[2,t+h,a2] + gx[t,j1,j2] * jointChoiceProb[t,j1,j2,a1,a2,h];
+		let gx[t+h,a1,a2] := gx[t+h,a1,a2] + gx[t,j1,j2] * jointChoiceProb[t,j1,j2,a1,a2,h];
+	}
+}
+
+# export fx to file FX.m
+printf "fxx = zeros(%d, %d, %d);\n", N, H, M > DATA/FXX.m;
+for {t in TIME} {
+	printf "fxx(:, %3d, :) = [", t+1 > DATA/FXX.m;
+	for {n in PERS} {
+		for {j in AUW[n]} {
+			if fx[n,t,j] > 0.0 then
+				printf " %8.1f", fx[n,t,j] > DATA/FXX.m;
+			else
+				printf " %8s", "nan" > DATA/FXX.m;
+		}
+		printf ";" > DATA/FXX.m;
+	}
+	printf "];\n" > DATA/FXX.m;
+}

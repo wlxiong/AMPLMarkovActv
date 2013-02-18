@@ -94,6 +94,10 @@ display Um, b, c > DATA/jointMDP.sol;
 # Output commands
 option display_round 6, display_width 120;
 
+
+# export flow variables
+include JointMDPNetworkFlows.run;
+
 # export EW to a file jointEUtil.m
 printf "EW = zeros(%d, %d, %d);\n", H, M, M > DATA/jointEUtil.m;
 for {t in TIME} {
