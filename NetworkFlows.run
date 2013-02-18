@@ -23,7 +23,7 @@ for {n in PERS, (t,j) in X[n]} {
 		if k == j then
 			let {s in 1..h} fx[n,t+s,k] := fx[n,t+s,k] + gx[n,t,j] * choiceProb[n,t,j,k,h];
 		else
-			let fx[n,t+h,k] := fx[n,t+h,k] + fx[n,t,j] * choiceProb[n,t,j,k,h];
+			let fx[n,t+h,k] := fx[n,t+h,k] + gx[n,t,j] * choiceProb[n,t,j,k,h];
 		let gx[n,t+h,k] := gx[n,t+h,k] + gx[n,t,j] * choiceProb[n,t,j,k,h];
 	}
 }
