@@ -10,6 +10,8 @@
 # AMPL Command File: MDPNonlinearEqn.run, JointMDPNonlinearEqn.run
 #					 StateAction.run, JointStateAction.run
 
+# control of debug logging
+param debug_log;
 
 # SET UP THE MODEL and DATA #
 
