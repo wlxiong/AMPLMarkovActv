@@ -1,7 +1,5 @@
-function genTT
+function genTT(tx)
 % generate travel time data
-
-clear all
 
 % number of nodes
 % 1: home
@@ -45,9 +43,9 @@ pdf = @(m_, b_, c_) m_./( ( (t-b_)./c_ ).^2 + 1 );
 
 % BPR function
 % bpr = @(x, k, t0) t0 .* ( 1.0 + (x./k).^4);
-bpr = @(x, k, t0) t0;   % constant travel time
+bpr = @(x, k, t0) t0 * tx;   % constant travel time
 
-whos
+% whos
 figure
 hold on
 grid on
@@ -71,7 +69,7 @@ datetick('x', 'HH:MM', 'keepticks');
 pbaspect([2 1 1])
 xlabel('Time of the day')
 ylabel('Travel time (\times 5 min)')
-axis([.0 1.0 0.0 12])
+axis([0.0 1.0 0.0 max(travelTime(:))*1.1+1])
 pbaspect([2 1 1])
 legend('boxoff')
 % export_fig('FIGURES/travel_time', '-pdf')
