@@ -1,7 +1,7 @@
 function runUTILS
 % plotting utility variables
 
-runAMPL('ChoiceUtils.run')
+runAMPL('ExportActvUtils.run')
 
 % load data
 clear functions

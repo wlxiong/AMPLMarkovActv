@@ -12,7 +12,7 @@ function [fxx rho_str] = run_helper(r)
 	runAMPL('JointMDPNonlinearEqn.run')
 
 	% load data
-	fxx = readFLOWS('DATA\FXX.m', n);
+	fxx = readFLOW('DATA\FXX.m', n);
 
 	% plot fxx
 	figure; grid off; box off

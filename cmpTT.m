@@ -12,7 +12,7 @@ function fx = run_helper(tx)
 	runAMPL('MDPNonlinearEqn.run')
 
 	% load data
-	fx = readFLOWS('DATA\FX.m', n);
+	fx = readFLOW('DATA\FX.m', n);
 end
 
 % export beta to an AMPL .dat file

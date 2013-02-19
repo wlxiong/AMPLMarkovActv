@@ -12,7 +12,7 @@ function run_helper(b)
 	runAMPL('MDPNonlinearEqn.run')
 
 	% load data
-    fx = readFLOWS('DATA\FX.m', n);
+    fx = readFLOW('DATA\FX.m', n);
 
 	figure; grid off; box off
 	plotFX(fx)

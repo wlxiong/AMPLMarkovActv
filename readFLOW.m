@@ -1,4 +1,4 @@
-function flows = readFLOWS(mfile, n)
+function flows = readFLOW(mfile, n)
 % load flow data
 rehash
 clear functions
