@@ -169,17 +169,26 @@ printf "theta = %f;\n", theta > DATA/jointMDP.m;
 # export the structural parameters to jointMDP.m
 printf "VoT0 = %f;\n", VoT > DATA/jointMDP.m;
 printf "Um0 = [ " > DATA/jointMDP.m;
-for {j in ALLACTV} {
-	printf "%f ", Um[j] > DATA/jointMDP.m;
+for {n in PERS} {
+	for {j in ALLACTV} {
+		printf "%f ", Um[n,j] > DATA/jointMDP.m;
+	}
+	printf "\n" > DATA/jointMDP.m;
 }
 printf "];\n" > DATA/jointMDP.m;
 printf "b0 = [ " > DATA/jointMDP.m;
-for {j in ALLACTV} {
-	printf "%f ", b[j] > DATA/jointMDP.m;
+for {n in PERS} {
+	for {j in ALLACTV} {
+		printf "%f ", b[n,j] > DATA/jointMDP.m;
+	}
+	printf "\n" > DATA/jointMDP.m;
 }
 printf "];\n" > DATA/jointMDP.m;
 printf "c0 = [ " > DATA/jointMDP.m;
-for {j in ALLACTV} {
-	printf "%f ", c[j] > DATA/jointMDP.m;
+for {n in PERS} {
+	for {j in ALLACTV} {
+		printf "%f ", c[n,j] > DATA/jointMDP.m;
+	}
+	printf "\n" > DATA/jointMDP.m;
 }
 printf "];\n" > DATA/jointMDP.m;
