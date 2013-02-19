@@ -33,9 +33,9 @@ for {(t,j1,j2) in XX} {
 }
 
 # export fx to file FX.m
-printf "fxx = zeros(%d, %d, %d);\n", N, H, M > DATA/FXX.m;
+printf "fx = zeros(%d, %d, %d);\n", N, H, M > DATA/FXX.m;
 for {t in TIME} {
-	printf "fxx(:, %3d, :) = [", t+1 > DATA/FXX.m;
+	printf "fx(:, %3d, :) = [", t+1 > DATA/FXX.m;
 	for {n in PERS} {
 		for {j in AUW[n]} {
 			if fx[n,t,j] > 0.0 then

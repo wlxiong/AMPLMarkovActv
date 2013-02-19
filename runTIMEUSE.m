@@ -1,4 +1,4 @@
-function [ah, fx1, fx2] = runTIMEUSE
+function [ah, fx0, fx1] = runTIMEUSE
 % plot time use bars
 
 % select individual 1
@@ -12,36 +12,33 @@ function fx = run_helper(tx)
 	runAMPL('MDPNonlinearEqn.run')
 
 	% load data
-	rehash
-	clear functions
-	run('DATA\FX.m')
-	fx = squeeze(fx(n,:,:));
+	fx = readFLOWS('DATA\FX.m', n);
 end
 
 % export beta to an AMPL .dat file
-fid = fopen('DATA/beta.dat', 'W');
-amplwrite(fid, 'beta', 0.95);
-fclose(fid);
-
-% run with 1.5x travel time
-fx2 = run_helper(1.5);
+setPARAM('beta', 0.95)
 
 % run with 1x travel time
-fx1 = run_helper(1.0);
+tx0 = 1.0;
+fx0 = run_helper(1.0);
+
+% run with 1.5x travel time
+tx1 = 1.5;
+fx1 = run_helper(1.5);
 
 % plot time use bars
 figure; grid off; box off
-ah = plotAH(fx1, fx2);
+ah = plotAH(fx0, fx1);
 % export time use into csv
-csvwrite('FIGURES/AH.csv', [1, 2; ah])
+csvwrite('FIGURES/AH.csv', [tx0, tx1; ah])
 export_fig('FIGURES/TU' , '-pdf')
 
-% also plot fx1 and fx2
+% also plot fx0 and fx1
+figure; grid off; box off
+plotFX(fx0)
+export_fig(['FIGURES/FXt', num2str(tx0, '%.1f')] , '-pdf')
 figure; grid off; box off
 plotFX(fx1)
-export_fig('FIGURES/FX1x' , '-pdf')
-figure; grid off; box off
-plotFX(fx2)
-export_fig('FIGURES/FX2x' , '-pdf')
+export_fig(['FIGURES/FXt', num2str(tx1, '%.1f')] , '-pdf')
 
 end

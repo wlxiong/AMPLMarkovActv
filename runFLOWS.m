@@ -6,23 +6,18 @@ n = 1;
 
 function run_helper(b)
 	% export beta to an AMPL .dat file
-	fid = fopen('DATA/beta.dat', 'W');
-	amplwrite(fid, 'beta', b);
-	fclose(fid);
+	setPARAM('beta', b)
 
 	% start solver
 	runAMPL('MDPNonlinearEqn.run')
 
 	% load data
-    rehash
-	clear functions
-	run 'DATA\FX.m'
-	% whos
+    fx = readFLOWS('DATA\FX.m', n);
 
 	figure; grid off; box off
-	plotFX(squeeze(fx(n,:,:)))
-	title(['\beta = ', num2str(b,3)])
-	export_fig(['FIGURES/FX', num2str(b,3)] , '-pdf')
+	plotFX(fx)
+	title(['\beta = ', num2str(b, '%.2f')])
+	export_fig(['FIGURES/FX', num2str(b, '%.2f')] , '-pdf')
 end
 
 % run with 1x travel time
