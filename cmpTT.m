@@ -28,9 +28,10 @@ fx1 = run_helper(1.5);
 
 % plot time use bars
 figure; grid off; box off
-ah = plotAH(fx0, fx1, {'Normal condition', 'Congestion situation'});
+TU = [getTU(fx0); getTU(fx1)];
+barTU(TU', {'Normal condition', 'Congestion situation'});
 % export time use into csv
-csvwrite('FIGURES/TUtt.csv', [tx0, tx1; ah])
+csvwrite('FIGURES/TUtt.csv', TU)
 export_fig('FIGURES/TUtt' , '-pdf')
 
 % also plot fx0 and fx1

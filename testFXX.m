@@ -16,4 +16,5 @@ fx2 = squeeze(fx(2,:,:));
 plotFX(fx2)
 
 figure; grid off; box off
-ah = plotAH(fx1, fx2, {'HH member 1', 'HH member 2'});
+TU = [getTU(fx1); getTU(fx2)];
+barTU(TU', {'HH member 1', 'HH member 2'});
