@@ -28,7 +28,7 @@ fx1 = run_helper(1.5);
 
 % plot time use bars
 figure; grid off; box off
-ah = plotAH(fx0, fx1);
+ah = plotAH(fx0, fx1, {'Normal condition', 'Congestion situation'});
 % export time use into csv
 csvwrite('FIGURES/AH.csv', [tx0, tx1; ah])
 export_fig('FIGURES/TU' , '-pdf')

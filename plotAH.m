@@ -1,4 +1,4 @@
-function ah = plotAH(fx1, fx2)
+function ah = plotAH(fx1, fx2, group_names)
 % plot activity duration
 
 % average activity duration
@@ -17,5 +17,5 @@ ylabel('Average activity duration (hours)')
 xlabel('Activities')
 set(gca,'XTick',1:size(ah,1))
 set(gca,'XTickLabel',{'Home', 'Work', 'Shopping', 'Travel'})
-legend({'Normal condition', 'Congestion situation'})
+legend(group_names)
 legend('boxoff')
