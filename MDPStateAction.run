@@ -25,6 +25,9 @@ for {n in PERS, t in H-1..0 by -1, j in AUW[n], k in AUW[n]} {
 	};
 }
 
+# start debug log
+if debug_log == 1 then {
+
 # Write isFeasibleState to DATA/ISFS.sol
 for {n in PERS} {
 	for {t in 0..H} {
@@ -36,17 +39,5 @@ for {n in PERS} {
 	printf "\n" > DATA/ISFS.sol;
 }
 
-# Write number of decisions for each state to DATA/ISFD.sol
-# for {n in PERS} {
-# 	printf "individual %d:\n", n > DATA/ISFD.sol;
-# 	for {t in 0..H} {
-# 		for {j in AUW[n]} {
-# 			if (t,j) in X[n] then
-# 				printf "%d\t", card(DA[n,t,j]) > DATA/ISFD.sol;
-# 			else
-# 				printf "%d\t", 0 > DATA/ISFD.sol;
-# 		}
-# 		printf "\n" > DATA/ISFD.sol;
-# 	}
-# 	printf "\n" > DATA/ISFD.sol;
-# }
+# end of log
+}

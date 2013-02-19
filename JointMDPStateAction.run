@@ -11,6 +11,9 @@ for {t in TIME} {
 	}
 }
 
+# start debug log
+if debug_log == 1 then {
+
 # Write isFeasibleState to DATA/jointISFS.sol
 for {t in TIME} {
 	for {j1 in AUW[1], j2 in AUW[2]} {
@@ -18,4 +21,7 @@ for {t in TIME} {
 			printf "(%3d,%d,%d):%3d\t", t, j1, j2, card(DD[t,j1,j2]) > DATA/jointISFS.sol;
 	}
 	printf "\n" > DATA/jointISFS.sol;
+}
+
+# end of log
 }
