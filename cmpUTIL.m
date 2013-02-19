@@ -1,4 +1,4 @@
-function runUTILS
+function cmpUTIL
 % plotting utility variables
 
 runAMPL('ExportActvUtils.run')

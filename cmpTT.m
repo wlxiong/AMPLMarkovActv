@@ -1,4 +1,4 @@
-function [ah, fx0, fx1] = runTIMEUSE
+function [TU, fx0, fx1] = cmpTT
 % plot time use bars
 
 % select individual 1

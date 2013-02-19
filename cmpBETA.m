@@ -1,4 +1,4 @@
-function runFLOWS
+function cmpBETA
 % plotting flow variables
 
 % plot fx for individual n

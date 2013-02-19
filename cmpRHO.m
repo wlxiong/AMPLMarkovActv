@@ -1,4 +1,4 @@
-function [ah, fxx0, fxx1] = runHHFLOWS
+function TU = cmpRHO
 % plotting flow variables
 
 % plot fx for individual n
