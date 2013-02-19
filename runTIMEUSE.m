@@ -18,8 +18,13 @@ function fx = run_helper(tx)
 	fx = squeeze(fx(n,:,:));
 end
 
-% run with 2x travel time
-fx2 = run_helper(2.0);
+% export beta to an AMPL .dat file
+fid = fopen('DATA/beta.dat', 'W');
+amplwrite(fid, 'beta', 0.95);
+fclose(fid);
+
+% run with 1.5x travel time
+fx2 = run_helper(1.5);
 
 % run with 1x travel time
 fx1 = run_helper(1.0);

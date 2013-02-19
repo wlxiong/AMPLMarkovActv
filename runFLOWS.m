@@ -1,4 +1,4 @@
-function runFLOW
+function runFLOWS
 % plotting flow variables
 
 % plot fx for individual n
@@ -14,6 +14,7 @@ function run_helper(b)
 	runAMPL('MDPNonlinearEqn.run')
 
 	% load data
+    rehash
 	clear functions
 	run 'DATA\FX.m'
 	% whos
@@ -24,7 +25,9 @@ function run_helper(b)
 	export_fig(['FIGURES/FX', num2str(b,3)] , '-pdf')
 end
 
-run_helper(.9)
+% run with 1x travel time
+genTT(1.0)
+run_helper(.93)
 run_helper(.95)
 
 end
