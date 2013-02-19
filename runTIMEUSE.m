@@ -30,8 +30,8 @@ fx1 = run_helper(1.5);
 figure; grid off; box off
 ah = plotAH(fx0, fx1, {'Normal condition', 'Congestion situation'});
 % export time use into csv
-csvwrite('FIGURES/AH.csv', [tx0, tx1; ah])
-export_fig('FIGURES/TU' , '-pdf')
+csvwrite('FIGURES/TUtt.csv', [tx0, tx1; ah])
+export_fig('FIGURES/TUtt' , '-pdf')
 
 % also plot fx0 and fx1
 figure; grid off; box off

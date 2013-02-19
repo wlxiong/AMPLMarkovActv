@@ -40,7 +40,7 @@ r1 = [.0 .0 .2];
 figure; grid off; box off
 ah = plotAH(fxx0, fxx1, {str0, str1});
 % export time use into csv
-csvwrite('FIGURES/AHhh.csv', [1, 2; ah])
-export_fig('FIGURES/TUhh' , '-pdf')
+csvwrite('FIGURES/TUrr.csv', [1, 2; ah])
+export_fig('FIGURES/TUrr' , '-pdf')
 
 end

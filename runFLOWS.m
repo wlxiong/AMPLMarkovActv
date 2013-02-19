@@ -17,7 +17,7 @@ function run_helper(b)
 	figure; grid off; box off
 	plotFX(fx)
 	title(['\beta = ', num2str(b, '%.2f')])
-	export_fig(['FIGURES/FX', num2str(b, '%.2f')] , '-pdf')
+	export_fig(['FIGURES/FXb', num2str(b, '%.2f')] , '-pdf')
 end
 
 % run with 1x travel time
