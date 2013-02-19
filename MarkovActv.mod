@@ -171,9 +171,11 @@ var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} =
 
 # Define the joint decision utility
 param jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
-	if a1 == j1 and a2 == j2 then
+	if a1 == j1 and a2 == j2 and a1 == a2 then
 		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
 		jointActvUtil[t,j1,j2,a1,a2,h]
+	else if a1 == j1 and a2 == j2 then
+		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h]
 	else if a1 == j1 then
 		sumActvUtil[1,t,j1,a1,h] - sumTravelCost[2,t,j2,a2,h]
 	else if a2 == j2 then
