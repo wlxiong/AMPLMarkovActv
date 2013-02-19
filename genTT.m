@@ -1,6 +1,9 @@
 function genTT(tx)
 % generate travel time data
 
+% show travel time ?
+plot_tt = false;
+
 % number of nodes
 % 1: home
 % 2: work
@@ -45,11 +48,11 @@ pdf = @(m_, b_, c_) m_./( ( (t-b_)./c_ ).^2 + 1 );
 % bpr = @(x, k, t0) t0 .* ( 1.0 + (x./k).^4);
 bpr = @(x, k, t0) t0 * tx;   % constant travel time
 
-% whos
+if plot_tt
+% create a new figure
 figure
-hold on
-grid on
-box off
+hold on; grid on; box off
+end
 
 travelTime = zeros(length(t), I, I, 'int32');
 for i = 1:I
@@ -60,22 +63,29 @@ for i = 1:I
 		ff = pdf(m(i,j), b(i,j), c(i,j));
 		tt = bpr(ff, capcity(i,j), freeTime(i,j));
 		travelTime(:,i,j) = int8(tt(:));
-		plot(t/1440.0, travelTime(:,i,j), 'LineWidth', 1)
+		if plot_tt
+			% plot travel time
+			plot(t/1440.0, travelTime(:,i,j), 'LineWidth', 1)
+		end
 	end
 end
 
+if plot_tt
+% adjust axis
+pbaspect([2 1 1])
 set(gca, 'XTick', .0:1.0/6.0:1.0);
 datetick('x', 'HH:MM', 'keepticks');
-pbaspect([2 1 1])
 xlabel('Time of the day')
 ylabel('Travel time (\times 5 min)')
 axis([0.0 1.0 0.0 max(travelTime(:))*1.1+1])
-pbaspect([2 1 1])
-legend('boxoff')
-% export_fig('FIGURES/travel_time', '-pdf')
+% export_fig('FIGURES/TT', '-pdf')
+end
 
+% save travel time
 fprintf('save travel time\n')
 save 'DATA/TT.mat' travelTime
+
+% export travel time
 fprintf('export the data as .dat\n')
 fid = fopen('DATA/TT.dat', 'W');
 amplwrite(fid, 'travelTime', travelTime, 0, 1, 1);
