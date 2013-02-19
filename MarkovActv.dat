@@ -17,11 +17,7 @@ include DATA/beta.dat;
 include DATA/TT.dat;
 
 # interaction coefficient for each activity
-param rho :=
-	1	0.0
-	2	0.0
-	3	0.2
-;
+include DATA/rho.dat;
 
 # activity opening and closing time
 param opening := 
