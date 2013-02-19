@@ -44,7 +44,7 @@ for i = 1:length(rho)
 end
 
 % save time use data
-save('DATA/TUrr.mat', 'TU')
+save('DATA/TUrr.mat', 'TU', 'rho')
 % export time use into csv
 csvwrite('FIGURES/TUrr.csv', TU)
 
@@ -54,10 +54,12 @@ barTU(TU([1 3],:)', {getEQ('\rho', rho(1)), getEQ('\rho', rho(3))});
 export_fig('FIGURES/TUbar' , '-pdf')
 
 % plot time use stacked bars
+figure;
 barhTU(rho, TU, {'Home', 'Work', 'Shopping', 'Travel'})
 export_fig('FIGURES/TUbarh' , '-pdf')
 
 % plot time use 3D bars
+figure; box off
 bar3TU(rho, TU, {'Home', 'Work', 'Shopping', 'Travel'})
 export_fig('FIGURES/TUbar3' , '-pdf')
 
