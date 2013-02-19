@@ -94,11 +94,17 @@ display Um, b, c > DATA/jointMDP.sol;
 # Output commands
 option display_round 6, display_width 120;
 
+# write the activity utility and travel cost
+# display actvUtil > DATA/actvUtil.dat;
+# display sumActvUtil > DATA/sumActvUtil.dat;
+# display sumTravelCost > DATA/sumTravelCost.dat;
+# display jointActvUtil > DATA/jointActvUtil.dat;
+
 
 # export flow variables
 include JointMDPNetworkFlows.run;
 
-# export EW to a file jointEUtil.m
+# export EW to file jointEUtil.m
 printf "EW = zeros(%d, %d, %d);\n", H, M, M > DATA/jointEUtil.m;
 for {t in TIME} {
 	printf "EW(%3d, :, :) = [", t+1 > DATA/jointEUtil.m;
@@ -114,7 +120,10 @@ for {t in TIME} {
 	printf "];\n" > DATA/jointEUtil.m;
 }
 
-# export choiceProb to a file jointChoiceProb.m
+# start debug log
+if debug_log == 1 then {
+
+# export choiceProb to file jointChoiceProb.m
 printf "Pj = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/jointChoiceProb.m;
 for {(t,j1,j2) in XX} {
 	for {h in 1..DH} {
@@ -136,10 +145,7 @@ for {(t,j1,j2) in XX} {
 	}
 }
 
-# start debug log
-if debug_log == 1 then {
-
-# export exp(jointChoiceProb) to a file expJointChoiceProb.txt
+# export exp(jointChoiceProb) to file expJointChoiceProb.txt
 printf "ePj = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/expJointChoiceProb.txt;
 for {(t,j1,j2) in XX} {
 	for {h in 1..DH} {
@@ -151,11 +157,30 @@ for {(t,j1,j2) in XX} {
 				  								 beta**h * EW[t,a1,a2]) - 
 		 							   theta * EW[t,j1,j2]) > DATA/expJointChoiceProb.txt;
 				else
-					printf " %8.2f", 0.0 > DATA/expJointChoiceProb.txt;
+					printf " %8s", "nan" > DATA/expJointChoiceProb.txt;
 			}
 			printf ";" > DATA/expJointChoiceProb.txt;
 		}
 		printf "];\n" > DATA/expJointChoiceProb.txt;
+	}
+}
+
+# export jointChoiceUtil + beta^h*EW to file jointChoiceUtil&EW.txt
+printf "ePj = zeros(%d, %d, %d, %d, %d, %d);\n", H, M, M, M, M, DH > DATA/jointChoiceUtil&EW.txt;
+for {(t,j1,j2) in XX} {
+	for {h in 1..DH} {
+		printf "ePj(%3d, %d, %d, :, :, %2d) = [", t+1, j1, j2, h > DATA/jointChoiceUtil&EW.txt;
+		for {a1 in AUW[1]} {
+			for {a2 in AUW[2]} {
+				if (a1,a2,h) in DD[t,j1,j2] then
+					printf " %8.2f + %8.2f", jointChoiceUtil[t,j1,j2,a1,a2,h],
+				  							 beta**h * EW[t,a1,a2] > DATA/jointChoiceUtil&EW.txt;
+				else
+					printf " %8s + %8.2f", "nan", beta**h * EW[t,a1,a2] > DATA/jointChoiceUtil&EW.txt;
+			}
+			printf ";" > DATA/jointChoiceUtil&EW.txt;
+		}
+		printf "];\n" > DATA/jointChoiceUtil&EW.txt;
 	}
 }
 

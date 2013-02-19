@@ -109,7 +109,7 @@ option display_round 6, display_width 120;
 # export flow variables
 include MDPNetworkFlows.run;
 
-# export EV to a file EUtil.m
+# export EV to file EUtil.m
 printf "EV = zeros(%d, %d, %d);\n", N, H, M > DATA/EUtil.m;
 for {t in TIME} {
 	printf "EV(:, %3d, :) = [", t+1 > DATA/EUtil.m;
@@ -125,7 +125,10 @@ for {t in TIME} {
 	printf "];\n" > DATA/EUtil.m;
 }
 
-# export choiceProb to a file choiceProb.m
+# debug output
+if debug_log == 1 then {
+
+# export choiceProb to file choiceProb.m
 printf "Pr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/choiceProb.m;
 for {n in PERS} {
 	for {(t,j) in X[n]} {
@@ -147,10 +150,7 @@ for {n in PERS} {
 	}
 }
 
-# debug output
-if debug_log == 1 then {
-
-# export exp(choiceProb) to a file expChoiceProb.txt
+# export exp(choiceProb) to file expChoiceProb.txt
 printf "ePr = zeros(%d, %d, %d, %d, %d);\n", N, H, M, M, DH > DATA/expChoiceProb.txt;
 for {n in PERS} {
 	for {(t,j) in X[n]} {
@@ -162,7 +162,7 @@ for {n in PERS} {
 												 beta**h * EV[n,(t+h),k]) - 
 									   theta * EV[n,t,j]) > DATA/expChoiceProb.txt;
 				else
-					printf " %8.2f", 0.0 > DATA/expChoiceProb.txt;
+					printf " %8s", "nan" > DATA/expChoiceProb.txt;
 			}
 			printf "\n" > DATA/expChoiceProb.txt;
 		}
