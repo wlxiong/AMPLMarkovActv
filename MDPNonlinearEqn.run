@@ -107,7 +107,7 @@ option display_round 6, display_width 120;
 
 
 # export flow variables
-include MDPNetworkFlows.run;
+include ExportNetworkFlows.run;
 
 # export EV to file EUtil.m
 printf "EV = zeros(%d, %d, %d);\n", N, H, M > DATA/EUtil.m;
