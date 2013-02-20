@@ -4,11 +4,13 @@
 model "MarkovActv.mod";
 data "MarkovActv.dat";
 
+# logging options
+let debug_log := 0;
+
 # include the code that define the component state and choice set
 include MDPStateAction.run
 # include the code that define the composite state and choice set
 include JointMDPStateAction.run
-
 
 # export the activity utility
 printf "Ua = zeros(%d, %d, %d);\n", N, M, H > DATA/actvUtil.m;
