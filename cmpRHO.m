@@ -29,11 +29,8 @@ end
 %% run the solver and import data
 if run_solver
 
-% export beta to an AMPL .dat file
-setPARAM('beta', 0.95)
-
-% run with 1x travel time
-genTT(1.0)
+% set default values for solver
+setDEFAULT()
 
 % run solver with rho in [0.0 1.0]
 rho = 0:.1:1.0;

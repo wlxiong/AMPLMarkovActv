@@ -18,8 +18,8 @@ end
 %% run the solver and import data
 if run_solver
 
-% run with 1x travel time
-genTT(1.0)
+% set default values for solver
+setDEFAULT()
 
 b1 = .93; b2 = .95;
 fx1 = run_helper(b1);

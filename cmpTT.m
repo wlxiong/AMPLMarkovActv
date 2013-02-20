@@ -18,8 +18,8 @@ end
 % run the solver and import data
 if run_solver
 
-% export beta to an AMPL .dat file
-setPARAM('beta', 0.95)
+% set default values for solver
+setDEFAULT()
 
 % run with different travel times
 tx1 = 1.0; tx2 = 1.5;
