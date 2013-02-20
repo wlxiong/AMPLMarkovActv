@@ -1,11 +1,11 @@
 Composite MDP
 Optimal solution found
     0 
-_solve_time = 0.499203
+_solve_time = 1.07641
 
-beta = 0.95
+beta = 0.99
 VoT = 60
-theta = 1
+theta = 0.2
 
 :      Um     b      c     :=
 1 1   3600      0   320

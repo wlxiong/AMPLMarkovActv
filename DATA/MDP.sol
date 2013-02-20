@@ -1,11 +1,11 @@
 Component MDP 1
 Optimal solution found
     0 
-_solve_time = 1.46641
+_solve_time = 1.71601
 
-beta = 0.95
+beta = 0.97
 VoT = 60
-theta = 1
+theta = 0.2
 
 :      Um     b      c     :=
 1 1   3600      0   320
@@ -19,11 +19,11 @@ theta = 1
 Component MDP 2
 Optimal solution found
     0 
-_solve_time = 1.48201
+_solve_time = 1.76281
 
-beta = 0.95
+beta = 0.97
 VoT = 60
-theta = 1
+theta = 0.2
 
 :      Um     b      c     :=
 1 1   3600      0   320
