@@ -19,6 +19,9 @@ include DATA/TT.dat;
 # interaction coefficient for each activity
 include DATA/rho.dat;
 
+# value of time
+include DATA/VoT.dat;
+
 # activity opening and closing time
 param opening := 
 	1	0
@@ -35,9 +38,6 @@ param closing :=
 param initEV :=   0.0;
 
 # MDP SIMULATION INPUTS
-
-# the true value of VoT
-param VoT :=  60.0;		# HKD per hour
 
 # true value of theta
 param theta := 1.0;
