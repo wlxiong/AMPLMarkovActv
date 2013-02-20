@@ -1,7 +1,7 @@
 Component MDP 1
 Optimal solution found
     0 
-_solve_time = 1.57561
+_solve_time = 1.46641
 
 beta = 0.95
 VoT = 60
@@ -19,7 +19,7 @@ theta = 1
 Component MDP 2
 Optimal solution found
     0 
-_solve_time = 1.56001
+_solve_time = 1.48201
 
 beta = 0.95
 VoT = 60
