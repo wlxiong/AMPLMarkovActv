@@ -1,7 +1,7 @@
 Composite MDP
 Optimal solution found
     0 
-_solve_time = 1.07641
+_solve_time = 0.904806
 
 beta = 0.99
 VoT = 60
