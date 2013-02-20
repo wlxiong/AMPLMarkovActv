@@ -22,7 +22,7 @@ if run_solver
 setDEFAULT()
 
 % start solver
-a1 = 60; a2 = 90;
+a1 = 60; a2 = 120;
 fx1 = run_helper(a1);
 fx2 = run_helper(a2);
 
@@ -54,5 +54,11 @@ figure; grid off; box off
 plotFX(fx2)
 title(['\alpha = ', num2str(a2)])
 export_fig(['FIGURES/FXa', num2str(a2, '%.0f')], '-pdf', '-jpg', '-r150')
+
+figure; grid off; box off
+plotFF(fx2, fx1)
+title(['\alpha = ', num2str(a2)])
+export_fig(['FIGURES/FXa', num2str(a1, '%.1f'), 'a', num2str(a2, '%.1f')],...
+	'-pdf', '-jpg', '-r150')
 
 end

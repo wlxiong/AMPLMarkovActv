@@ -41,7 +41,7 @@ export_fig(['FIGURES/UAsamp' num2str(n)], '-pdf', '-jpg', '-r150')
 figure; grid off; box off
 plotUA(x, Ua1)
 grey = [.5 .5 .5];
-plot(x, Ua2(3, :), '-^', 'Color', grey, 'LineWidth', 1, 'MarkerSize', 6)
+plot(x, Ua2(3, :), '-v', 'Color', grey, 'LineWidth', 1, 'MarkerSize', 6)
 legend({'Home', 'Work', 'Shopping 1', 'Shopping 2'},...
 	'Location', 'Southwest', 'FontSize', 11)
 legend('boxoff')

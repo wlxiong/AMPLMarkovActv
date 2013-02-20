@@ -5,7 +5,7 @@ function barTU(TU, group_names)
 bar(TU, .9, 'EdgeColor', 'k', 'LineWidth', 1, 'LineStyle', '-');
 % label bars
 x = [ (1:size(TU,1))-.15; (1:size(TU,1))+.15]';
-text(x(:), TU(:), strcat(num2str(TU(:),'%.2f'),'h'),...
+text(x(:), TU(:), strcat(num2str(TU(:),'%.1f'),'h'),...
 	'FontSize',11,'horiz','center','vert','bottom')
 
 % set axis properties
