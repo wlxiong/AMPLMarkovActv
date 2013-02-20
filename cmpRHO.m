@@ -58,7 +58,7 @@ end
 % plot time use bars for rho = 0.0 and 0.2
 figure; grid off; box off
 barTU(TU([1 3],:)', {getEQ('\rho', rho(1)), getEQ('\rho', rho(3))});
-export_fig('FIGURES/TUbar' , '-pdf')
+export_fig('FIGURES/TUbar', '-pdf',  '-jpg', '-r150')
 
 % plot time use stacked bars
 figure;

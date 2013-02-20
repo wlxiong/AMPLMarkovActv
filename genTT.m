@@ -82,11 +82,9 @@ axis([0.0 1.0 0.0 max(travelTime(:))*1.1+1])
 end
 
 % save travel time
-fprintf('save travel time\n')
 save 'DATA/TT.mat' travelTime
 
 % export travel time
-fprintf('export the data as .dat\n')
 fid = fopen('DATA/TT.dat', 'W');
 amplwrite(fid, 'travelTime', travelTime, 0, 1, 1);
 fclose(fid);
