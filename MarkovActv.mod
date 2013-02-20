@@ -107,18 +107,22 @@ param PI := 3.141592653;
 param actvUtil {n in PERS, j in AUW[n], t in 0..H} = 
 	if IS_CAUCHY == 1 then
 		# Scaled Cauchy distribution
-		if j == HOME and t < H/2 then 
-			Um[n,j]/PI*( atan( ( t*T+T-b[n,j])/c[n,j] ) - atan( ( t*T-b[n,j])/c[n,j]) )
-		else if j == HOME and t >= H/2 then
+		if j == HOME and t >= H/2 then
 			Um[n,j]/PI*( atan( ( t*T+T-(b[n,j]+1440) )/c[n,j] ) - atan( ( t*T-(b[n,j]+1440) )/c[n,j]) )
 		else
 			Um[n,j]/PI*( atan( ( t*T+T-b[n,j])/c[n,j] ) - atan( ( t*T-b[n,j])/c[n,j]) )
 	else
 		# Bell-shaped marginal utility function
-		T * ( U0[n,j] + 
-			  gamma[n,j]*lambda[n,j]*U1[n,j] / 
-				 ( exp( gamma[n,j] * (t*T - xi[n,j]) ) *
-				   ( 1 + exp( -gamma[n,j]*(t*T - xi[n,j]) ) )**(lambda[n,j]+1) ) );
+		if j == HOME and t >= H/2 then
+			T * ( U0[n,j] + 
+				  gamma[n,j]*lambda[n,j]*U1[n,j] / 
+					 ( exp( gamma[n,j] * (1440.0 - t*T - xi[n,j]) ) *
+					   ( 1 + exp( -gamma[n,j]*(1440.0 - t*T - xi[n,j]) ) )**(lambda[n,j]+1) ) )
+		else
+			T * ( U0[n,j] + 
+				  gamma[n,j]*lambda[n,j]*U1[n,j] / 
+					 ( exp( gamma[n,j] * (t*T - xi[n,j]) ) *
+					   ( 1 + exp( -gamma[n,j]*(t*T - xi[n,j]) ) )**(lambda[n,j]+1) ) );
 
 
 # DECLARE EQUILIBRIUM CONSTRAINT VARIABLES 
