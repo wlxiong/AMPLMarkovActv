@@ -16,14 +16,9 @@ function fxx = run_helper(r)
 	% start solver
 	runAMPL('JointMDPNonlinearEqn.run')
 
-	% load data
+	% import and save data
 	fxx = readFLOW('DATA\FXX.m', n);
-
-	% plot fxx
-	figure; grid off; box off
-	plotFX(fxx)
-	title(getEQ('\rho', r(3)))
-	export_fig(['FIGURES/FXXr', num2str(r(3), '%.1f')], '-pdf', '-jpg', '-r150')
+	save(['DATA/FXX', num2str(r(3), '%.1f'), '.mat'], 'fxx')
 end
 
 %% run the solver and import data
@@ -53,6 +48,18 @@ else
 % load time use data
 load('DATA/TUrr.mat', 'TU', 'rho')
 
+end
+
+% plot fxx for each value of rho
+for i = 1:length(rho)
+	% load saved fxx values
+	clear fxx
+	load(['DATA/FXX', num2str(rho(i), '%.1f'), '.mat'], 'fxx')
+    % plot activity participation probability
+	figure; grid off; box off
+	plotFXX(fxx./fxx(1,1))
+	title(getEQ('\rho', rho(i)))
+	export_fig(['FIGURES/FXXr', num2str(rho(i), '%.1f')], '-pdf', '-jpg', '-r150')
 end
 
 % plot time use bars for rho = 0.0 and 0.2
