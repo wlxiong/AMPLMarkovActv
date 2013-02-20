@@ -1,4 +1,4 @@
-function TU = cmpRHO
+function TU = cmpRHO(run_solver)
 % plotting flow variables
 
 % plot fx for individual n
@@ -23,8 +23,11 @@ function fxx = run_helper(r)
 	figure; grid off; box off
 	plotFX(fxx)
 	title(getEQ('\rho', r(3)))
-	export_fig(['FIGURES/FXXr', num2str(r(3), '%.1f')] , '-pdf')
+	export_fig(['FIGURES/FXXr', num2str(r(3), '%.1f')], '-pdf', '-jpg', '-r150')
 end
+
+%% run the solver and import data
+if run_solver
 
 % export beta to an AMPL .dat file
 setPARAM('beta', 0.95)
@@ -48,6 +51,13 @@ save('DATA/TUrr.mat', 'TU', 'rho')
 % export time use into csv
 csvwrite('FIGURES/TUrr.csv', TU)
 
+else
+
+% load time use data
+load('DATA/TUrr.mat', 'TU', 'rho')
+
+end
+
 % plot time use bars for rho = 0.0 and 0.2
 figure; grid off; box off
 barTU(TU([1 3],:)', {getEQ('\rho', rho(1)), getEQ('\rho', rho(3))});
@@ -56,11 +66,11 @@ export_fig('FIGURES/TUbar' , '-pdf')
 % plot time use stacked bars
 figure;
 barhTU(rho, TU, {'Home', 'Work', 'Shopping', 'Travel'})
-export_fig('FIGURES/TUbarh' , '-pdf')
+export_fig('FIGURES/TUbarh', '-pdf', '-jpg', '-r150')
 
 % plot time use 3D bars
 figure; box off
 bar3TU(rho, TU, {'Home', 'Work', 'Shopping', 'Travel'})
-export_fig('FIGURES/TUbar3' , '-pdf')
+export_fig('FIGURES/TUbar3', '-pdf', '-jpg', '-r150')
 
 end
