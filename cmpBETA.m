@@ -21,7 +21,7 @@ if run_solver
 % set default values for solver
 setDEFAULT()
 
-b1 = .93; b2 = .95;
+b1 = .925; b2 = .95;
 fx1 = run_helper(b1);
 fx2 = run_helper(b2);
 
@@ -38,12 +38,18 @@ end
 % plot flows
 figure; grid off; box off
 plotFX(fx1)
-title(['\beta = ', num2str(b1, '%.2f')])
-export_fig(['FIGURES/FXb', num2str(b1, '%.2f')], '-pdf', '-jpg', '-r150')
+title(['\beta = ', num2str(b1, '%.3f')])
+export_fig(['FIGURES/FXb', num2str(b1, '%.3f')], '-pdf', '-jpg', '-r150')
 
 figure; grid off; box off
 plotFX(fx2)
-title(['\beta = ', num2str(b2, '%.2f')])
-export_fig(['FIGURES/FXb', num2str(b2, '%.2f')], '-pdf', '-jpg', '-r150')
+title(['\beta = ', num2str(b2, '%.3f')])
+export_fig(['FIGURES/FXb', num2str(b2, '%.3f')], '-pdf', '-jpg', '-r150')
+
+figure; grid off; box off
+plotFF(fx1, fx2)
+title(['\beta = ', num2str(b1, '%.3f')])
+export_fig(['FIGURES/FXb', num2str(b1, '%.3f'), 'b', num2str(b2, '%.3f')],...
+	'-pdf', '-jpg', '-r150')
 
 end
