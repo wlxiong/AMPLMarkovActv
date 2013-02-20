@@ -3,6 +3,7 @@ function barTU(TU, group_names)
 
 % plot bars
 bar(TU, .9, 'EdgeColor', 'k', 'LineWidth', 1, 'LineStyle', '-');
+colormap(gray)
 % label bars
 x = [ (1:size(TU,1))-.15; (1:size(TU,1))+.15]';
 text(x(:), TU(:), strcat(num2str(TU(:),'%.1f'),'h'),...

@@ -1,5 +1,5 @@
-function TU = cmpRHO(run_solver)
-% plotting flow variables
+function TU = cmpRHO(rho, run_solver)
+% plotting flow variables with rho in a range, eg. 0:.1:.2 or 0:-.1:-.2
 
 % plot fx for individual n
 n = 2;
@@ -27,8 +27,7 @@ if run_solver
 % set default values for solver
 setDEFAULT()
 
-% run solver with rho in [0.0 1.0]
-rho = 0:.1:1.0;
+% run solver with rho
 TU = zeros(length(rho), 4);
 for i = 1:length(rho)
 	rvec = [.0 .0 rho(i)];
@@ -39,14 +38,14 @@ for i = 1:length(rho)
 end
 
 % save time use data
-save('DATA/TUrr.mat', 'TU', 'rho')
+save(['DATA/TUrr', num2str(rho(end), '%.1f'), '.mat'], 'TU', 'rho')
 % export time use into csv
-csvwrite('FIGURES/TUrr.csv', TU)
+csvwrite(['DATA/TUrr', num2str(rho(end), '%.1f'), '.csv'], TU)
 
 else
 
 % load time use data
-load('DATA/TUrr.mat', 'TU', 'rho')
+load(['DATA/TUrr', num2str(rho(end), '%.1f'), '.mat'], 'TU', 'rho')
 
 end
 
@@ -62,10 +61,11 @@ for i = 1:length(rho)
 	export_fig(['FIGURES/FXXr', num2str(rho(i), '%.1f')], '-pdf', '-jpg', '-r150')
 end
 
-% plot time use bars for rho = 0.0 and 0.2
+% plot time use bars for rho(1) and rho(3)
 figure; grid off; box off
 barTU(TU([1 3],:)', {getEQ('\rho', rho(1)), getEQ('\rho', rho(3))});
-export_fig('FIGURES/TUbar', '-pdf',  '-jpg', '-r150')
+export_fig(['FIGURES/TUr', num2str(rho(1), '%.1f'), 'r', num2str(rho(3), '%.1f')],...
+	'-pdf',  '-jpg', '-r150')
 
 % plot time use stacked bars
 figure;
