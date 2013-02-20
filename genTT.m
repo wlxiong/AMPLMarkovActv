@@ -13,9 +13,9 @@ H = 288;
 
 % free travel time
 freeTime = [
-0	6	2
+0	6	4
 6	0	6
-2	6	0
+4	6	0
 ];
 capcity = [
 -1		1500	1000
