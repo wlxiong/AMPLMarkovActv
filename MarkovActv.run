@@ -12,8 +12,10 @@ for {t in H-1..0 by -1, j in ACTV, k in ACTV} {
 }
 
 # Write isFeasibleState to DATA/ISF.sol
+print "DATA/ISF.sol";
+print "------------";
 for {t in 0..H} {
 	for {j in ACTV}
-		printf "%d\t", isFeasibleState[t,j] > DATA/ISF.sol;
-	printf "\n" > DATA/ISF.sol;
+		printf "%d\t", isFeasibleState[t,j];
+	printf "\n";
 }

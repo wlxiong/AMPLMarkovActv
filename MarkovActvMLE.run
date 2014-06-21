@@ -34,8 +34,8 @@ fix theta := trueTheta;
 fix VoT := trueVoT;
 
 # Specify KNITRO solver options:
-option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
-option knitro_options "alg=2 hessopt=2 outlev=0 maxit=300 xtol=0.0000000001 wantsol=1";
+# option knitro_options "alg=2 hessopt=2 outlev=0 maxit=300 xtol=0.0000000001 wantsol=1";
+options ipopt_options "nlp_scaling_method=equilibration-based linear_system_scaling=none";
 
 # Output commands
 option display_round 6, display_width 120;
@@ -46,21 +46,25 @@ fix {j in ACTV}  c[j]:= trueC[j];
 
 # Solve command
 solve MarkovActvMLE;
+
+# Solution status
+print "DATA/MLE.m";
+print "----------";
 if match (solve_message, "Locally optimal solution") > 0 then {
-	printf "solve_message = 'Locally optimal solution';\n" > DATA/MLE.m;
-	printf "solve_return = %5.0f;\n", 0 > DATA/MLE.m;
+	printf "solve_message = 'Locally optimal solution';\n";
+	printf "solve_return = %5.0f;\n", 0;
 }
 else if match (solve_message, "Iteration limit reached") > 0 then {
-	printf "solve_message = 'Iteration limit reached';\n" > DATA/MLE.m;
-	printf "solve_return = %5.0f;\n", 400 > DATA/MLE.m;
+	printf "solve_message = 'Iteration limit reached';\n";
+	printf "solve_return = %5.0f;\n", 400;
 }
 else if match (solve_message, "Evaluation error") > 0 then {
-	printf "solve_message = 'Evaluation error';\n" > DATA/MLE.m;
-	printf "solve_return = %5.0f;\n", 502 > DATA/MLE.m;
+	printf "solve_message = 'Evaluation error';\n";
+	printf "solve_return = %5.0f;\n", 502;
 }
 else {
-	printf "solve_message = 'Unknown error';\n", solve_message > DATA/MLE.m;
-	printf "solve_return = %5.0f;\n", 1000 > DATA/MLE.m;
+	printf "solve_message = 'Unknown error';\n", solve_message;
+	printf "solve_return = %5.0f;\n", 1000;
 }
 
 # display solver running time
@@ -73,47 +77,51 @@ display trueUm, trueB, trueC;
 # display Uw, xi, gamma, lambda;
 
 # write the estimates
-printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
-printf "param Um_ := \n" > DATA/MLE.dat;
+print "DATA/MLE.dat";
+print "------------";
+printf "param VoT_ := %f\n; ", VoT;
+printf "param Um_ := \n";
 for {j in ACTV} {
-	printf "%d\t%f\n", j, Um[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, Um[j];
 }
-printf ";\n" > DATA/MLE.dat;
-printf "param  b_ := \n" > DATA/MLE.dat;
+printf ";\n";
+printf "param  b_ := \n";
 for {j in ACTV} {
-	printf "%d\t%f\n", j, b[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, b[j];
 }
-printf ";\n" > DATA/MLE.dat;
-printf "param  c_ := \n" > DATA/MLE.dat;
+printf ";\n";
+printf "param  c_ := \n";
 for {j in ACTV} {
-	printf "%d\t%f\n", j, c[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, c[j];
 }
-printf ";\n" > DATA/MLE.dat;
+printf ";\n";
 
 # export to MATLAB
-printf "ml = %f;\n", likelihood > DATA/MLE.m;
+print "DATA/MLE.m";
+print "----------";
+printf "ml = %f;\n", likelihood;
 
 # export fixed parameters to MLE.m
-printf "beta = %f;\n", beta > DATA/MLE.m;
-printf "theta = %f;\n", theta > DATA/MLE.m;
+printf "beta = %f;\n", beta;
+printf "theta = %f;\n", theta;
 
 # export the estimated parameters to MLE.m
-printf "VoT_ = %f;\n", VoT > DATA/MLE.m;
-printf "Um_ = [ " > DATA/MLE.m;
+printf "VoT_ = %f;\n", VoT;
+printf "Um_ = [ ";
 for {j in ACTV} {
-	printf "%f ", Um[j] > DATA/MLE.m;
+	printf "%f ", Um[j];
 }
-printf "];\n" > DATA/MLE.m;
-printf "b_ = [ " > DATA/MLE.m;
+printf "];\n";
+printf "b_ = [ ";
 for {j in ACTV} {
-	printf "%f ", b[j] > DATA/MLE.m;
+	printf "%f ", b[j];
 }
-printf "];\n" > DATA/MLE.m;
-printf "c_ = [ " > DATA/MLE.m;
+printf "];\n";
+printf "c_ = [ ";
 for {j in ACTV} {
-	printf "%f ", c[j] > DATA/MLE.m;
+	printf "%f ", c[j];
 }
-printf "];\n" > DATA/MLE.m;
+printf "];\n";
 
 # display Uw, xi, gamma, lambda > DATA/MLE.sol;
 

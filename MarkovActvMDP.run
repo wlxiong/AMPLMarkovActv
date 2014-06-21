@@ -21,7 +21,7 @@ Bellman_Eqn,
 Bellman_EqnH;
 
 # include the code that define the state and choice set
-include MarkovActv.run
+include MarkovActv.run;
 
 # Set at a trivial initial value
 let {t in 0..H, j in ACTV} EV[t,j] := initEV;
@@ -42,29 +42,32 @@ fix {j in ACTV}  c[j]:= trueC[j];
 fix theta := trueTheta;
 
 # Specify KNITRO solver options:
-option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
 option knitro_options "alg=2 hessopt=2 outlev=3 maxit=100 xtol=0.0000000001 wantsol=1";
 
 # Solve command
 solve MarkovActvMDP;
 
 # Solution status
+print "DATA/MDP.sol";
+print "------------";
 if match (solve_message, "Locally optimal solution") > 0 then { 
-	printf "%s\n", "Optimal solution found" > DATA/MDP.sol;
-	printf "%5.0f \n", 0 > DATA/MDP.sol ; 
+	printf "%s\n", "Optimal solution found";
+	printf "%5.0f \n", 0;
 }
 else if match (solve_message, "Iteration limit reached") > 0 then { 
-	printf "%s\n", "Iteration limit reached" > DATA/MDP.sol;
-	printf "%5.0f \n", 400 > DATA/MDP.sol ; 
+	printf "%s\n", "Iteration limit reached";
+	printf "%5.0f \n", 400;
 }
 else if match (solve_message, "Evaluation error") > 0 then { 
-	printf "%s\n", "Evaluation error" > DATA/MDP.sol;
-	printf "%5.0f \n", 502 > DATA/MDP.sol ; 
+	printf "%s\n", "Evaluation error";
+	printf "%5.0f \n", 502;
 }
 else {
-	printf "%s\n", "No solution" > DATA/MDP.sol;
-	printf "%5.0f \n", 1000 > DATA/MDP.sol ; 
+	printf "%s\n", "No solution";
+	printf "%5.0f \n", 1000;
 }
+
+printf "_solve_time:\t%10.7f \n", _solve_time;
 
 display _solve_time;
 
@@ -85,60 +88,63 @@ display beta, VoT, theta;
 display Um, b, c;
 # display Uw, xi, gamma, lambda;
 
-printf "_solve_time:\t%10.7f \n", _solve_time > DATA/MDP.sol;
-
 # write EV to a file EUtil.m
-printf "EV = [\n" > DATA/EUtil.m;
+print "DATA/EUtil.m";
+print "------------";
+printf "EV = [\n";
 for {t in TIME} {
 	for {j in ACTV} {
 		if (t,j) in X then
-			printf "%10.7f\t", EV[t,j] > DATA/EUtil.m;
+			printf "%10.7f\t", EV[t,j];
 		else
-			printf "%10.7f\t", -1 > DATA/EUtil.m;
+			printf "%10.7f\t", -1;
 	}
-	printf "\n" > DATA/EUtil.m;
+	printf "\n";
 }
-printf "];" > DATA/EUtil.m;
+printf "];\n";
 
 # write choiceProb to a file Prob.m
-printf "Pr = zeros(%d, %d, %d);\n", H, M, M > DATA/Prob.m;
+print "DATA/Prob.m";
+print "-----------";
+printf "Pr = zeros(%d, %d, %d);\n", H, M, M;
 for {j in ACTV} {
-	printf "Pr(:, %d, :) = [\n", j > DATA/Prob.m;
+	printf "Pr(:, %d, :) = [\n", j;
 	for {t in TIME} {
 		if (t,j) in X then
 			for {k in ACTV} {
 				if k in D[t,j] then
-					printf "%10.7f\t", choiceProb[t,j,k] > DATA/Prob.m;
+					printf "%10.7f\t", choiceProb[t,j,k];
 				else
-					printf "%10.7f\t", 0.0 > DATA/Prob.m;
+					printf "%10.7f\t", 0.0;
 			}
 		else
 			for {k in ACTV} {
-				printf "%10.7f\t", 0.0 > DATA/Prob.m;
+				printf "%10.7f\t", 0.0;
 			}
-		printf "\n" > DATA/Prob.m;
+		printf "\n";
 	}
-	printf "];\n" > DATA/Prob.m;
+	printf "];\n";
 }
 
 # export fixed parameters to MDP.m
-printf "beta = %f;\n", beta > DATA/MDP.m;
-printf "theta = %f;\n", theta > DATA/MDP.m;
-
+print "DATA/MDP.m";
+print "----------";
+printf "beta = %f;\n", beta;
+printf "theta = %f;\n", theta;
 # export the structural parameters to MDP.m
-printf "VoT0 = %f;\n", VoT > DATA/MDP.m;
-printf "Um0 = [ " > DATA/MDP.m;
+printf "VoT0 = %f;\n", VoT;
+printf "Um0 = [ ";
 for {j in ACTV} {
-	printf "%f ", Um[j] > DATA/MDP.m;
+	printf "%f ", Um[j];
 }
-printf "];\n" > DATA/MDP.m;
-printf "b0 = [ " > DATA/MDP.m;
+printf "];\n";
+printf "b0 = [ ";
 for {j in ACTV} {
-	printf "%f ", b[j] > DATA/MDP.m;
+	printf "%f ", b[j];
 }
-printf "];\n" > DATA/MDP.m;
-printf "c0 = [ " > DATA/MDP.m;
+printf "];\n";
+printf "c0 = [ ";
 for {j in ACTV} {
-	printf "%f ", c[j] > DATA/MDP.m;
+	printf "%f ", c[j];
 }
-printf "];\n" > DATA/MDP.m;
+printf "];\n";
