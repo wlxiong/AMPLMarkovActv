@@ -44,7 +44,7 @@ for {n in PERS} {
 	# let {t in 0..H, j in ACTVWORK[n]} EV[n,t,j] := initEV;
 
 	# Specify KNITRO solver options:
-	option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
+	option solver "C:\Ziena\KNITRO900\knitroampl\knitroampl.exe";
 	option knitro_options "alg=2 hessopt=1 outlev=3 maxit=300 xtol=0.0000000001 wantsol=1";
 	# option presolve 0;
 
