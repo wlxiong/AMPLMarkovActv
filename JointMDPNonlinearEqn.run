@@ -9,7 +9,7 @@ data "MarkovActv.dat";
 fix IS_CAUCHY := 0;
 
 # logging options
-let debug_log := 0;
+let debug_log := 1;
 
 # include the code that define the component state and choice set
 include MDPStateAction.run

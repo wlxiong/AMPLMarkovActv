@@ -33,18 +33,13 @@ for n = 1:I
 	while t <= H
 		% [l, t, xt(n,t)]
         p = squeeze(Pr(n1, t, xt(n,t), :, :));
-		num_actv = size(p, 1);
+		dim = size(p);
         p = p(:)./sum(p(:));      % make sure the probabilites sum to one
 		% generate a choice
 		d = find(mnrnd(1, p'));
-		dx(n,t) = mod(d - 1, num_actv) + 1;
-		dh(n,t) = idivide(int32(d - 1), num_actv) + 1;
-		% dh(n,t)
-		% dx(n,t)
-		% state transition
-		% size(xt)
-		% size(travelTime)
-		% size(dh)
+		[ix, ih] = ind2sub(dim, d);
+		dx(n,t) = ix;
+		dh(n,t) = ih;
 		start_time = int32(t + travelTime(t, xt(n,t), dx(n,t)) + 1);
 		end_time = int32(start_time + dh(n,t));
 		% [start_time, end_time]
