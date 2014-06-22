@@ -19,9 +19,9 @@ H = 288;	% number of time slices, and T * H = 1440 minutes
 I = 300;	% number of individuals
 HOME = 1;	% index of HOME activity
 
-dx = zeros(N,H,'int32');	% travelers' activity choices
-dh = zeros(N,H,'int32');	% travelers' activity duration choices
-xt = zeros(N,H,'int32');	% travelers' states
+dx = zeros(I,H,'int32');	% travelers' activity choices
+dh = zeros(I,H,'int32');	% travelers' activity duration choices
+xt = zeros(I,H,'int32');	% travelers' states
 n1 = 1;						% person 1
 
 for n = 1:I
@@ -55,7 +55,7 @@ end
 
 % save the simulated data
 fprintf('\n save the simulation data')
-save 'DATA/MC.mat' dx dh xt EV Pr H N
+save 'DATA/MC.mat' dx dh xt EV Pr H I
 
 % export the data to an AMPL .dat file
 fprintf('\n export the data as .dat\n')
