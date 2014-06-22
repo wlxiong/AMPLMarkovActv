@@ -7,6 +7,9 @@ data "MarkovActv.dat";
 # include the simulated states and choices
 data "DATA/MC.dat";
 
+# Is Cauchy distribution used ? 
+fix IS_CAUCHY := 1;
+
 # Define the MLE problem
 problem MarkovActvMLE:
 
@@ -14,35 +17,43 @@ problem MarkovActvMLE:
 likelihood,
 
 # List the variables
-EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
+{t in 0..H, j in AUW[n1]} EV[n1,t,j], 
+{(t,j) in X[n1], (k,h) in D[n1,t,j]} choiceProb[n1,t,j,k,h], 
+{t in 0..H, j in AUW[n1]} actvUtil[n1,t,j],
+{(t,j) in X[n1], (k,h) in DA[n1,t,j]} sumActvUtil[n1,t,j,k,h],
+{(t,j) in X[n1], (k,h) in D[n1,t,j]} choiceUtil[n1,t,j,k,h],
+{j in ACTV} Um[n1,j],
+{j in ACTV} b[n1,j],
+{j in ACTV} c[n1,j],
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
-Bellman_Eqn,
-Bellman_EqnH;
+{(t,j) in X[n1]} Bellman_Eqn[n1,t,j],
+Bellman_EqnH[n1];
 
 # include the code that define the state and choice set
-include MarkovActv.run
+let debug_log := 0;
+include MDPStateAction.run
 
 # Set at a trivial initial value
-let {t in 0..H, j in ACTV} EV[t,j] := initEV;
+let {t in 0..H, j in ACTV} EV[n1,t,j] := initEV;
 
 # Fix theta at the true value
-fix theta := trueTheta;
+# fix theta := trueTheta;
 
 # Initial guesses set at trivial values; probably not good initial guesses
-fix VoT := trueVoT;
+# fix VoT := trueVoT;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\KNITRO900\knitroampl\knitroampl.exe";
-option knitro_options "alg=2 hessopt=2 outlev=0 maxit=300 xtol=0.0000000001 wantsol=1";
+option knitro_options "alg=2 hessopt=1 outlev=3 maxit=300 xtol=0.0000000001 wantsol=1";
 
 # Output commands
 option display_round 6, display_width 120;
 
-let {j in ACTV} Um[j]:= initUm[j];
-let {j in ACTV}  b[j]:= initB[j];
-fix {j in ACTV}  c[j]:= trueC[j];
+# fix {j in ACTV} Um[n1,j]:= Um0[n1,j];
+# fix {j in ACTV}  b[n1,j]:= b0[n1,j];
+# fix {j in ACTV}  c[n1,j]:= c0[n1,j];
 
 # Solve command
 solve MarkovActvMLE;
@@ -69,24 +80,24 @@ display _solve_time;
 display beta, theta, VoT;
 display Um, b, c;
 # display the true values
-display trueUm, trueB, trueC;
+display Um0, b0, c0;
 # display Uw, xi, gamma, lambda;
 
 # write the estimates
 printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
 printf "param Um_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
-	printf "%d\t%f\n", j, Um[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, Um[n1,j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
 printf "param  b_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
-	printf "%d\t%f\n", j, b[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, b[n1,j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
 printf "param  c_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
-	printf "%d\t%f\n", j, c[j] > DATA/MLE.dat;
+	printf "%d\t%f\n", j, c[n1,j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
 
@@ -101,17 +112,17 @@ printf "theta = %f;\n", theta > DATA/MLE.m;
 printf "VoT_ = %f;\n", VoT > DATA/MLE.m;
 printf "Um_ = [ " > DATA/MLE.m;
 for {j in ACTV} {
-	printf "%f ", Um[j] > DATA/MLE.m;
+	printf "%f ", Um[n1,j] > DATA/MLE.m;
 }
 printf "];\n" > DATA/MLE.m;
 printf "b_ = [ " > DATA/MLE.m;
 for {j in ACTV} {
-	printf "%f ", b[j] > DATA/MLE.m;
+	printf "%f ", b[n1,j] > DATA/MLE.m;
 }
 printf "];\n" > DATA/MLE.m;
 printf "c_ = [ " > DATA/MLE.m;
 for {j in ACTV} {
-	printf "%f ", c[j] > DATA/MLE.m;
+	printf "%f ", c[n1,j] > DATA/MLE.m;
 }
 printf "];\n" > DATA/MLE.m;
 

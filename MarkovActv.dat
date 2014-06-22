@@ -44,21 +44,18 @@ param theta := 0.2;
 
 # the true parameters of utility function
 
-# Is Cauchy distribution used ? 
-param IS_CAUCHY := 0;
-
 ## Cauchy curve
-param Um :=
+param Um0 :=
 	[*,1]	1	3600	2	3600
 	[*,2]	1	2500	2	2500
 	[*,3]	1	1200	2	1200
 ;
-param b :=
+param b0 :=
 	[*,1]	1	0		2	0
 	[*,2]	1	840		2	840
 	[*,3]	1	1140	2	1140
 ;
-param c :=
+param c0 :=
 	[*,1]	1	320		2	320
 	[*,2]	1	180		2	180
 	[*,3]	1	210		2	210

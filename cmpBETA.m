@@ -12,7 +12,7 @@ function fx = run_helper(b)
 	runAMPL('MDPNonlinearEqn.run')
 
 	% load data
-    fx = readFLOW('DATA\FX.m', n);
+    fx = readFLOW('DATA/FX.m', n);
 end
 
 %% run the solver and import data

@@ -27,6 +27,14 @@ set ACTV := 1..M;       # ACTV is the index set of activities
 param HOME;				# define HOME activity
 set WORK {n in PERS};	# define the work activity for each household member
 
+# generated time serise data
+param n1;				# a specific household member
+param I;				# sample size
+set SAMPLE := 1..I;		# sample IDs
+param xt {SAMPLE, TIME};	# state: current activity
+param dx {SAMPLE, TIME};	# decision: activity type
+param dh {SAMPLE, TIME};	# decision: activity duration
+
 # shortcuts for set union and set product
 set AUW {n in PERS} := ACTV union WORK[n];
 set AW1xAW2 := AUW[1] cross AUW[2];
@@ -87,11 +95,15 @@ param rho {ALLACTV};
 
 # PARAMETERS OF CAUCHY DISTRIBUTION
 # Is Cauchy distribution used ? 
-param IS_CAUCHY;
+var IS_CAUCHY;
 # Activity Parameters
-param Um {PERS cross ALLACTV} >= 0, <= 5000;
-param b {PERS cross ALLACTV} >= 0, <= 1440;
-param c {PERS cross ALLACTV} >= 0, <= 600;
+var Um {PERS cross ALLACTV} >= 0, <= 5000;
+var b {PERS cross ALLACTV} >= 0, <= 1440;
+var c {PERS cross ALLACTV} >= 0, <= 600;
+
+param Um0 {PERS cross ALLACTV} >= 0, <= 5000;
+param b0 {PERS cross ALLACTV} >= 0, <= 1440;
+param c0 {PERS cross ALLACTV} >= 0, <= 600;
 
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
@@ -104,7 +116,7 @@ param lambda {PERS cross ALLACTV};
 
 # Marginal activity utility
 param PI := 3.141592653;
-param actvUtil {n in PERS, j in AUW[n], t in 0..H} = 
+var actvUtil {n in PERS, j in AUW[n], t in 0..H} = 
 	if IS_CAUCHY == 1 then
 		# Scaled Cauchy distribution
 		if j == HOME and t >= H/2 then
@@ -148,20 +160,20 @@ var upper {t in 0..H, (j1,j2) in AW1xAW2};
 #  Define auxiliary variables to economize on expressions	
 
 #  Define the total discounted utility of pursuing activity j in time (t, t+h-1)
-param sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DA[n,t,j]} = 
+var sumActvUtil {n in PERS, (t,j) in X[n], (k,h) in DA[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * actvUtil[n,k,t+s];
 #  Define the total discounted utility of traveling from j to k departing at t
 param sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} = 
 	sum {s in 1..h} beta**(s-1) * T*VoT/60;
 # Define the joint utility
-param jointActvUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
+var jointActvUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
 	if a1 == a2 then
 		sum {s in 1..h} beta**(s-1) * rho[a1]*actvUtil[1,a1,t+s]*actvUtil[2,a2,t+s]
 	else
 		0.0;
 
 # Define the utility of selecting decision (k,h)
-param choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
+var choiceUtil {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} = 
     if k == j then
           sumActvUtil[n,t,j,k,h]
     else
@@ -174,7 +186,7 @@ var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} =
 		 theta * EV[n,t,j] );
 
 # Define the joint decision utility
-param jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
+var jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 	if a1 == j1 and a2 == j2 and a1 == a2 then
 		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
 		jointActvUtil[t,j1,j2,a1,a2,h]
@@ -206,12 +218,12 @@ var jointChoiceProb {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 #   Second is the likelihood that the observed transition between t-1 and t would have occurred.
 maximize likelihood0: 0;
 
-# maximize likelihood: 
-# 	sum {i in PERS, t in TIME} 
-# 		if (t, xt[i,t]) in X and dt[i,t] in D[t, xt[i,t]] then
-# 			log( choiceProb[ t, xt[i,t], dt[i,t] ] ) 
-# 		else
-# 			0.0;
+maximize likelihood:
+	sum {i in SAMPLE, t in TIME}
+		if (t, xt[i,t]) in X[1] and (dx[i,t], dh[i,t]) in D[n1, t, xt[i,t]] then
+			log( choiceProb[ n1, t, xt[i,t], dx[i,t], dh[i,t] ] )
+		else
+			0.0;
 
 
 #  Define the Bellman equation of the component MDP model

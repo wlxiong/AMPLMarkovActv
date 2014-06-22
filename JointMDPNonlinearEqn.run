@@ -5,6 +5,9 @@
 model "MarkovActv.mod";
 data "MarkovActv.dat";
 
+# Is Cauchy distribution used ? 
+fix IS_CAUCHY := 0;
+
 # logging options
 let debug_log := 0;
 
@@ -21,8 +24,11 @@ likelihood0,
 
 # List the variables
 EW, 
-# lower, upper, 
+actvUtil,
+sumActvUtil,
+jointChoiceUtil,
 jointChoiceProb,
+# lower, upper, 
 # actvUtil, sumActvUtil, sumTravelCost, jointActvUtil, jointChoiceUtil, 
 # Um, b, c,
 # VoT, theta, 
@@ -39,6 +45,9 @@ Bellman_JointH;
 # LowerBound, 
 # UpperBound;
 
+fix {n in PERS, j in ACTV} Um[n,j]:= Um0[n,j];
+fix {n in PERS, j in ACTV}  b[n,j]:= b0[n,j];
+fix {n in PERS, j in ACTV}  c[n,j]:= c0[n,j];
 
 # Initialize the lower and upper bounds and the EW values
 # for {(t,j1,j2) in XX} {

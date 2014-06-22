@@ -6,8 +6,11 @@
 model "MarkovActv.mod";
 data "MarkovActv.dat";
 
+# Is Cauchy distribution used ? 
+fix IS_CAUCHY := 0;
+
 # logging options
-let debug_log := 0;
+let debug_log := 1;
 
 # include the code that define the state and choice set
 include MDPStateAction.run
@@ -21,11 +24,11 @@ likelihood0,
 # List the variables
 {t in 0..H, j in AUW[n]} EV[n,t,j], 
 {(t,j) in X[n], (k,h) in D[n,t,j]} choiceProb[n,t,j,k,h], 
-# {t in 0..H, j in AUW[n]} actvUtil[n,t,j], 
-# {(t,j) in X[n], (k,h) in DA[n,t,j]} sumActvUtil[n,t,j,k,h], 
-# {(t,j) in X[n], (k,h) in DT[n,t,j]} sumTravelCost[n,t,j,k,h], 
-# {(t,j) in X[n], (k,h) in D[n,t,j]} choiceUtil[n,t,j,k,h], 
-# Um, b, c,
+{t in 0..H, j in AUW[n]} actvUtil[n,t,j],
+{(t,j) in X[n], (k,h) in DA[n,t,j]} sumActvUtil[n,t,j,k,h],
+{(t,j) in X[n], (k,h) in D[n,t,j]} choiceUtil[n,t,j,k,h],
+# {(t,j) in X[n], (k,h) in DT[n,t,j]} sumTravelCost[n,t,j,k,h],
+Um, b, c,
 # VoT, theta, 
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
@@ -39,6 +42,10 @@ for {n in PERS} {
 
 	# Set the current problem
 	problem componentMDP[n];
+
+	fix {j in ACTV} Um[n,j]:= Um0[n,j];
+	fix {j in ACTV}  b[n,j]:= b0[n,j];
+	fix {j in ACTV}  c[n,j]:= c0[n,j];
 
 	# Set at a trivial initial value
 	# let {t in 0..H, j in ACTVWORK[n]} EV[n,t,j] := initEV;
