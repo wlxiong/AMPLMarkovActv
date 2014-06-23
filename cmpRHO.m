@@ -11,7 +11,7 @@ end
 
 function fxx = run_helper(r)
 	% export rho to an AMPL .dat file
-	setPARAM('rho', r)
+	setPARAM('rho0', r)
 
 	% start solver
 	runAMPL('JointMDPNonlinearEqn.run')

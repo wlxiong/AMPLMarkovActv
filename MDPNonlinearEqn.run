@@ -42,9 +42,9 @@ for {n in PERS} {
 	# Set the current problem
 	problem componentMDP[n];
 
-	fix {j in ACTV} Um[n,j]:= Um0[n,j];
-	fix {j in ACTV}  b[n,j]:= b0[n,j];
-	fix {j in ACTV}  c[n,j]:= c0[n,j];
+	fix {j in ACTV} Um[n,j] := Um0[n,j];
+	fix {j in ACTV}  b[n,j] := b0[n,j];
+	fix {j in ACTV}  c[n,j] := c0[n,j];
 
 	# Set at a trivial initial value
 	# let {t in 0..H, j in ACTVWORK[n]} EV[n,t,j] := initEV;
@@ -83,10 +83,10 @@ for {n in PERS} {
 	display Um, b, c > DATA/MDP.sol;
 
 	# also display the structural parameters
-	# printf "\n\nComponent MDP %d", n;
-	# printf "\n\nstructural parameters (all fixed):\n\n";
-	# display beta, VoT, theta;
-	# display Um, b, c;
+	printf "\n\nComponent MDP %d", n;
+	printf "\n\nstructural parameters (all fixed):\n\n";
+	display beta, VoT, theta;
+	display Um, b, c;
 	# display Uw, xi, gamma, lambda;
 }
 

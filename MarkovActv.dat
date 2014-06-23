@@ -17,7 +17,7 @@ include DATA/beta.dat;
 include DATA/TT.dat;
 
 # interaction coefficient for each activity
-include DATA/rho.dat;
+include DATA/rho0.dat;
 
 # value of time
 include DATA/VoT.dat;

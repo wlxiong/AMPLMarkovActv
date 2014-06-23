@@ -94,7 +94,8 @@ param VoT >= 0;
 param theta >= 0;
 
 # intra-household interaction coeffcient for each activity
-param rho {ALLACTV};
+var rho {ALLACTV} >= -1.0, <= 1.0;
+param rho0 {ALLACTV} >= -1.0, <= 1.0;
 
 
 # PARAMETERS OF CAUCHY DISTRIBUTION
@@ -102,12 +103,12 @@ param rho {ALLACTV};
 var IS_CAUCHY;
 # Activity Parameters
 var Um {PERS cross ALLACTV} >= 0, <= 5000;
-var b {PERS cross ALLACTV} >= 0, <= 1440;
-var c {PERS cross ALLACTV} >= 0, <= 600;
+var b  {PERS cross ALLACTV} >= 0, <= 1440;
+var c  {PERS cross ALLACTV} >= 0, <= 600;
 
 param Um0 {PERS cross ALLACTV} >= 0, <= 5000;
-param b0 {PERS cross ALLACTV} >= 0, <= 1440;
-param c0 {PERS cross ALLACTV} >= 0, <= 600;
+param b0  {PERS cross ALLACTV} >= 0, <= 1440;
+param c0  {PERS cross ALLACTV} >= 0, <= 600;
 
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
