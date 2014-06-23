@@ -40,11 +40,9 @@ for n = 1:I
 		[x, h] = ind2sub(dim, d);
 		dx(n,t) = x;
 		dh(n,t) = h;
-		[start_time, end_time] = nextState(t, xt(n,t), dx(n,t), dh(n,t), travelTime);
-		% start_time = int32(t + travelTime(t, xt(n,t), dx(n,t)) + 1);
-		% end_time = int32(start_time + dh(n,t));
-		% [start_time, end_time]
-		xt(n, start_time:end_time) = dx(n,t);
+		[x, start_time, end_time] = nextState(t, xt(n,t), dx(n,t), dh(n,t), travelTime);
+		xt(n, start_time:end_time-1) = x;
+		xt(n, end_time) = dx(n,t);
 		t = end_time;
 	end
 end

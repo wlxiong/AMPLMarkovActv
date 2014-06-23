@@ -42,10 +42,13 @@ for n = 1:I
 		dx1(n,t) = x1;
 		dx2(n,t) = x2;
 		dh(n,t) = h;
-		[start_time1, end_time1] = nextState(t, xt1(n,t), dx1(n,t), dh(n,t), travelTime);
-		[start_time2, end_time2] = nextState(t, xt2(n,t), dx2(n,t), dh(n,t), travelTime);
-		xt1(n, start_time1:end_time1) = dx1(n,t);
-		xt2(n, start_time2:end_time2) = dx2(n,t);
+		[x1, start_time1, end_time1] = nextState(t, xt1(n,t), dx1(n,t), dh(n,t), travelTime);
+		[x2, start_time2, end_time2] = nextState(t, xt2(n,t), dx2(n,t), dh(n,t), travelTime);
+		xt1(n, start_time1:end_time1-1) = x1;
+		xt2(n, start_time2:end_time2-1) = x2;
+		xt1(n, end_time1) = dx1(n,t);
+		xt2(n, end_time2) = dx2(n,t);
+		assert(end_time1 == end_time2);
 		t = min(end_time1, end_time2);
 	end
 end
