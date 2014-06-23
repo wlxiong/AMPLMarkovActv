@@ -11,7 +11,7 @@ data "DATA/JointMC.dat";
 fix IS_CAUCHY := 1;
 
 # Define the MLE problem
-problem MarkovActvMLE:
+problem JointMarkovActvMLE:
 
 # Choose the objective function
 likelihood_joint,
@@ -29,9 +29,12 @@ Um, b, c,
 Bellman_Joint,
 Bellman_JointH;
 
+# logging options
+let debug_log := 1;
+
 # include the code that define the state and choice set
-let debug_log := 0;
 include MDPStateAction.run
+include JointMDPStateAction.run
 
 # Set at a trivial initial value
 # let {t in 0..H, j in ACTV} EV[n1,t,j] := initEV;
@@ -54,7 +57,7 @@ option display_round 6, display_width 120;
 # fix {j in ACTV}  c[n1,j]:= c0[n1,j];
 
 # Solve command
-solve MarkovActvMLE;
+solve JointMarkovActvMLE;
 if match (solve_message, "Locally optimal solution") > 0 then {
 	printf "solve_message = 'Locally optimal solution';\n" > DATA/JointMLE.m;
 	printf "solve_return = %5.0f;\n", 0 > DATA/JointMLE.m;

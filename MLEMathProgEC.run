@@ -18,10 +18,10 @@ likelihood,
 
 # List the variables
 {t in 0..H, j in AUW[n1]} EV[n1,t,j], 
-{(t,j) in X[n1], (k,h) in D[n1,t,j]} choiceProb[n1,t,j,k,h], 
 {t in 0..H, j in AUW[n1]} actvUtil[n1,t,j],
 {(t,j) in X[n1], (k,h) in DA[n1,t,j]} sumActvUtil[n1,t,j,k,h],
 {(t,j) in X[n1], (k,h) in D[n1,t,j]} choiceUtil[n1,t,j,k,h],
+{(t,j) in X[n1], (k,h) in D[n1,t,j]} choiceProb[n1,t,j,k,h],
 {j in ACTV} Um[n1,j],
 {j in ACTV} b[n1,j],
 {j in ACTV} c[n1,j],
