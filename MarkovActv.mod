@@ -289,4 +289,9 @@ subject to LowerBound {(t,j1,j2) in XX}:
 subject to UpperBound {(t,j1,j2) in XX}:
 	EW[t,j1,j2] <= upper[t,j1,j2];
 
+# Symmetric parameters
+subject to Symmetric_Um {j in ACTV}: Um[1,j] = Um[2,j];
+subject to Symmetric_b  {j in ACTV}:  b[1,j] =  b[2,j];
+subject to Symmetric_c  {j in ACTV}:  c[1,j] =  c[2,j];
+
 # END OF DEFINING OBJECTIVE FUNCTION AND CONSTRAINTS

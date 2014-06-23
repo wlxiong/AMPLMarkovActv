@@ -26,6 +26,9 @@ Um, b, c, rho,
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
+Symmetric_Um,
+Symmetric_b,
+Symmetric_c,
 Bellman_Joint,
 Bellman_JointH;
 
