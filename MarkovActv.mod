@@ -34,6 +34,10 @@ set SAMPLE := 1..I;		# sample IDs
 param xt {SAMPLE, TIME};	# state: current activity
 param dx {SAMPLE, TIME};	# decision: activity type
 param dh {SAMPLE, TIME};	# decision: activity duration
+param xt1 {SAMPLE, TIME};	# state: current activity of person 1
+param xt2 {SAMPLE, TIME};	# state: current activity of person 2
+param dx1 {SAMPLE, TIME};	# decision: activity type of person 1
+param dx2 {SAMPLE, TIME};	# decision: activity type of person 2
 
 # shortcuts for set union and set product
 set AUW {n in PERS} := ACTV union WORK[n];
@@ -220,8 +224,15 @@ maximize likelihood0: 0;
 
 maximize likelihood:
 	sum {i in SAMPLE, t in TIME}
-		if (t, xt[i,t]) in X[1] and (dx[i,t], dh[i,t]) in D[n1, t, xt[i,t]] then
+		if (t, xt[i,t]) in X[n1] and (dx[i,t], dh[i,t]) in D[n1, t, xt[i,t]] then
 			log( choiceProb[ n1, t, xt[i,t], dx[i,t], dh[i,t] ] )
+		else
+			0.0;
+
+maximize likelihood_joint:
+	sum {i in SAMPLE, t in TIME}
+		if (t, xt1[i,t], xt2[i,t]) in XX and (dx1[i,t], dx2[i,t], dh[i,t]) in DD[ t, xt1[i,t], xt2[i,t] ] then
+			log( jointChoiceProb[ t, xt1[i,t], xt2[i,t], dx1[i,t], dx2[i,t], dh[i,t] ] )
 		else
 			0.0;
 
