@@ -173,7 +173,7 @@ param sumTravelCost {n in PERS, (t,j) in X[n], (k,h) in DT[n,t,j]} =
 # Define the joint utility
 var jointActvUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} = 
 	if a1 == a2 then
-		sum {s in 1..h} beta**(s-1) * rho[a1]*actvUtil[1,a1,t+s]*actvUtil[2,a2,t+s]
+		sum {s in 1..h} beta**(s-1) * actvUtil[1,a1,t+s]*actvUtil[2,a2,t+s]
 	else
 		0.0;
 
@@ -194,7 +194,7 @@ var choiceProb {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]} =
 var jointChoiceUtil {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 	if a1 == j1 and a2 == j2 and a1 == a2 then
 		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h] + 
-		jointActvUtil[t,j1,j2,a1,a2,h]
+		rho[a1] * sqrt(jointActvUtil[t,j1,j2,a1,a2,h])
 	else if a1 == j1 and a2 == j2 then
 		sumActvUtil[1,t,j1,a1,h] + sumActvUtil[2,t,j2,a2,h]
 	else if a1 == j1 then

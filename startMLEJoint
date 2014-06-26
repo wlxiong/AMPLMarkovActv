@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wine ampl JointMDPNonlinearEqn.run
+matlab -nojvm -r "runMCJoint; exit;"
+wine ampl JointMLEMathProgEC.run

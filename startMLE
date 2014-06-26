@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wine ampl MDPNonlinearEqn.run
+matlab -nojvm -r "runMC; exit;"
+wine ampl MLEMathProgEC.run
