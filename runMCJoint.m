@@ -16,7 +16,7 @@ run DATA/jointEUtil.m
 load DATA/TT.mat travelTime
 
 H = 288;	% number of time slices, and T * H = 1440 minutes
-I = 300;	% number of household
+I = 3000;	% number of household
 HOME = 1;	% index of HOME activity
 
 xt1 = zeros(I,H,'int32');	% travelers' states
@@ -24,9 +24,10 @@ xt2 = zeros(I,H,'int32');	% travelers' states
 dx1 = zeros(I,H,'int32');	% travelers' activity choices
 dx2 = zeros(I,H,'int32');	% travelers' activity choices
 dh = zeros(I,H,'int32');	% travelers' activity duration choices
+n1 = 1;						% person 1
 
 for n = 1:I
-	if mod(n,50) == 0
+	if mod(n,100) == 0
 		fprintf('%3d...', n)
 	end
 	xt1(n,1) = HOME;		% the individual stay at home in time slice 1
@@ -60,6 +61,7 @@ save 'DATA/MC.mat' dx* dh xt* EW Pj H I
 % export the data to an AMPL .dat file
 fprintf('\n export the data as .dat\n')
 fid = fopen('DATA/JointMC.dat', 'W');
+amplwrite(fid, 'n1', n1);
 amplwrite(fid, 'I', I);
 amplwrite(fid, 'xt1', xt1(:,1:H), 1, 0);
 amplwrite(fid, 'xt2', xt2(:,1:H), 1, 0);

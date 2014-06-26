@@ -225,8 +225,8 @@ maximize likelihood0: 0;
 
 maximize likelihood:
 	sum {i in SAMPLE, t in TIME}
-		if (t, xt[i,t]) in X[n1] and (dx[i,t], dh[i,t]) in D[n1, t, xt[i,t]] then
-			log( choiceProb[ n1, t, xt[i,t], dx[i,t], dh[i,t] ] )
+		if (t, xt1[i,t]) in X[n1] and (dx1[i,t], dh[i,t]) in D[n1, t, xt1[i,t]] then
+			log( choiceProb[ n1, t, xt1[i,t], dx1[i,t], dh[i,t] ] )
 		else
 			0.0;
 

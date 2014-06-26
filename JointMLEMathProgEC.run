@@ -26,9 +26,9 @@ Um, b, c, rho,
 # EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Uw, xi, gamma,
 
 # List the constraints
-Symmetric_Um,
-Symmetric_b,
-Symmetric_c,
+# Symmetric_Um,
+# Symmetric_b,
+# Symmetric_c,
 Bellman_Joint,
 Bellman_JointH;
 
@@ -57,7 +57,7 @@ option display_round 6, display_width 120;
 
 # let {n in PERS, j in ACTV} Um[n,j] := Um0[n,j];
 # let {n in PERS, j in ACTV}  b[n,j] := b0[n,j];
-# let {n in PERS, j in ACTV}  c[n,j] := c0[n,j];
+# fix {n in PERS, j in ACTV}  c[n,j] := c0[n,j];
 # let {j in ALLACTV} rho[j] := rho0[j];
 
 # Solve command

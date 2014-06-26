@@ -16,7 +16,7 @@ run DATA/EUtil.m
 load DATA/TT.mat travelTime
 
 H = 288;	% number of time slices, and T * H = 1440 minutes
-I = 300;	% number of individuals
+I = 1000;	% number of individuals
 HOME = 1;	% index of HOME activity
 
 dx = zeros(I,H,'int32');	% travelers' activity choices
@@ -25,7 +25,7 @@ xt = zeros(I,H,'int32');	% travelers' states
 n1 = 1;						% person 1
 
 for n = 1:I
-	if mod(n,50) == 0
+	if mod(n,100) == 0
 		fprintf('%3d...', n)
 	end
 	xt(n,1) = HOME;		% the individual stay at home in time slice 1
@@ -56,7 +56,7 @@ fprintf('\n export the data as .dat\n')
 fid = fopen('DATA/MC.dat', 'W');
 amplwrite(fid, 'n1', n1);
 amplwrite(fid, 'I', I);
-amplwrite(fid, 'xt', xt(:,1:H), 1, 0);
-amplwrite(fid, 'dx', dx(:,1:H), 1, 0);
+amplwrite(fid, 'xt1', xt(:,1:H), 1, 0);
+amplwrite(fid, 'dx1', dx(:,1:H), 1, 0);
 amplwrite(fid, 'dh', dh(:,1:H), 1, 0);
 fclose(fid);

@@ -1,16 +1,16 @@
 Component MDP 1
 Optimal solution found
     0 
-_solve_time = 1.49
+_solve_time = 1.51
 
-beta = 0.97
+beta = 0.95
 VoT = 60
 theta = 0.2
 
 :      Um     b      c     :=
-1 1   3600      0   320
+1 1   2000     60   240
 1 2   2500    840   180
-1 3   1200   1140   210
+1 3   1200   1080   120
 2 1      0      0     0
 2 2      0      0     0
 2 3      0      0     0
@@ -19,18 +19,18 @@ theta = 0.2
 Component MDP 2
 Optimal solution found
     0 
-_solve_time = 1.93
+_solve_time = 1.94
 
-beta = 0.97
+beta = 0.95
 VoT = 60
 theta = 0.2
 
 :      Um     b      c     :=
-1 1   3600      0   320
+1 1   2000     60   240
 1 2   2500    840   180
-1 3   1200   1140   210
+1 3   1200   1080   120
 2 1   3600      0   320
 2 2   2500    840   180
-2 3   1200   1140   210
+2 3   2000   1140   210
 ;
 
