@@ -47,7 +47,7 @@ Bellman_JointH;
 fix {n in PERS, j in ACTV} Um[n,j] := Um0[n,j];
 fix {n in PERS, j in ACTV}  b[n,j] := b0[n,j];
 fix {n in PERS, j in ACTV}  c[n,j] := c0[n,j];
-fix {j in ALLACTV} rho[j] := rho0[j];
+fix {j in ACTV} rho[j] := rho0[j];
 
 # Initialize the lower and upper bounds and the EW values
 # for {(t,j1,j2) in XX} {
@@ -140,8 +140,8 @@ for {(t,j1,j2) in XX} {
 		for {a1 in AUW[1]} {
 			for {a2 in AUW[2]} {
 				if (a1,a2,h) in DD[t,j1,j2] then
-					if jointChoiceProb[t,j1,j2,a1,a2,h] >= -0.01 and 
-					   jointChoiceProb[t,j1,j2,a1,a2,h] <=  1.01 then
+					if jointChoiceProb[t,j1,j2,a1,a2,h] >= -0.000001 and 
+					   jointChoiceProb[t,j1,j2,a1,a2,h] <=  1.000001 then
 						printf " %8.5f", jointChoiceProb[t,j1,j2,a1,a2,h] > DATA/jointChoiceProb.m;
 					else
 						printf " %8s", "nan" > DATA/jointChoiceProb.m;
