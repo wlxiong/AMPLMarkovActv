@@ -86,7 +86,7 @@ else {
 	printf "%5.0f \n", 1000 > DATA/jointMDP.sol ; 
 }
 
-display _solve_time > DATA/jointMDP.sol;
+# display _solve_time > DATA/jointMDP.sol;
 
 # write the structural parameters
 display beta, VoT, theta > DATA/jointMDP.sol;

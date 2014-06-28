@@ -80,7 +80,7 @@ else {
 }
 
 # display solver running time
-display _solve_time;
+# display _solve_time;
 # display estimates of structural parameters
 display beta, theta, VoT;
 display Um, b, c, rho;

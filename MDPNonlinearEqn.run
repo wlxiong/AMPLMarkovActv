@@ -76,7 +76,7 @@ for {n in PERS} {
 		printf "%5.0f \n", 1000 > DATA/MDP.sol ; 
 	}
 
-	display _solve_time > DATA/MDP.sol;
+	# display _solve_time > DATA/MDP.sol;
 
 	# write the structural parameters
 	display beta, VoT, theta > DATA/MDP.sol;
