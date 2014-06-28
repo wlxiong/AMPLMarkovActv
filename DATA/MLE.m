@@ -1,6 +1,7 @@
 solve_message = 'Locally optimal solution';
 solve_return =     0;
 ml = -1319370.647632;
+n1 = 1;
 beta = 0.950000;
 theta = 0.200000;
 VoT_ = 60.000000;
