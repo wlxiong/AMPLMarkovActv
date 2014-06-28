@@ -1,7 +1,7 @@
 Composite MDP
 Optimal solution found
     0 
-_solve_time = 3.68
+_solve_time = 3.91
 
 beta = 0.95
 VoT = 60
@@ -12,7 +12,7 @@ theta = 0.2
 1 2   2500    840   180
 1 3   2000   1140   210
 2 1   3600      0   320
-2 2   2500    840   180
+2 2   3000    840   180
 2 3   1500   1140   210
 ;
 

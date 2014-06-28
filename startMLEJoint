@@ -1,5 +1,7 @@
 #!/bin/bash
+set -e
+sample_size=$1
 
 wine ampl JointMDPNonlinearEqn.run
-matlab -nojvm -r "runMCJoint; exit;"
+matlab -nojvm -r "runMCJoint(${sample_size}); exit;"
 wine ampl JointMLEMathProgEC.run

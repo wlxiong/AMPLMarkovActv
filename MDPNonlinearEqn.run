@@ -7,7 +7,7 @@ model "MarkovActv.mod";
 data "MarkovActv.dat";
 
 # Is Cauchy distribution used ? 
-fix IS_CAUCHY := 0;
+fix IS_CAUCHY := 1;
 
 # logging options
 let debug_log := 1;

@@ -10,6 +10,9 @@ data "DATA/MC.dat";
 # Is Cauchy distribution used ? 
 fix IS_CAUCHY := 1;
 
+# logging options
+let debug_log := 1;
+
 # Define the MLE problem
 problem MarkovActvMLE:
 
@@ -32,7 +35,6 @@ likelihood,
 Bellman_EqnH[n1];
 
 # include the code that define the state and choice set
-let debug_log := 0;
 include MDPStateAction.run
 
 # Set at a trivial initial value
