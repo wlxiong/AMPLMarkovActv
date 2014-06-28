@@ -5,7 +5,7 @@ model "MarkovActv.mod";
 data "MarkovActv.dat";
 
 # include the simulated states and choices
-data "DATA/JointMC.dat";
+data "DATA/jointMC.dat";
 
 # Is Cauchy distribution used ? 
 fix IS_CAUCHY := 1;
@@ -63,20 +63,20 @@ option display_round 6, display_width 120;
 # Solve command
 solve JointMarkovActvMLE;
 if match (solve_message, "Locally optimal solution") > 0 then {
-	printf "solve_message = 'Locally optimal solution';\n" > DATA/JointMLE.m;
-	printf "solve_return = %5.0f;\n", 0 > DATA/JointMLE.m;
+	printf "solve_message = 'Locally optimal solution';\n" > DATA/jointMLE.m;
+	printf "solve_return = %5.0f;\n", 0 > DATA/jointMLE.m;
 }
 else if match (solve_message, "Iteration limit reached") > 0 then {
-	printf "solve_message = 'Iteration limit reached';\n" > DATA/JointMLE.m;
-	printf "solve_return = %5.0f;\n", 400 > DATA/JointMLE.m;
+	printf "solve_message = 'Iteration limit reached';\n" > DATA/jointMLE.m;
+	printf "solve_return = %5.0f;\n", 400 > DATA/jointMLE.m;
 }
 else if match (solve_message, "Evaluation error") > 0 then {
-	printf "solve_message = 'Evaluation error';\n" > DATA/JointMLE.m;
-	printf "solve_return = %5.0f;\n", 502 > DATA/JointMLE.m;
+	printf "solve_message = 'Evaluation error';\n" > DATA/jointMLE.m;
+	printf "solve_return = %5.0f;\n", 502 > DATA/jointMLE.m;
 }
 else {
-	printf "solve_message = 'Unknown error';\n", solve_message > DATA/JointMLE.m;
-	printf "solve_return = %5.0f;\n", 1000 > DATA/JointMLE.m;
+	printf "solve_message = 'Unknown error';\n", solve_message > DATA/jointMLE.m;
+	printf "solve_return = %5.0f;\n", 1000 > DATA/jointMLE.m;
 }
 
 # display solver running time
@@ -89,49 +89,49 @@ display Um0, b0, c0, rho0;
 # display Uw, xi, gamma, lambda;
 
 # # write the estimates
-# printf "param VoT_ := %f\n; ", VoT > DATA/JointMLE.dat;
-# printf "param Um_ := \n" > DATA/JointMLE.dat;
-# for {j in ACTV} {
-# 	printf "%d\t%f\n", j, Um[n1,j] > DATA/JointMLE.dat;
-# }
-# printf ";\n" > DATA/JointMLE.dat;
-# printf "param  b_ := \n" > DATA/JointMLE.dat;
-# for {j in ACTV} {
-# 	printf "%d\t%f\n", j, b[n1,j] > DATA/JointMLE.dat;
-# }
-# printf ";\n" > DATA/JointMLE.dat;
-# printf "param  c_ := \n" > DATA/JointMLE.dat;
-# for {j in ACTV} {
-# 	printf "%d\t%f\n", j, c[n1,j] > DATA/JointMLE.dat;
-# }
-# printf ";\n" > DATA/JointMLE.dat;
+# printf "param VoT_ := %f\n; ", VoT > DATA/jointMLE.dat;
+printf "param Um_ := \n" > DATA/jointMLE.dat;
+for {j in ACTV} {
+	printf "%d\t%f\n", j, Um[n1,j] > DATA/jointMLE.dat;
+}
+printf ";\n" > DATA/jointMLE.dat;
+printf "param  b_ := \n" > DATA/jointMLE.dat;
+for {j in ACTV} {
+	printf "%d\t%f\n", j, b[n1,j] > DATA/jointMLE.dat;
+}
+printf ";\n" > DATA/jointMLE.dat;
+printf "param  c_ := \n" > DATA/jointMLE.dat;
+for {j in ACTV} {
+	printf "%d\t%f\n", j, c[n1,j] > DATA/jointMLE.dat;
+}
+printf ";\n" > DATA/jointMLE.dat;
 
 # export to MATLAB
-printf "ml = %f;\n", likelihood_joint > DATA/JointMLE.m;
+printf "ml = %f;\n", likelihood_joint > DATA/jointMLE.m;
 
 # export fixed parameters to MLE.m
-printf "beta = %f;\n", beta > DATA/JointMLE.m;
-printf "theta = %f;\n", theta > DATA/JointMLE.m;
+printf "beta = %f;\n", beta > DATA/jointMLE.m;
+printf "theta = %f;\n", theta > DATA/jointMLE.m;
 
 # export the estimated parameters to MLE.m
-# printf "VoT_ = %f;\n", VoT > DATA/JointMLE.m;
-# printf "Um_ = [ " > DATA/JointMLE.m;
-# for {j in ACTV} {
-# 	printf "%f ", Um[n1,j] > DATA/JointMLE.m;
-# }
-# printf "];\n" > DATA/JointMLE.m;
-# printf "b_ = [ " > DATA/JointMLE.m;
-# for {j in ACTV} {
-# 	printf "%f ", b[n1,j] > DATA/JointMLE.m;
-# }
-# printf "];\n" > DATA/JointMLE.m;
-# printf "c_ = [ " > DATA/JointMLE.m;
-# for {j in ACTV} {
-# 	printf "%f ", c[n1,j] > DATA/JointMLE.m;
-# }
-# printf "];\n" > DATA/JointMLE.m;
+printf "VoT_ = %f;\n", VoT > DATA/jointMLE.m;
+printf "Um_ = [ " > DATA/jointMLE.m;
+for {j in ACTV} {
+	printf "%f ", Um[n1,j] > DATA/jointMLE.m;
+}
+printf "];\n" > DATA/jointMLE.m;
+printf "b_ = [ " > DATA/jointMLE.m;
+for {j in ACTV} {
+	printf "%f ", b[n1,j] > DATA/jointMLE.m;
+}
+printf "];\n" > DATA/jointMLE.m;
+printf "c_ = [ " > DATA/jointMLE.m;
+for {j in ACTV} {
+	printf "%f ", c[n1,j] > DATA/jointMLE.m;
+}
+printf "];\n" > DATA/jointMLE.m;
 
-# display Uw, xi, gamma, lambda > DATA/JointMLE.sol;
+# display Uw, xi, gamma, lambda > DATA/jointMLE.sol;
 
 # display the value function
 # display EV;

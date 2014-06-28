@@ -70,7 +70,7 @@ save 'DATA/MC.mat' dx* dh xt* EW Pj H I
 
 % export the data to an AMPL .dat file
 fprintf('\n export the data as .dat\n')
-fid = fopen('DATA/JointMC.dat', 'W');
+fid = fopen('DATA/jointMC.dat', 'W');
 amplwrite(fid, 'n1', n1);
 amplwrite(fid, 'I', I);
 amplwrite(fid, 'xt1', xt1(:,1:H), 1, 0);

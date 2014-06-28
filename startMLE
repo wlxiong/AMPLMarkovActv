@@ -3,5 +3,5 @@ set -e
 sample_size=$1
 
 wine ampl MDPNonlinearEqn.run
-matlab -nojvm -r "runMC(${sample_size}); exit;"
+matlab -nojvm -r "runMC(${sample_size}); exit;" | tee DATA/MC.log
 wine ampl MLEMathProgEC.run
