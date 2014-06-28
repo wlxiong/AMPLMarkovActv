@@ -10,6 +10,12 @@ data "DATA/MC.dat";
 # read the estimates
 data "DATA/MLE.dat";
 
+# Is Cauchy distribution used ? 
+fix IS_CAUCHY := 1;
+
+# logging options
+let debug_log := 1;
+
 # Define the problem
 problem MarkovActvMDP:
 
@@ -17,30 +23,36 @@ problem MarkovActvMDP:
 likelihood0,
 
 # List the variables
-EV, actvUtil, choiceUtil, choiceProb, VoT, theta, Um, b, c,
+{t in 0..H, j in AUW[n1]} EV[n1,t,j], 
+{t in 0..H, j in AUW[n1]} actvUtil[n1,t,j],
+{(t,j) in X[n1], (k,h) in DA[n1,t,j]} sumActvUtil[n1,t,j,k,h],
+{(t,j) in X[n1], (k,h) in D[n1,t,j]} choiceUtil[n1,t,j,k,h],
+{(t,j) in X[n1], (k,h) in D[n1,t,j]} choiceProb[n1,t,j,k,h],
+{j in ACTV} Um[n1,j],
+{j in ACTV} b[n1,j],
+{j in ACTV} c[n1,j],
 
 # List the constraints
-Bellman_Eqn,
-Bellman_EqnH;
+{(t,j) in X[n1]} Bellman_Eqn[n1,t,j],
+Bellman_EqnH[n1];
 
 # include the code that define the state and choice set
-include MarkovActv.run
+include MDPStateAction.run
 
 # Set at a trivial initial value
-let {t in 0..H, j in ACTV} EV[t,j] := initEV;
+let {t in 0..H, j in ACTV} EV[n1,t,j] := initEV;
 
 # Fix at the estimated values
-fix VoT := VoT_;
-fix {j in ACTV} Um[j]:= Um_[j];
-fix {j in ACTV}  b[j]:= b_[j];
-fix {j in ACTV}  c[j]:= c_[j];
+fix {j in ACTV} Um[n1,j] := Um_[j];
+fix {j in ACTV}  b[n1,j] := b_[j];
+fix {j in ACTV}  c[n1,j] := c_[j];
 
 # Fix at true values
-fix theta := trueTheta;
+# fix theta := trueTheta;
 
 # Specify KNITRO solver options:
-option solver "C:\Ziena\Knitro811\knitro-8.1.1-z-WinMSVC10\knitroampl\knitroampl";
-option knitro_options "alg=2 hessopt=2 outlev=0 maxit=100 xtol=0.0000000001 wantsol=1";
+option solver "C:\Ziena\KNITRO900\knitroampl\knitroampl.exe";
+option knitro_options "alg=2 hessopt=1 outlev=1 maxit=100 xtol=0.0000000001 wantsol=1";
 
 # Output commands
 option display_round 6, display_width 120;
@@ -49,44 +61,32 @@ option show_stats 0;
 # option log_file "DATA/LL.log";
 
 # first, try all the possible values of b[2]
-set TT := (0..(H-1) by 8) union {H-1};
-param lf_b2 {TT};
+set TT := (0..(H-1) by 6) union {H-1};
+param ll_b2 {TT};
 for {s in TT} {
 	# set b
-	let b[2] := s*T;
-	fix b;
+	fix b[n1,2] := s*T;
 	# solve the problem
 	solve MarkovActvMDP > DATA/LL.log;
-	# display _solve_time;
 	# calculate likelihood
-	let lf_b2[s] := 
-		sum {i in PERS, t in TIME} 
-			if (t, xt[i,t]) in X and dt[i,t] in D[t, xt[i,t]] then
-				log( choiceProb[ t, xt[i,t], dt[i,t] ] )
-			else
-				1.0;
-	display s, lf_b2[s];
+	let ll_b2[s] := likelihood;
+	display s, ll_b2[s], _solve_time;
 }
 
 # then, try all the possible combinations of b[2] and b[3]
-param lf_b23 {TT cross TT};
+param ll_b23 {TT cross TT};
 for {s in TT} {
 	for {r in TT} {
 		# set b
-		let b[2] := s*T;
-		let b[3] := r*T;
+		let b[n1,2] := s*T;
+		let b[n1,3] := r*T;
 		fix b;
 		# solve the problem
 		solve MarkovActvMDP > DATA/LL.log;
 		# display _solve_time;
 		# calculate likelihood
-		let lf_b23[s,r] := 
-			sum {i in PERS, t in TIME} 
-				if (t, xt[i,t]) in X and dt[i,t] in D[t, xt[i,t]] then
-					log( choiceProb[ t, xt[i,t], dt[i,t] ] )
-				else
-					1.0;
-		display s, r, lf_b23[s,r];
+		let ll_b23[s,r] := likelihood;
+		display s, r, ll_b23[s,r];
 	}
 }
 
@@ -98,16 +98,16 @@ for {t in TT} {
 }
 printf "];\n" > DATA/LL.m;
 
-printf "lf_b2 = [\n" > DATA/LL.m;
+printf "ll_b2 = [\n" > DATA/LL.m;
 for {t in TT} {
-	printf "%f\n", lf_b2[t] > DATA/LL.m;
+	printf "%f\n", ll_b2[t] > DATA/LL.m;
 }
 printf "];\n" > DATA/LL.m;
 
-printf "lf_b23 = [\n" > DATA/LL.m;
+printf "ll_b23 = [\n" > DATA/LL.m;
 for {s in TT} {
 	for {t in TT} {
-		printf "%f\t", lf_b23[s,t] > DATA/LL.m;
+		printf "%f\t", ll_b23[s,t] > DATA/LL.m;
 	}
 	printf "\n" > DATA/LL.m;
 }

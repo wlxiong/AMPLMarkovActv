@@ -86,7 +86,7 @@ display Um0, b0, c0;
 # display Uw, xi, gamma, lambda;
 
 # write the estimates
-printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
+# printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
 printf "param Um_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
 	printf "%d\t%f\n", j, Um[n1,j] > DATA/MLE.dat;

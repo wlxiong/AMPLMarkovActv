@@ -101,18 +101,22 @@ param rho0 {ALLACTV} >= -1.0, <= 1.0;
 # PARAMETERS OF CAUCHY DISTRIBUTION
 # Is Cauchy distribution used ? 
 var IS_CAUCHY;
-# Activity Parameters
+# Activity parameters
 var Um {PERS cross ALLACTV} >= 0, <= 5000;
 var b  {PERS cross ALLACTV} >= 0, <= 1440;
 var c  {PERS cross ALLACTV} >= 0, <= 600;
-
+# True parameters
 param Um0 {PERS cross ALLACTV} >= 0, <= 5000;
 param b0  {PERS cross ALLACTV} >= 0, <= 1440;
 param c0  {PERS cross ALLACTV} >= 0, <= 600;
+# Estimated parameters
+param Um_ {ALLACTV} >= 0, <= 5000;
+param b_  {ALLACTV} >= 0, <= 1440;
+param c_  {ALLACTV} >= 0, <= 600;
 
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
-# Activity Parameters
+# Activity parameters
 param U0 {PERS cross ALLACTV};
 param U1 {PERS cross ALLACTV};
 param xi {PERS cross ALLACTV} >= 0, <= 1440;
