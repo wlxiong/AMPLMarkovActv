@@ -1,0 +1,103 @@
+# Load model and data
+model "MarkovActv.mod";
+data "MarkovActv.dat";
+
+# include the simulated states and choices
+data "DATA/jointMC.dat";
+
+# read the estimates
+data "DATA/jointMLE.dat";
+
+# Is Cauchy distribution used ? 
+fix IS_CAUCHY := 1;
+
+# logging options
+let debug_log := 1;
+
+# include the code that define the component state and choice set
+include MDPStateAction.run
+include JointMDPStateAction.run
+
+# Define the composite MDP problem for the entire household
+problem compositeMDP:
+
+# Choose the objective function
+likelihood0,
+
+# List the variables
+EW, 
+actvUtil,
+sumActvUtil,
+jointChoiceUtil,
+jointChoiceProb,
+Um, b, c, rho,
+
+# List the constraints
+Bellman_Joint,
+Bellman_JointH;
+
+fix {n in PERS, j in ACTV} Um[n,j] := Um_[n,j];
+fix {n in PERS, j in ACTV}  b[n,j] := b_[n,j];
+fix {n in PERS, j in ACTV}  c[n,j] := c_[n,j];
+fix {j in ACTV} rho[j] := rho_[j];
+
+# Specify KNITRO solver options:
+option solver "C:\Ziena\KNITRO900\knitroampl\knitroampl.exe";
+option knitro_options "alg=2 hessopt=1 outlev=1 maxit=100 xtol=0.0000000001 wantsol=1";
+
+# Output commands
+option display_round 6, display_width 120;
+option solver_msg 0;
+option show_stats 0; 
+# option log_file "DATA/LL.log";
+
+# first, try all the possible values of rho[3]
+set RHO := (0..10);
+param ll_rho3 {RHO};
+for {r in RHO} {
+	# set rho
+	fix rho[3] := r / 10.0;
+	# solve the problem
+	solve compositeMDP > DATA/jointLL.log;
+	# calculate likelihood
+	let ll_rho3[r] := likelihood_joint;
+	display r, ll_rho3[r], _solve_time;
+}
+
+# then, try all the possible combinations of rho[1] and rho[3]
+param ll_rho13 {RHO cross RHO};
+for {r1 in RHO} {
+	for {r3 in RHO} {
+		# set rho
+		fix rho[1] := r1 / 10.0;
+		fix rho[3] := r3 / 10.0;
+		# solve the problem
+		solve compositeMDP > DATA/jointLL.log;
+		# calculate likelihood
+		let ll_rho13[r1,r3] := likelihood_joint;
+		display r1, r3, ll_rho13[r1,r3], _solve_time;
+	}
+}
+
+# print likelihood values
+
+printf "rho = [\n" > DATA/jointLL.m;
+for {r in RHO} {
+	printf "%f\n", r> DATA/jointLL.m;
+}
+printf "];\n" > DATA/jointLL.m;
+
+printf "ll_rho3 = [\n" > DATA/jointLL.m;
+for {r in RHO} {
+	printf "%f\n", ll_rho3[r] > DATA/jointLL.m;
+}
+printf "];\n" > DATA/jointLL.m;
+
+printf "ll_rho13 = [\n" > DATA/jointLL.m;
+for {r1 in RHO} {
+	for {r3 in RHO} {
+		printf "%f\t", ll_rho13[r1,r3] > DATA/jointLL.m;
+	}
+	printf "\n" > DATA/jointLL.m;
+}
+printf "];\n" > DATA/jointLL.m;

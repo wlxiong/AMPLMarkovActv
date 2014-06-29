@@ -1,6 +1,3 @@
-# Load the component MDPs
-# include MarkovActvMDP.run
-
 # Load model and data
 model "MarkovActv.mod";
 data "MarkovActv.dat";

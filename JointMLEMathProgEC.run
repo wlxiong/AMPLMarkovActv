@@ -113,6 +113,11 @@ for {n in PERS} {
 	}
 }
 printf ";\n" > DATA/jointMLE.dat;
+printf "param rho_ := \n" > DATA/jointMLE.dat;
+for {j in ACTV} {
+	printf "%d\t%f\n", j, rho[j] > DATA/jointMLE.dat;
+}
+printf ";\n" > DATA/jointMLE.dat;
 
 # export to MATLAB
 printf "ml = %f;\n", likelihood_joint > DATA/jointMLE.m;
@@ -141,9 +146,14 @@ printf "];\n" > DATA/jointMLE.m;
 printf "c_ = [\n" > DATA/jointMLE.m;
 for {n in PERS} {
 	for {j in ACTV} {
-		printf "%f ", c[n1,j] > DATA/jointMLE.m;
+		printf "%f ", c[n,j] > DATA/jointMLE.m;
 	}
 	printf "\n" > DATA/jointMLE.m;
+}
+printf "];\n" > DATA/jointMLE.m;
+printf "rho_ = [ " > DATA/jointMLE.m;
+for {j in ACTV} {
+	printf "%f ", rho[j] > DATA/jointMLE.m;
 }
 printf "];\n" > DATA/jointMLE.m;
 

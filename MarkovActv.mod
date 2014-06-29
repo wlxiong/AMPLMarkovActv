@@ -95,8 +95,10 @@ param theta >= 0;
 
 # intra-household interaction coeffcient for each activity
 var rho {ALLACTV} >= -1.0, <= 1.0;
+# true value
 param rho0 {ALLACTV} >= -1.0, <= 1.0;
-
+# estimated value
+param rho_ {ALLACTV} >= -1.0, <= 1.0;
 
 # PARAMETERS OF CAUCHY DISTRIBUTION
 # Is Cauchy distribution used ? 
@@ -110,9 +112,9 @@ param Um0 {PERS cross ALLACTV} >= 0, <= 5000;
 param b0  {PERS cross ALLACTV} >= 0, <= 1440;
 param c0  {PERS cross ALLACTV} >= 0, <= 600;
 # Estimated parameters
-param Um_ {ALLACTV} >= 0, <= 5000;
-param b_  {ALLACTV} >= 0, <= 1440;
-param c_  {ALLACTV} >= 0, <= 600;
+param Um_ {PERS cross ALLACTV} >= 0, <= 5000;
+param b_  {PERS cross ALLACTV} >= 0, <= 1440;
+param c_  {PERS cross ALLACTV} >= 0, <= 600;
 
 
 # PARAMETERS OF BELL-SHAPED FUNCTION
