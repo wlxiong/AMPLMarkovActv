@@ -48,7 +48,7 @@ let {t in 0..H, j in ACTV} EV[n1,t,j] := initEV;
 
 # Specify KNITRO solver options:
 option solver "C:\Ziena\KNITRO900\knitroampl\knitroampl.exe";
-option knitro_options "alg=2 hessopt=1 outlev=3 maxit=1000 xtol=0.0000000001 wantsol=1";
+option knitro_options "alg=2 hessopt=1 outlev=3 maxit=600 xtol=0.0000000001 wantsol=1";
 
 # Output commands
 option display_round 6, display_width 120;
@@ -80,13 +80,15 @@ else {
 # display _solve_time;
 # display estimates of structural parameters
 display beta, theta, VoT;
+display beta, theta, VoT > DATA/MLE.sol;
 display Um, b, c;
+display Um, b, c > DATA/MLE.sol;
 # display the true values
 display Um0, b0, c0;
+display Um0, b0, c0 > DATA/MLE.sol;
 # display Uw, xi, gamma, lambda;
 
 # write the estimates
-# printf "param VoT_ := %f\n; ", VoT > DATA/MLE.dat;
 printf "param Um_ := \n" > DATA/MLE.dat;
 for {j in ACTV} {
 	printf "%d\t%f\n", j, Um[n1,j] > DATA/MLE.dat;
@@ -105,14 +107,13 @@ printf ";\n" > DATA/MLE.dat;
 
 # export to MATLAB
 printf "ml = %f;\n", likelihood > DATA/MLE.m;
-printf "n1 = %d;\n", n1 > DATA/MLE.m
+printf "n1 = %d;\n", n1 > DATA/MLE.m;
 
 # export fixed parameters to MLE.m
 printf "beta = %f;\n", beta > DATA/MLE.m;
 printf "theta = %f;\n", theta > DATA/MLE.m;
 
 # export the estimated parameters to MLE.m
-printf "VoT_ = %f;\n", VoT > DATA/MLE.m;
 printf "Um_ = [ " > DATA/MLE.m;
 for {j in ACTV} {
 	printf "%f ", Um[n1,j] > DATA/MLE.m;
@@ -128,8 +129,6 @@ for {j in ACTV} {
 	printf "%f ", c[n1,j] > DATA/MLE.m;
 }
 printf "];\n" > DATA/MLE.m;
-
-# display Uw, xi, gamma, lambda > DATA/MLE.sol;
 
 # display the value function
 # display EV;

@@ -83,26 +83,34 @@ else {
 # display _solve_time;
 # display estimates of structural parameters
 display beta, theta, VoT;
+display beta, theta, VoT > DATA/jointMLE.sol;
 display Um, b, c, rho;
+display Um, b, c, rho > DATA/jointMLE.sol;
 # display the true values
 display Um0, b0, c0, rho0;
+display Um0, b0, c0, rho0 > DATA/jointMLE.sol;
 # display Uw, xi, gamma, lambda;
 
 # # write the estimates
-# printf "param VoT_ := %f\n; ", VoT > DATA/jointMLE.dat;
 printf "param Um_ := \n" > DATA/jointMLE.dat;
-for {j in ACTV} {
-	printf "%d\t%f\n", j, Um[n1,j] > DATA/jointMLE.dat;
+for {n in PERS} {
+	for {j in ACTV} {
+		printf "%d %d\t%f\n", n, j, Um[n,j] > DATA/jointMLE.dat;
+	}
 }
 printf ";\n" > DATA/jointMLE.dat;
 printf "param  b_ := \n" > DATA/jointMLE.dat;
-for {j in ACTV} {
-	printf "%d\t%f\n", j, b[n1,j] > DATA/jointMLE.dat;
+for {n in PERS} {
+	for {j in ACTV} {
+		printf "%d %d\t%f\n", n, j, b[n,j] > DATA/jointMLE.dat;
+	}
 }
 printf ";\n" > DATA/jointMLE.dat;
 printf "param  c_ := \n" > DATA/jointMLE.dat;
-for {j in ACTV} {
-	printf "%d\t%f\n", j, c[n1,j] > DATA/jointMLE.dat;
+for {n in PERS} {
+	for {j in ACTV} {
+		printf "%d %d\t%f\n", n, j, c[n,j] > DATA/jointMLE.dat;
+	}
 }
 printf ";\n" > DATA/jointMLE.dat;
 
@@ -114,24 +122,30 @@ printf "beta = %f;\n", beta > DATA/jointMLE.m;
 printf "theta = %f;\n", theta > DATA/jointMLE.m;
 
 # export the estimated parameters to MLE.m
-printf "VoT_ = %f;\n", VoT > DATA/jointMLE.m;
-printf "Um_ = [ " > DATA/jointMLE.m;
-for {j in ACTV} {
-	printf "%f ", Um[n1,j] > DATA/jointMLE.m;
+printf "Um_ = [\n" > DATA/jointMLE.m;
+for {n in PERS} {
+	for {j in ACTV} {
+		printf "%f ", Um[n,j] > DATA/jointMLE.m;
+	}
+	printf "\n" > DATA/jointMLE.m;
 }
 printf "];\n" > DATA/jointMLE.m;
-printf "b_ = [ " > DATA/jointMLE.m;
-for {j in ACTV} {
-	printf "%f ", b[n1,j] > DATA/jointMLE.m;
+printf "b_ = [\n" > DATA/jointMLE.m;
+for {n in PERS} {
+	for {j in ACTV} {
+		printf "%f ", b[n,j] > DATA/jointMLE.m;
+	}
+	printf "\n" > DATA/jointMLE.m;
 }
 printf "];\n" > DATA/jointMLE.m;
-printf "c_ = [ " > DATA/jointMLE.m;
-for {j in ACTV} {
-	printf "%f ", c[n1,j] > DATA/jointMLE.m;
+printf "c_ = [\n" > DATA/jointMLE.m;
+for {n in PERS} {
+	for {j in ACTV} {
+		printf "%f ", c[n1,j] > DATA/jointMLE.m;
+	}
+	printf "\n" > DATA/jointMLE.m;
 }
 printf "];\n" > DATA/jointMLE.m;
-
-# display Uw, xi, gamma, lambda > DATA/jointMLE.sol;
 
 # display the value function
 # display EV;

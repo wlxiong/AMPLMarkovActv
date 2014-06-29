@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
+
 sample_size=$1
+if [ -z ${sample_size} ]; then
+	echo "usage: $0 <sample size>" >&2
+	exit 1
+fi
 
 wine ampl MDPNonlinearEqn.run
 matlab -nojvm -r "runMC(${sample_size}); exit;" | tee DATA/MC.log

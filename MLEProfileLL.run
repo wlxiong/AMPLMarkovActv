@@ -61,7 +61,7 @@ option show_stats 0;
 # option log_file "DATA/LL.log";
 
 # first, try all the possible values of b[2]
-set TT := (0..(H-1) by 6) union {H-1};
+set TT := (0..(H-1) by 8) union {H-1};
 param ll_b2 {TT};
 for {s in TT} {
 	# set b
@@ -83,10 +83,9 @@ for {s in TT} {
 		fix b;
 		# solve the problem
 		solve MarkovActvMDP > DATA/LL.log;
-		# display _solve_time;
 		# calculate likelihood
 		let ll_b23[s,r] := likelihood;
-		display s, r, ll_b23[s,r];
+		display s, r, ll_b23[s,r], _solve_time;
 	}
 }
 
