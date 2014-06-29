@@ -89,17 +89,17 @@ display Um0, b0, c0 > DATA/MLE.sol;
 # display Uw, xi, gamma, lambda;
 
 # write the estimates
-printf "param Um_ := \n" > DATA/MLE.dat;
+printf "param Um_[%d,*] := \n", n1 > DATA/MLE.dat;
 for {j in ACTV} {
 	printf "%d\t%f\n", j, Um[n1,j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
-printf "param  b_ := \n" > DATA/MLE.dat;
+printf "param  b_[%d,*] := \n", n1 > DATA/MLE.dat;
 for {j in ACTV} {
 	printf "%d\t%f\n", j, b[n1,j] > DATA/MLE.dat;
 }
 printf ";\n" > DATA/MLE.dat;
-printf "param  c_ := \n" > DATA/MLE.dat;
+printf "param  c_[%d,*] := \n", n1 > DATA/MLE.dat;
 for {j in ACTV} {
 	printf "%d\t%f\n", j, c[n1,j] > DATA/MLE.dat;
 }
@@ -114,17 +114,17 @@ printf "beta = %f;\n", beta > DATA/MLE.m;
 printf "theta = %f;\n", theta > DATA/MLE.m;
 
 # export the estimated parameters to MLE.m
-printf "Um_[%d,*] = [ ", n1 > DATA/MLE.m;
+printf "Um_ = [ ", n1 > DATA/MLE.m;
 for {j in ACTV} {
 	printf "%f ", Um[n1,j] > DATA/MLE.m;
 }
 printf "];\n" > DATA/MLE.m;
-printf "b_[%d,*] = [ ", n1 > DATA/MLE.m;
+printf "b_ = [ ", n1 > DATA/MLE.m;
 for {j in ACTV} {
 	printf "%f ", b[n1,j] > DATA/MLE.m;
 }
 printf "];\n" > DATA/MLE.m;
-printf "c_[%d,*] = [ ", n1 > DATA/MLE.m;
+printf "c_ = [ ", n1 > DATA/MLE.m;
 for {j in ACTV} {
 	printf "%f ", c[n1,j] > DATA/MLE.m;
 }
