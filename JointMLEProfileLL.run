@@ -64,6 +64,19 @@ for {r in RHO} {
 	display r, ll_rho3[r], _solve_time;
 }
 
+# print likelihood values
+printf "rho = [\n" > DATA/jointLL.m;
+for {r in RHO} {
+	printf "%f\n", r> DATA/jointLL.m;
+}
+printf "];\n" > DATA/jointLL.m;
+
+printf "ll_rho3 = [\n" > DATA/jointLL.m;
+for {r in RHO} {
+	printf "%f\n", ll_rho3[r] > DATA/jointLL.m;
+}
+printf "];\n" > DATA/jointLL.m;
+
 # then, try all the possible combinations of rho[1] and rho[3]
 param ll_rho13 {RHO cross RHO};
 for {r1 in RHO} {
@@ -80,19 +93,6 @@ for {r1 in RHO} {
 }
 
 # print likelihood values
-
-printf "rho = [\n" > DATA/jointLL.m;
-for {r in RHO} {
-	printf "%f\n", r> DATA/jointLL.m;
-}
-printf "];\n" > DATA/jointLL.m;
-
-printf "ll_rho3 = [\n" > DATA/jointLL.m;
-for {r in RHO} {
-	printf "%f\n", ll_rho3[r] > DATA/jointLL.m;
-}
-printf "];\n" > DATA/jointLL.m;
-
 printf "ll_rho13 = [\n" > DATA/jointLL.m;
 for {r1 in RHO} {
 	for {r3 in RHO} {
