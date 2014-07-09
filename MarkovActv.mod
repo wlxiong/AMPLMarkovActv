@@ -8,7 +8,8 @@
 # AMPL Model File:   MarkovActv.mod
 # AMPL Data File:    MarkovActv.dat
 # AMPL Command File: MDPNonlinearEqn.run, JointMDPNonlinearEqn.run
-#					 StateAction.run, JointStateAction.run
+#                    MDPStateAction.run, JointMDPStateAction.run
+#                    MLEMathProgEC.run, JointMLEMathProgEC.run
 
 # control of debug logging
 param debug_log;
@@ -16,28 +17,28 @@ param debug_log;
 # SET UP THE MODEL and DATA #
 
 #  Define and process the data
-param T;				# the equivalent minutes of a time slice
-param H;                # number of time slice in the data
-param DH;				# the longest duration for a decision
-set TIME := 0..(H-1);   # TIME is the vector of time slices
+param T;        # the equivalent minutes of a time episode
+param H;        # number of time episode in the data
+param DH;       # the longest duration for a decision
+set TIME := 0..(H-1);   # TIME is the vector of time episodes
 param N := 2;           # number of individuals in the household
 set PERS := 1..N;       # PERS is the index set of individuals
 param M;                # number of activities, including HOME
 set ACTV := 1..M;       # ACTV is the index set of activities
-param HOME;				# define HOME activity
-set WORK {n in PERS};	# define the work activity for each household member
+param HOME;             # define HOME activity
+set WORK {n in PERS};   # define the work activity for each household member
 
 # generated time serise data
 param n1;				# a specific household member
 param I;				# sample size
-set SAMPLE := 1..I;		# sample IDs
-param xt {SAMPLE, TIME};	# state: current activity
-param dx {SAMPLE, TIME};	# decision: activity type
-param dh {SAMPLE, TIME};	# decision: activity duration
-param xt1 {SAMPLE, TIME};	# state: current activity of person 1
-param xt2 {SAMPLE, TIME};	# state: current activity of person 2
-param dx1 {SAMPLE, TIME};	# decision: activity type of person 1
-param dx2 {SAMPLE, TIME};	# decision: activity type of person 2
+set SAMPLE := 1..I;       # sample IDs
+param xt {SAMPLE, TIME};  # state: current activity
+param dx {SAMPLE, TIME};  # decision: activity type
+param dh {SAMPLE, TIME};  # decision: activity duration
+param xt1 {SAMPLE, TIME}; # state: current activity of person 1
+param xt2 {SAMPLE, TIME}; # state: current activity of person 2
+param dx1 {SAMPLE, TIME}; # decision: activity type of person 1
+param dx2 {SAMPLE, TIME}; # decision: activity type of person 2
 
 # shortcuts for set union and set product
 set AUW {n in PERS} := ACTV union WORK[n];
@@ -221,8 +222,6 @@ var jointChoiceProb {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]} =
 
 # DEFINE OBJECTIVE FUNCTION AND CONSTRAINTS #
 
-# TODO calculate profile of likelihood and draw 3D diagrams
-
 # Define the objective: Likelihood function 
 #   The likelihood function contains two parts
 #   First is the likelihood that the engine is replaced given time t state in the data.
@@ -255,10 +254,6 @@ subject to Bellman_Eqn {n in PERS, (t,j) in X[n]}:
 subject to Bellman_EqnH {n in PERS}: 
 	EV[n,H,HOME] = EV[n,0,HOME];
 
-# choice probability range
-# subject to choiceProb_Range {n in PERS, (t,j) in X[n], (k,h) in D[n,t,j]}:
-# 	0.0 <= choiceProb[n,t,j,k,h] <= 1.0;
-
 
 # Define the Bellman equation of the composite MDP model
 subject to Bellman_Joint {(t,j1,j2) in XX}:
@@ -270,10 +265,6 @@ subject to Bellman_Joint {(t,j1,j2) in XX}:
 							(jointChoiceUtil[t,j1,j2,a1,a2,h] + beta**h * EW[t,a1,a2]);
 subject to Bellman_JointH: 
 	EW[H,HOME,HOME] = EW[0,HOME,HOME];
-
-# joint choice probability range
-# subject to jointChoiceProb_Range {(t,j1,j2) in XX, (a1, a2, h) in DD[t,j1,j2]}:
-# 	0.0 <= jointChoiceProb[t,j1,j2,a1,a2,h] <= 1.0;
 
 # Define the Bellman equation for updating the lower and upper bounds
 subject to Bellman_Lower {(t,j1,j2) in XX}:
